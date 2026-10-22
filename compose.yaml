@@ -1,0 +1,19 @@
+name: bloomcare-fresh
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?Run python scripts/setup.py first}
+      POSTGRES_USER: ${POSTGRES_USER:?Run python scripts/setup.py first}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run python scripts/setup.py first}
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - bloomcare_fresh_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+volumes:
+  bloomcare_fresh_data:

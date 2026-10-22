@@ -1,0 +1,115 @@
+{
+  "source": "Pinned original BloomCare workbooks; legacy category labels retained, not confirmed PE outcomes",
+  "raw_rows": 203,
+  "exact_duplicates_removed": 113,
+  "usable_rows": 90,
+  "train_rows": 72,
+  "test_rows": 18,
+  "overlap_feature_groups": 0,
+  "parameters": {
+    "n_estimators": 400,
+    "max_depth": 6,
+    "min_samples_leaf": 2,
+    "class_weight": "balanced_subsample",
+    "random_state": 20261016,
+    "n_jobs": 1
+  },
+  "test_accuracy": 0.7222222222222222,
+  "test_macro_f1": 0.6618736383442265,
+  "test_class_report": {
+    "HIGH": {
+      "precision": 0.5,
+      "recall": 0.75,
+      "f1-score": 0.6,
+      "support": 4.0
+    },
+    "LOW": {
+      "precision": 0.8888888888888888,
+      "recall": 1.0,
+      "f1-score": 0.9411764705882353,
+      "support": 8.0
+    },
+    "MEDIUM": {
+      "precision": 0.6666666666666666,
+      "recall": 0.3333333333333333,
+      "f1-score": 0.4444444444444444,
+      "support": 6.0
+    },
+    "accuracy": 0.7222222222222222,
+    "macro avg": {
+      "precision": 0.6851851851851851,
+      "recall": 0.6944444444444445,
+      "f1-score": 0.6618736383442265,
+      "support": 18.0
+    },
+    "weighted avg": {
+      "precision": 0.7283950617283951,
+      "recall": 0.7222222222222222,
+      "f1-score": 0.6997821350762528,
+      "support": 18.0
+    }
+  },
+  "observed_ranges": {
+    "gravida": [
+      1.0,
+      8.0
+    ],
+    "parity": [
+      0.0,
+      6.0
+    ],
+    "gestational_weeks": [
+      14.0,
+      40.0
+    ],
+    "age_years": [
+      18.0,
+      38.0
+    ],
+    "bmi": [
+      16.4,
+      43.3
+    ],
+    "diabetes": [
+      0.0,
+      1.0
+    ],
+    "history_of_hypertension": [
+      0.0,
+      1.0
+    ],
+    "systolic_mmhg": [
+      90.0,
+      130.0
+    ],
+    "diastolic_mmhg": [
+      20.0,
+      90.0
+    ],
+    "hb": [
+      8.0,
+      11.2
+    ],
+    "fetal_weight_kg": [
+      0.0001,
+      9.55
+    ],
+    "protein_uria": [
+      0.0,
+      1.0
+    ],
+    "amniotic_fluid_level_cm": [
+      4.79,
+      18.0
+    ]
+  },
+  "activation": "NOT_PROMOTED_DATA_PROVENANCE_AND_INDEPENDENT_OUTCOMES_REQUIRED",
+  "limitations": [
+    "Only 90 unique rows remain; this is a small internal grouped comparison, not external validation.",
+    "No source support for systolic BP above 130 mmHg; training cannot extend coverage.",
+    "Original HB units and confirmed PE outcome definition remain undocumented.",
+    "The original overlapping train/test score is not comparable to this grouped test.",
+    "Unused all-missing Doppler features are omitted; no observations are synthesized."
+  ],
+  "candidate_artifact_sha256": "babaadec9f41c586e395e6b9b48a2741d9043a5763453da459a038663570ad40"
+}

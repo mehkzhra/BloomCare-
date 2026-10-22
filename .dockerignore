@@ -1,0 +1,14 @@
+**/.venv
+**/node_modules
+**/dist
+**/__pycache__
+**/.pytest_cache
+**/.ruff_cache
+**/.env*
+**/model-trust.json
+ml/artifacts/*
+!ml/artifacts/legacy_pe_v0.7.1/
+!ml/artifacts/legacy_pe_v0.7.1/**
+ml/data
+backups
+.git

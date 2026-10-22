@@ -1,0 +1,34 @@
+name: bloomcare-release
+services:
+  api:
+    extends:
+      file: compose.deploy.yaml
+      service: api
+    environment:
+      PUBLIC_APP_URL: https://${BLOOMCARE_DOMAIN:?Set BLOOMCARE_DOMAIN to your own domain}
+      ALLOWED_ORIGINS: https://${BLOOMCARE_DOMAIN:?Set BLOOMCARE_DOMAIN}
+      COOKIE_SECURE: "true"
+      AUTH_REQUIRE_EMAIL_VERIFICATION: "true"
+      # Only this private container network may reach the API. Caddy overwrites
+      # X-Forwarded-For with the actual connection peer before forwarding.
+      FORWARDED_ALLOW_IPS: "*"
+  web:
+    build:
+      context: .
+      dockerfile: deploy/frontend-public.Dockerfile
+    environment:
+      BLOOMCARE_DOMAIN: ${BLOOMCARE_DOMAIN:?Set BLOOMCARE_DOMAIN}
+    depends_on: [api]
+    ports: ["80:80", "443:443"]
+    volumes:
+      - bloomcare_tls_data:/data
+      - bloomcare_tls_config:/config
+    networks: [bloomcare_db]
+    restart: unless-stopped
+networks:
+  bloomcare_db:
+    external: true
+    name: bloomcare-fresh_default
+volumes:
+  bloomcare_tls_data:
+  bloomcare_tls_config:

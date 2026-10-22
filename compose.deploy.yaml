@@ -1,0 +1,27 @@
+name: bloomcare-release
+services:
+  api:
+    build:
+      context: .
+      dockerfile: deploy/backend.Dockerfile
+    env_file: backend/.env
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      ALLOWED_ORIGINS: ${BLOOMCARE_ALLOWED_ORIGINS:-http://127.0.0.1:8080,http://localhost:8080}
+    volumes:
+      - ./ml/artifacts:/app/ml/artifacts:ro
+      - ./backend/model-trust.json:/app/backend/model-trust.json:ro
+    networks: [bloomcare_db]
+    restart: unless-stopped
+  web:
+    build:
+      context: .
+      dockerfile: deploy/frontend.Dockerfile
+    depends_on: [api]
+    ports: ["127.0.0.1:8080:80"]
+    networks: [bloomcare_db]
+    restart: unless-stopped
+networks:
+  bloomcare_db:
+    external: true
+    name: bloomcare-fresh_default

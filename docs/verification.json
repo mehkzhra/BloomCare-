@@ -1,0 +1,72 @@
+{
+  "release": "1.2.0",
+  "date": "2026-10-21",
+  "schema": "0013_account_security",
+  "tables": 31,
+  "environment": "Linux; isolated SQLite API tests; mocked SMTP/Brevo/provider tests; supervised Chrome UI fixture review",
+  "backend": {
+    "passed": 294,
+    "skipped": 1,
+    "failed": 0
+  },
+  "frontend": {
+    "passed": 139,
+    "failed": 0
+  },
+  "ml": {
+    "passed": 11,
+    "failed": 0
+  },
+  "lint": {
+    "python": "passed",
+    "frontend": "passed"
+  },
+  "frontend_build": "passed",
+  "pe_integrity": "passed",
+  "new_features": [
+    "maternal-embrace SVG logo and favicon",
+    "coordinated colorful public, sign-in and three-role UI",
+    "pregnancy and next-appointment priority layout",
+    "Brevo HTTPS account email option",
+    "same-origin cloud SPA/API serving",
+    "Render Free Docker/Blueprint + Neon guide",
+    "build-time checksum-pinned maternal training and PE integrity verification",
+    "safe first-admin mailbox recovery",
+    "Render edge client-IP throttling",
+    "stable derived session key from provider-generated seed"
+  ],
+  "migration": "No new schema migration in 1.2.0; head remains 0013_account_security. Populated upgrade and parity were verified in 1.1.0; current isolated backend suite passes.",
+  "restore_test": "subprocess target/lifecycle/failure guards tested; actual PostgreSQL restore pending",
+  "public_template": "Render blueprint and Docker paths reviewed; no live host, container runtime or public TLS claimed.",
+  "models_changed": false,
+  "not_executed_here": [
+    "native Windows/PostgreSQL destination workflow",
+    "Docker/Caddy/Render image runtime and cloud PostgreSQL",
+    "real Brevo/SMTP inbox delivery",
+    "live Groq/Twilio delivery",
+    "real two-device camera/microphone/TURN connectivity",
+    "public HTTPS/cookie/proxy acceptance and cloud load",
+    "actual PostgreSQL backup restore",
+    "clinical or external model validation"
+  ],
+  "operator_guide": "docs/FINALIZE-TODAY.md",
+  "cloud_build": "Python model build/integrity/inference stage executed locally with pinned fixture and pinned original PE files; actual Docker build on Render not executed.",
+  "visual_review": {
+    "data": "synthetic UI fixtures, removed from delivery; no real accounts or provider sessions",
+    "desktop": [
+      "public welcome",
+      "sign-in",
+      "patient",
+      "doctor",
+      "admin"
+    ],
+    "mobile": [
+      "patient",
+      "doctor",
+      "admin"
+    ],
+    "urdu_rtl": "patient mobile; drawer open and Escape dismissal; new key text translated",
+    "overflow": "mobile patient care-team heading overflow fixed; final role viewports checked against document scroll width",
+    "not_included": "screenshots and temporary review entry points"
+  }
+}

@@ -1,0 +1,30 @@
+# One full-app service. Neon is configured separately; no expiring Render database.
+services:
+  - type: web
+    name: bloomcare
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./deploy/render.Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health/ready
+    autoDeployTrigger: "off"
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET_SEED
+        generateValue: true
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: AUTH_REQUIRE_EMAIL_VERIFICATION
+        value: "true"
+      - key: EMAIL_PROVIDER
+        value: brevo
+      - key: EMAIL_FROM
+        sync: false
+      - key: BREVO_API_KEY
+        sync: false
+      - key: BOOTSTRAP_ADMIN_EMAIL
+        sync: false
+      - key: BLOOMCARE_RESEARCH_ASSESSMENTS
+        value: "true"

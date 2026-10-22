@@ -1,0 +1,338 @@
+{
+  "release": "1.0.3",
+  "archive": "docs/history.zip",
+  "archive_sha256": "9c2c71178ad44917da81fc5bc2b6d42468e552d97fb31cae122b7cf8f78ced9b",
+  "policy": "Remove only unchanged archived legacy release material. Runtime data is excluded.",
+  "files": [
+    {
+      "path": "START-HERE-0.7.1.md",
+      "sha256": "9dd4e31a0fcde47554ccb37a137381d97a7def36c5c8e91d429b3cb76bd861b5",
+      "bytes": 1012
+    },
+    {
+      "path": "START-HERE-0.9.0.md",
+      "sha256": "aa43c797d21f690492cd67c34b9c96ea4ef3a185ea0b6bb2745a701cf7dd1b7a",
+      "bytes": 713
+    },
+    {
+      "path": "START-HERE-1.0.0.md",
+      "sha256": "bfb2f6973d954cd951f79ebb112019ab0bb5c4d6e4ac2cff7e20116f1c9d53df",
+      "bytes": 977
+    },
+    {
+      "path": "START-HERE-1.0.1.md",
+      "sha256": "16eccedbbe995e84a833eb4bcad67308132949fd01fc7e50e2ea65f99f1de895",
+      "bytes": 3499
+    },
+    {
+      "path": "START-HERE-1.0.2.md",
+      "sha256": "d99714ded1cad71b3bde17f50033ca3342487650d4e9dfe2182879326a2c6599",
+      "bytes": 2930
+    },
+    {
+      "path": "docs/APPOINTMENTS-0.3.0.md",
+      "sha256": "16d52085153086cd7d7866577e16f5062e1e292ad5eaba8d86bb1251c7935e5a",
+      "bytes": 8055
+    },
+    {
+      "path": "docs/ASSESSMENT-0.2.1.md",
+      "sha256": "0c0519ca8954b4c1cacef0a5c8b747c42ba44137192b7bc0032087cd08ea635c",
+      "bytes": 7114
+    },
+    {
+      "path": "docs/AUDIT-LOCK-FIX-0.6.1.md",
+      "sha256": "1f12a72cac39df90b0c75053da32c012f9f56b371612957d38fb496bb5c0d496",
+      "bytes": 2914
+    },
+    {
+      "path": "docs/COMMUNICATION-0.5.0.md",
+      "sha256": "b10a125f6c87fb1a0284e132c193e3cf0376f47360cfc85936c0f213cd9e4b9e",
+      "bytes": 6253
+    },
+    {
+      "path": "docs/COMPLETE-DELIVERY-0.9.0.md",
+      "sha256": "2d0aaea61eddbf4a621b48eab6bb53b702673083d28bfdad73ac68d67f04cd2e",
+      "bytes": 10799
+    },
+    {
+      "path": "docs/COMPLETE-DELIVERY-1.0.0.md",
+      "sha256": "12cb3205e777b8c30ac32d175d90732687364447af4148a8d653e8e6b889955f",
+      "bytes": 6830
+    },
+    {
+      "path": "docs/COMPLETE-DELIVERY-1.0.1.md",
+      "sha256": "f7bb82ec6566866c88abcfe07201ed5b05eaf405f9a98af606e6c04f35437f3f",
+      "bytes": 5892
+    },
+    {
+      "path": "docs/COMPLETE-DELIVERY-1.0.2.md",
+      "sha256": "884fadaed3eeeee15440bc4043334c413f3778c62118a76773e3e829fc1ee3fc",
+      "bytes": 4609
+    },
+    {
+      "path": "docs/DEPLOYMENT-0.6.0.md",
+      "sha256": "c2f5a941faef58cca8ad1a20dfad2693f8d35ab2b921c88753141a419892a747",
+      "bytes": 1957
+    },
+    {
+      "path": "docs/FEATURE-STATUS-0.6.0.md",
+      "sha256": "738b107425bf944751994d03ae878be8403da681873bc5603d757c9ec318e92f",
+      "bytes": 2624
+    },
+    {
+      "path": "docs/FIX-0.1.1.md",
+      "sha256": "83c272ae488b3f667f9196616b2781fcbce7a7a9196badb61d7f259d5436be7b",
+      "bytes": 3542
+    },
+    {
+      "path": "docs/GROQ-FIX-0.6.3.md",
+      "sha256": "bb02539c0eaf59106728a9e4cd7799f72742215bcb7acd09b875870e3668f614",
+      "bytes": 4160
+    },
+    {
+      "path": "docs/INTERFACE-0.7.0.md",
+      "sha256": "bd9ef8b981d756ae0b03b476e80f7b8f57cf8075af9d4a6847a1c4b281cc6609",
+      "bytes": 6154
+    },
+    {
+      "path": "docs/INTERFACE-0.8.0.md",
+      "sha256": "8cff38d48eff9b76e990bc90be3c704aebe7974a37af0891bbad2a010abd1f6f",
+      "bytes": 3743
+    },
+    {
+      "path": "docs/LOADING-FIX-0.6.2.md",
+      "sha256": "389e65ca9a424b2995d0627d74c0436898550a6202f1d799ceb3bad66e99ecba",
+      "bytes": 3519
+    },
+    {
+      "path": "docs/PATIENT-CARE-0.4.0.md",
+      "sha256": "22c78ff87028f343aecba27fdb100e2c72746b64571f3b3729775eeedbcc1e2d",
+      "bytes": 4396
+    },
+    {
+      "path": "docs/PE-ASSESSMENT-0.7.1.md",
+      "sha256": "e31cd8458b60e4d59c0ed198437db983fdcaf17389f021710bcc8420e243dce7",
+      "bytes": 7073
+    },
+    {
+      "path": "docs/PE-TEST-SAMPLES-0.7.1.md",
+      "sha256": "5b0d929150a6596305e2a71fc6636f0340a803f2df6a8d96f4cddba10742d328",
+      "bytes": 1710
+    },
+    {
+      "path": "docs/PERFORMANCE-1.0.0.json",
+      "sha256": "eecaf2c5fa209d8d6af2aa425f07e02cc208e97d2e821234f8d2feb0106101fb",
+      "bytes": 620
+    },
+    {
+      "path": "docs/PUBLIC-DEMO-0.2.1.json",
+      "sha256": "6fe2aea0c9292ec60ac3697093f49c20bf71d3876d8723c75103c95c09a9442e",
+      "bytes": 1368
+    },
+    {
+      "path": "docs/RECRUITER-WALKTHROUGH-1.0.0.md",
+      "sha256": "e42ee360c97ee653373d0ec5f126107751b23bdfbef85286dc489b170fccc007",
+      "bytes": 3996
+    },
+    {
+      "path": "docs/REFERENCE_INSPECTION.md",
+      "sha256": "8dcc65baa21473e1be0b01efb8d9bfb6d41c593e86a79ad58bffd43aed9a1162",
+      "bytes": 2131
+    },
+    {
+      "path": "docs/RELEASE-HISTORY-PRE-0.9.0.md",
+      "sha256": "4bfbe1728f4329a2e717e05a0e27a3bf18145fef585bdd848a0b316e07d2bd26",
+      "bytes": 10536
+    },
+    {
+      "path": "docs/REMAINING-WORKFLOWS-0.6.0.md",
+      "sha256": "98ece751cddfebd0e72797488fa70d80b9074d4421bc152489fd6fc38c6dade0",
+      "bytes": 9746
+    },
+    {
+      "path": "docs/RETRAINING-1.0.0.md",
+      "sha256": "1e6469e97a5e854bbbf602e2cd70f2c232cd7e27b3445c89503959e50c17fd0e",
+      "bytes": 5165
+    },
+    {
+      "path": "docs/ROLES-ADMIN-0.3.1.md",
+      "sha256": "6247f73be92e89a0c318397a6deb5c66c8b28b5411d9d4d6574199992ef0485e",
+      "bytes": 5324
+    },
+    {
+      "path": "docs/SDD-DELIVERY-ADDENDUM-0.9.0.md",
+      "sha256": "e0b38d3cfda65968e3b168941f409805ae0e2b02a1669104cea00b529861021d",
+      "bytes": 10840
+    },
+    {
+      "path": "docs/SESSION-FIX-0.2.2.md",
+      "sha256": "5c3070220af34b050c2964e65abb93f48d5f5d5f32f40501ff448b120e015e5c",
+      "bytes": 4302
+    },
+    {
+      "path": "docs/SRS-DELIVERY-ADDENDUM-0.9.0.md",
+      "sha256": "24d1e265e2a66681951e9095d89b75b449bbe7d0234665b4cbe638eb63876ed5",
+      "bytes": 10790
+    },
+    {
+      "path": "docs/SRS-SDD-ADDENDUM-1.0.0.md",
+      "sha256": "a99167bc196f872e80f23f12d8c2ba67bc394118bbb19b4a144d31e27e366d54",
+      "bytes": 4201
+    },
+    {
+      "path": "docs/SRS-SDD-ADDENDUM-1.0.1.md",
+      "sha256": "73793580f9a18c89613dff87ef8d3838183293d8436728b1e6cab19858ea98c8",
+      "bytes": 2294
+    },
+    {
+      "path": "docs/SRS-SDD-ADDENDUM-1.0.2.md",
+      "sha256": "27366052c5dc262f3497565faa502a5444b4c8cab1fdecbe049164d62c71f754",
+      "bytes": 1636
+    },
+    {
+      "path": "docs/THIRD-PARTY-ASSETS-0.9.0.md",
+      "sha256": "c6e2c5f501c7fc73c385183cde86a85d169d5f54f74a03abe75ee02a9bcab400",
+      "bytes": 2271
+    },
+    {
+      "path": "docs/VERIFICATION-0.3.0.md",
+      "sha256": "4b9b731fe402b962ca55f608cc3e6f6a0a56b958669e3999d5f5d7446ae6240d",
+      "bytes": 3165
+    },
+    {
+      "path": "docs/VERIFICATION-0.9.0.json",
+      "sha256": "19c3d7d34f7de0ac315ba2c54d527f9fddf5113eb2fd16c06485ad82adf77236",
+      "bytes": 827
+    },
+    {
+      "path": "docs/VERIFICATION-0.9.0.md",
+      "sha256": "fe40f471c003c695bd1d2c475141fd563100a2d6c252297dccaafcf1826f6b55",
+      "bytes": 3780
+    },
+    {
+      "path": "docs/VERIFICATION-1.0.0.json",
+      "sha256": "cd3cf04cbc05dbfa3fb0aca60c35f30dca42bd5440bc2a2919e25ab4fe33b833",
+      "bytes": 863
+    },
+    {
+      "path": "docs/VERIFICATION-1.0.0.md",
+      "sha256": "2fed582f5c10c41841dd61c6702c5ac1cc7ec8a19a019769021567d108fdeb1b",
+      "bytes": 4297
+    },
+    {
+      "path": "docs/VERIFICATION-1.0.1.json",
+      "sha256": "ff5acb4c4d15c00f1b219fdf22da2fd1ffe4f308bbcbe1ffcd789f74c818d9a6",
+      "bytes": 1629
+    },
+    {
+      "path": "docs/VERIFICATION-1.0.1.md",
+      "sha256": "ca1000ce5885260ba85d224e0c410982bf0297ee0e9c8a0b2e293d2b231dc2bf",
+      "bytes": 2227
+    },
+    {
+      "path": "docs/VERIFICATION-1.0.2.json",
+      "sha256": "981197d5566e0cc0bcb77012b31ab8adfb690c581a7f0c21243cbb9a1c021dcf",
+      "bytes": 1722
+    },
+    {
+      "path": "docs/VERIFICATION-1.0.2.md",
+      "sha256": "c3debe95c09712a001afffc86540eff7e1704407688befbaa34a9ca97412a572",
+      "bytes": 2189
+    },
+    {
+      "path": "docs/WINDOWS-UI-CHECK-FIX-0.7.2.md",
+      "sha256": "1f48cc78d64ce54f56a15467e66da98cc6c0851e82e550987c7f4e711930cfb5",
+      "bytes": 2572
+    },
+    {
+      "path": "ml/training_reports/pe-v1.0.0/pe-candidate.json",
+      "sha256": "babaadec9f41c586e395e6b9b48a2741d9043a5763453da459a038663570ad40",
+      "bytes": 1820553
+    },
+    {
+      "path": "ml/training_reports/v1.0.0/extra_trees-candidate.json",
+      "sha256": "479273e223695cc011b4445a8633f1d479d421368a480a38060dffa56d3c14e0",
+      "bytes": 9889692
+    },
+    {
+      "path": "ml/training_reports/v1.0.0/extra_trees-progress.json",
+      "sha256": "885dfa7fd01516a6bdd87a1373404e4f9eb1afbe423441e4f8500f3410c0d540",
+      "bytes": 28305
+    },
+    {
+      "path": "ml/training_reports/v1.0.0/extra_trees-report.json",
+      "sha256": "f6bce4449d5ec43f87122fb562d12e431cd455263676dbc26df34f340d57e665",
+      "bytes": 33423
+    },
+    {
+      "path": "ml/training_reports/v1.0.0/gradient_boosting-progress.json",
+      "sha256": "5b74d3dcaba9ab86c49605873f3d9f7e317f3867d26f3cdd5bc429e43d321496",
+      "bytes": 27509
+    },
+    {
+      "path": "ml/training_reports/v1.0.0/gradient_boosting-report.json",
+      "sha256": "829784b88ec28e7cded2868a84145869639ea29a1be6dd41d60eb9a162bf9038",
+      "bytes": 32386
+    },
+    {
+      "path": "ml/training_reports/v1.0.0/random_forest-candidate.json",
+      "sha256": "1cfd70adaacaa6fe549a8458eee13b44ea5c19680d03bbad96ee24302f9bf21e",
+      "bytes": 2600265
+    },
+    {
+      "path": "ml/training_reports/v1.0.0/random_forest-progress.json",
+      "sha256": "cfc5863cd98d26bf2ca7981da615219548f910049b8bb6cbad086c93a80fbd84",
+      "bytes": 43706
+    },
+    {
+      "path": "ml/training_reports/v1.0.0/random_forest-report.json",
+      "sha256": "18fea8df948bba4c87f36e8fa4de35ca62f866a166b1c5dbd5908776aa74055e",
+      "bytes": 49953
+    },
+    {
+      "path": "scripts/finish-preeclampsia.cmd",
+      "sha256": "68afbf440faac2b9cdcdc384b783b35512b06d5382c90f4bbf13fd7f2e2a8502",
+      "bytes": 1426
+    },
+    {
+      "path": "scripts/update-appointments.cmd",
+      "sha256": "2a6aa24b3d9b1d5f73ceb119aee48dc50477293481cfd2d467f337d98a75161a",
+      "bytes": 1253
+    },
+    {
+      "path": "scripts/update-assessment.cmd",
+      "sha256": "06b27fc8d19259c9c1bc035568d3e5f853cbe548e820286c2e783de1e318b172",
+      "bytes": 1865
+    },
+    {
+      "path": "scripts/update-care.cmd",
+      "sha256": "07ef4de59756d7d8a3e87982e58383509467efb4d367f674e0bea39c2e051f83",
+      "bytes": 1440
+    },
+    {
+      "path": "scripts/update-communication.cmd",
+      "sha256": "47261b82cb11ba6284999866d84fe4c976d67c1c3b8fbf0d873c352093f52f87",
+      "bytes": 1488
+    },
+    {
+      "path": "scripts/update-interface.cmd",
+      "sha256": "1a2abeec7261bbd57f37d732f66d027d77655752d9436e91b0fa079712d50098",
+      "bytes": 589
+    },
+    {
+      "path": "scripts/update-preeclampsia.cmd",
+      "sha256": "d58b55008e92abee5b926049aa5b20ade3e3c23ca8eb01edd58a8719305cdcf2",
+      "bytes": 1543
+    },
+    {
+      "path": "scripts/update-remaining.cmd",
+      "sha256": "b9fc67cf34ce1cf5575bdb4e67c78bc2a9984f447ce34f52da9606e430a191aa",
+      "bytes": 1454
+    },
+    {
+      "path": "scripts/update-roles.cmd",
+      "sha256": "efee017fc199a22efefcef4f077b793e50099592bfc43005ef7dcc22305d779d",
+      "bytes": 1314
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "created_at": "2026-10-16T11:00:39.401406+00:00",
+  "users": 100,
+  "concurrent_clients": 10,
+  "requests": 300,
+  "rounds_per_user": 3,
+  "duration_seconds": 4.365403968999999,
+  "p50_ms": 122.81652600017878,
+  "p95_ms": 233.67541300012817,
+  "max_ms": 458.5731309998664,
+  "successful_200": 300,
+  "ownership_checks_passed": 300,
+  "scope": "In-process FastAPI TestClient; logged-in synthetic users; disposable SQLite; no ML/provider/video workload or real network",
+  "limitations": "Not a deployed PostgreSQL/100-concurrent-user benchmark; does not establish production response-time or availability targets."
+}

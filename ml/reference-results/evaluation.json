@@ -1,0 +1,207 @@
+{
+  "audit": {
+    "source_sha256": "a1f7025719f84715096e0d1f95ae2e56b57809b9b15449e1836c96a7d976ae9b",
+    "downloaded_rows": 1014,
+    "raw_class_counts": {
+      "HIGH": 272,
+      "LOW": 406,
+      "MEDIUM": 336
+    },
+    "exact_duplicate_rows_removed": 562,
+    "unique_rows_before_input_bounds": 452,
+    "excluded_unique_rows": 3,
+    "exclusion_counts_may_overlap": {
+      "age_years": 2,
+      "systolic_mmhg": 0,
+      "diastolic_mmhg": 0,
+      "glucose_mmol_l": 0,
+      "temperature_c": 0,
+      "heart_rate_bpm": 1,
+      "blood_pressure_order": 0
+    },
+    "usable_rows": 449,
+    "usable_class_counts": {
+      "HIGH": 112,
+      "LOW": 231,
+      "MEDIUM": 106
+    },
+    "unique_measurement_groups": 413,
+    "groups_with_conflicting_labels_retained": 35,
+    "unit_conversion": "BodyTemp: Fahrenheit to Celsius; (F - 32) * 5 / 9",
+    "feature_bounds": {
+      "age_years": [
+        10,
+        65
+      ],
+      "systolic_mmhg": [
+        60,
+        260
+      ],
+      "diastolic_mmhg": [
+        30,
+        180
+      ],
+      "glucose_mmol_l": [
+        1,
+        40
+      ],
+      "temperature_c": [
+        32,
+        43
+      ],
+      "heart_rate_bpm": [
+        30,
+        220
+      ]
+    },
+    "cleaning_policy": "Remove exact duplicate feature-label rows; exclude records incompatible with the current input contract; retain conflicting labels in one group"
+  },
+  "split": {
+    "method": "First fold of StratifiedGroupKFold(5, shuffle=True, random_state=20261010)",
+    "group": "Exact six-feature measurement vector, regardless of its label",
+    "train_rows": 359,
+    "held_out_rows": 90,
+    "train_groups": 330,
+    "held_out_groups": 83,
+    "identical_feature_group_overlap": 0,
+    "train_class_counts": {
+      "LOW": 184,
+      "HIGH": 90,
+      "MEDIUM": 85
+    },
+    "held_out_class_counts": {
+      "LOW": 47,
+      "HIGH": 22,
+      "MEDIUM": 21
+    },
+    "hyperparameter_tuning": false,
+    "held_out_data_used_for_fitting": false
+  },
+  "random_forest": {
+    "accuracy": 0.7111111111111111,
+    "macro_f1": 0.6671453408295513,
+    "class_report": {
+      "LOW": {
+        "precision": 0.7068965517241379,
+        "recall": 0.8723404255319149,
+        "f1-score": 0.780952380952381,
+        "support": 47.0
+      },
+      "MEDIUM": {
+        "precision": 0.4375,
+        "recall": 0.3333333333333333,
+        "f1-score": 0.3783783783783784,
+        "support": 21.0
+      },
+      "HIGH": {
+        "precision": 1.0,
+        "recall": 0.7272727272727273,
+        "f1-score": 0.8421052631578947,
+        "support": 22.0
+      },
+      "accuracy": 0.7111111111111111,
+      "macro avg": {
+        "precision": 0.7147988505747126,
+        "recall": 0.6443154953793252,
+        "f1-score": 0.6671453408295513,
+        "support": 90.0
+      },
+      "weighted avg": {
+        "precision": 0.715684865900383,
+        "recall": 0.7111111111111111,
+        "f1-score": 0.7019669293353503,
+        "support": 90.0
+      }
+    },
+    "confusion_matrix_class_order": [
+      "LOW",
+      "MEDIUM",
+      "HIGH"
+    ],
+    "confusion_matrix_rows_actual_columns_predicted": [
+      [
+        41,
+        6,
+        0
+      ],
+      [
+        14,
+        7,
+        0
+      ],
+      [
+        3,
+        3,
+        16
+      ]
+    ]
+  },
+  "most_frequent_baseline": {
+    "accuracy": 0.5222222222222223,
+    "macro_f1": 0.22871046228710465,
+    "class_report": {
+      "LOW": {
+        "precision": 0.5222222222222223,
+        "recall": 1.0,
+        "f1-score": 0.6861313868613139,
+        "support": 47.0
+      },
+      "MEDIUM": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 21.0
+      },
+      "HIGH": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 22.0
+      },
+      "accuracy": 0.5222222222222223,
+      "macro avg": {
+        "precision": 0.17407407407407408,
+        "recall": 0.3333333333333333,
+        "f1-score": 0.22871046228710465,
+        "support": 90.0
+      },
+      "weighted avg": {
+        "precision": 0.27271604938271604,
+        "recall": 0.5222222222222223,
+        "f1-score": 0.3583130575831306,
+        "support": 90.0
+      }
+    },
+    "confusion_matrix_class_order": [
+      "LOW",
+      "MEDIUM",
+      "HIGH"
+    ],
+    "confusion_matrix_rows_actual_columns_predicted": [
+      [
+        47,
+        0,
+        0
+      ],
+      [
+        21,
+        0,
+        0
+      ],
+      [
+        22,
+        0,
+        0
+      ]
+    ]
+  },
+  "limitations": [
+    "No patient identifiers: repeated-subject leakage cannot be ruled out.",
+    "Labels are the dataset's risk categories, not prospectively observed complications.",
+    "Conflicting risk labels occur for some identical measurements and are retained.",
+    "Blood glucose below 6 mmol/L has no support in this dataset.",
+    "No independent external validation or clinical validation was performed.",
+    "The model was fitted only on the training partition, not refitted on held-out data.",
+    "No pre-eclampsia outcome label is present; no PE model was trained."
+  ]
+}
