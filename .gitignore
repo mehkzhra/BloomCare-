@@ -1,6 +1,12 @@
 .env
 backend/.env
+.env.*
+!.env.example
 backend/model-trust.json
+backups/
+*.dump
+*.dump.*
+*.backup
 **/.venv/
 **/__pycache__/
 **/.pytest_cache/

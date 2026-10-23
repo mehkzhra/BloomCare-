@@ -1,4 +1,5 @@
 import { t } from "./i18n.js";
+import { activityLabel } from './ui.jsx';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { api } from './api.js';
 import { useLocation } from 'react-router-dom';
@@ -87,7 +88,7 @@ export function AdminAccounts() {
     <div className="admin-tabs" role="tablist" aria-label={t('Account management')} onKeyDown={event => { if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return; event.preventDefault(); const buttons = [...event.currentTarget.querySelectorAll('[role=tab]')], current = tabs.findIndex(([key]) => key === tab); const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (current + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length; setTab(tabs[next][0]); buttons[next].focus(); }}>{tabs.map(([key, label]) => <button role="tab" id={'tab-' + key} aria-controls={'panel-' + key} key={key} aria-selected={tab === key} tabIndex={tab === key ? 0 : -1} onClick={() => setTab(key)}>{t(label)}</button>)}</div>
     <div role="tabpanel" id={'panel-' + tab} aria-labelledby={'tab-' + tab}>
     {tab === 'people' && <AdminList key={location.search} initialFilters={location.search.replace(/^\?/, '')} title="Patients and doctors" path="/admin/accounts" searchable render={(u, change, busy) => <>
-      <h3>{u.full_name}</h3><p>{u.email} · {u.role} · {u.active ? t("Active") : t("Disabled")}</p>
+      <h3>{u.full_name}</h3><p>{u.email} · {t(u.role)} · {u.active ? t("Active") : t("Disabled")}</p>
       {u.role === 'doctor' && <><p>{u.registration_number} · {u.specialty} · {u.approved ? t("Approved") : t("Pending / approval revoked")}</p>
         <button disabled={busy} onClick={() => change(`/admin/doctors/${u.id}/approval`, {
           approved: !u.approved
@@ -101,7 +102,7 @@ export function AdminAccounts() {
     {tab === 'appointments' && <AdminList title="Appointments" path="/admin/appointments" render={a => <>
       <p>{a.patient} → {a.doctor}</p><p>{new Date(a.scheduled_at).toLocaleString()} · {a.status}</p></>} />}
     {tab === 'activity' && <AdminList title="Activity" path="/admin/activity" render={a => <>
-      <p>{a.actor} · {a.action.replaceAll('_', ' ')}</p><p>{new Date(a.created_at).toLocaleString()}</p>
-      <small>{t("Reference:")}{a.subject_id}</small></>} />}
+      <p>{a.actor} · {t(activityLabel(a.action))}</p><p>{new Date(a.created_at).toLocaleString()}</p>
+</>} />}
     </div></div>;
 }

@@ -7,12 +7,13 @@ import { reviewLabel } from './clinical-ui.jsx';
 
 const colors = ['#184c85', '#007e87', '#7055b8', '#a14723', '#475569'];
 const categoryColor = key => ({ LOW: '#146d49', MEDIUM: '#985d0b', HIGH: '#b42338', PENDING: '#985d0b', REVIEWED: '#146d49', URGENT_FOLLOW_UP: '#b42338' })[key] || 'var(--accent)';
-export function CategoryChart({ data, title }) {
-  const entries = Object.entries(data || {}).filter(([, value]) => typeof value === 'number');
+const chartLabels = { patient: 'Patients', doctor: 'Doctors', admin: 'Administrators', ACCEPTED: 'Confirmed', REJECTED: 'Declined', CANCELLED: 'Cancelled', COMPLETED: 'Completed', MILD: 'Mild', MODERATE: 'Moderate', SEVERE: 'Severe', LOW: 'Low', MEDIUM: 'Medium', HIGH: 'High', PENDING: 'Awaiting review', REVIEWED: 'Reviewed', URGENT_FOLLOW_UP: 'Urgent follow-up' };
+export function CategoryChart({ data, title, labels = {} }) {
+  const entries = Object.entries(data || {}).filter(([, value]) => Number.isFinite(value) && value >= 0);
   const largest = Math.max(...entries.map(([, value]) => value), 1);
-  return <figure className="category-chart"><figcaption>{t(title)}</figcaption>{entries.length ? <svg viewBox={`0 0 510 ${entries.length * 49 + 8}`} role="img" aria-label={`${t(title)}: ${entries.map(([k, n]) => `${k} ${n}`).join(', ')}`}>
-    {entries.map(([key, count], i) => <g key={key} transform={`translate(0,${i * 49})`}><text x="0" y="20" fontSize="12" fill="#304e49">{t(key.replaceAll('_', ' '))}</text><rect x="175" y="7" width="285" height="22" rx="5" fill="#edf1eb" /><rect x="175" y="7" width={count / largest * 285} height="22" rx="5" fill={categoryColor(key)} /><text x="475" y="23" fontSize="14" fill="#24423c">{count}</text></g>)}
-  </svg> : <p className="muted">{t('No records in this view yet.')}</p>}</figure>;
+  return <figure className="category-chart"><figcaption>{t(title)}</figcaption>{entries.length ? <ul className="category-bars" aria-label={t(title).trim()}>{entries.map(([key, count]) =>
+    <li key={key}><span>{t(labels[key] || chartLabels[key] || key.replaceAll('_', ' '))}</span><span className="category-bar" aria-hidden="true"><i style={{ width: `${count / largest * 100}%`, background: categoryColor(key) }} /></span><strong>{count.toLocaleString()}</strong></li>
+  )}</ul> : <p className="muted">{t('No records in this view yet.')}</p>}</figure>;
 }
 
 export function DoctorCaseWorkspace() {

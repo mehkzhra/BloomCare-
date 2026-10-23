@@ -52,7 +52,7 @@ it.each(['MEDIUM', 'HIGH'])('opens the additional PE form for %s without inventi
 it('posts only the nine extra fields and renders the returned saved PE category', async () => {
   start(); fill();
   fireEvent.click(screen.getByRole('button', { name: 'Complete PE screening' }));
-  expect(await screen.findByText('PE model category: MEDIUM')).toBeInTheDocument();
+  expect(await screen.findByText('PE screening category: MEDIUM')).toBeInTheDocument();
   expect(fetch).toHaveBeenCalledTimes(1);
   const [url, request] = fetch.mock.calls[0];
   expect(url).toBe('/api/patients/me/assessments/assessment-1/pe');
@@ -70,7 +70,7 @@ it('requires an explicit answer for all boolean measurements', () => {
 
 it('keeps actual out-of-range saved readings and directs the patient to review', () => {
   start({ ...assessment, observations: { ...observations, systolic_mmhg: 145 } });
-  expect(screen.getByRole('alert')).toHaveTextContent('Keep your actual readings');
+  expect(screen.getByRole('alert')).toHaveTextContent('No PE category can be produced');
   expect(screen.getByRole('alert')).toHaveTextContent('145');
   expect(screen.queryByRole('form')).not.toBeInTheDocument();
   expect(fetch).not.toHaveBeenCalled();
@@ -86,8 +86,8 @@ it('does not open PE for LOW or allow doctors to enter patient PE values', () =>
 
 it.each(['patient', 'doctor'])('explains the saved 12-week limitation to a %s without exposing a PE submission form', viewerRole => {
   start({ ...assessment, pe_status: 'OUTSIDE_COVERAGE', observations: { ...observations, gestational_weeks: 12 }, pe_input_issues: [{ name: 'gestational_weeks', label: 'Pregnancy duration', value: 12, minimum: 14, maximum: 40, unit: 'weeks' }] }, capabilities, viewerRole);
-  expect(screen.getByText(/This is not a LOW result/)).toBeInTheDocument();
-  expect(screen.getByText(/pregnancy weeks are not an input/)).toBeInTheDocument();
+  expect(screen.getByText(/This does not mean LOW risk/)).toBeInTheDocument();
+  expect(screen.getByText(/unavailable for your recorded week of pregnancy/)).toBeInTheDocument();
   expect(screen.getByRole('cell', { name: '12 weeks' })).toBeInTheDocument();
   expect(screen.getByRole('cell', { name: '14–40 weeks' })).toBeInTheDocument();
   expect(screen.queryByRole('form', { name: 'Additional PE measurements' })).not.toBeInTheDocument();
@@ -96,7 +96,7 @@ it.each(['patient', 'doctor'])('explains the saved 12-week limitation to a %s wi
 
 it('reads stored PE labels and values even when the model is unavailable', () => {
   start({ ...assessment, pe_screening: saved }, { pe_model_ready: false }, 'doctor');
-  expect(screen.getByText('PE model category: MEDIUM')).toBeInTheDocument();
+  expect(screen.getByText('PE screening category: MEDIUM')).toBeInTheDocument();
   expect(screen.getByText('Haemoglobin (HB)')).toBeInTheDocument();
   expect(screen.getByText('10.5')).toBeInTheDocument();
 });
@@ -106,6 +106,6 @@ it('shows a failed PE request without a made-up category and permits retry', asy
     json: async () => ({ detail: { code: 'PE_MODEL_UNAVAILABLE', message: 'PE model unavailable. No PE result was saved.' } }) });
   start(); fill(); fireEvent.click(screen.getByRole('button', { name: 'Complete PE screening' }));
   expect(await screen.findByRole('alert')).toHaveTextContent('No PE result was saved');
-  expect(screen.queryByText(/PE model category:/)).not.toBeInTheDocument();
+  expect(screen.queryByText(/PE screening category:/)).not.toBeInTheDocument();
   await waitFor(() => expect(screen.getByRole('button', { name: 'Complete PE screening' })).toBeEnabled());
 });

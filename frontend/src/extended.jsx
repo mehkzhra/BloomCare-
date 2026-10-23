@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { api } from './api.js';
 import { ResourceStatus, useResource } from './pages.jsx';
 import { download } from './communication.jsx';
+import { Icon } from './ui.jsx';
 import { CategoryChart, ClinicalOversight } from './analytics-ui.jsx';
 export { AssistantPage } from './assistant.jsx';
 const scopes = ['profile', 'observations', 'assessments', 'symptoms', 'medications', 'reports'];
@@ -149,7 +150,7 @@ export function RemindersPage() {
       setError(err.message);
     }
   }
-  return <div className="stack"><h1>{t("Medication reminders")}</h1><p className="banner">{t("Choose times according to your prescription. Reminders appear in Notifications while the backend is running.")}</p>
+  return <div className="stack"><h1>{t("Medication reminders")}</h1><p className="banner">{t("Choose times according to your prescription. Check Notifications for scheduled reminders while BloomCare is available.")}</p>
     <ResourceStatus resource={medications} /><form className="card stack" onSubmit={save}>
       <label>{t("Medication")}<select name="medication_id" required><option value="">{t("Choose active medication")}</option>{medications.data?.filter(r => r.active).map(r => <option key={r.id} value={r.id}>{r.name}</option>)}</select></label>
       <label>{t("First reminder time")}<input name="due_at" type="datetime-local" required /></label>
@@ -163,17 +164,40 @@ export function RemindersPage() {
 }
 export function OversightPage() {
   const analytics = useResource('/admin/analytics');
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const data = analytics.data;
+  return <div className="stack"><header className="workspace-heading"><div><span className="eyebrow">{t('ADMINISTRATION')}</span><h1>{t('Care activity')}</h1><p>{t('See how your care community uses BloomCare and follow up on reviews.')}</p></div><Link className="button secondary" to="/admin/accounts">{t('Manage accounts')}</Link></header>
+    <ResourceStatus resource={analytics} />
+    {data && <><div className="workspace-metrics four">{[
+      ['Saved reports', data.report_count, 'report'], ['Care messages', data.message_count, 'chat'],
+      ['Active medications', data.active_medications, 'heart'], ['New accounts in 30 days', data.registrations_last_30_days, 'users'],
+    ].map(([label, value, icon]) => <article className="workspace-metric" key={label}><div className="metric-top"><span>{t(label)}</span><span className="metric-icon"><Icon name={icon} size={19} /></span></div><strong>{Number.isFinite(value) ? value.toLocaleString() : '—'}</strong></article>)}</div>
+      <div className="workspace-chart-grid">{[
+        ['Accounts by role', data.account_roles], ['Appointment progress', data.appointment_status],
+        ['Maternal screening categories', data.assessment_categories], ['Assessment review progress', data.clinical_review_status],
+      ].map(([title, values]) => <section className="workspace-panel" key={title}><CategoryChart title={title} data={values} labels={title === 'Appointment progress' ? { PENDING: 'Requested' } : undefined} /></section>)}</div>
+      <details className="workspace-panel explanation"><summary>{t('More activity insights')}</summary><CategoryChart title="Recorded symptom severity" data={data.symptom_severity} /><p className="muted">{t('Uploaded report storage:')} {Number.isFinite(data.report_bytes) ? (data.report_bytes / 1048576).toFixed(1) + ' MB' : '—'}</p></details>
+    </>}
+    <ClinicalOversight />
+    <details className="workspace-panel explanation" onToggle={event => setHistoryOpen(event.currentTarget.open)}><summary>{t('Access history')}</summary><p className="muted">{t('Who used each care area and whether access was allowed. Medical contents and passwords are excluded.')}</p>{historyOpen && <AccessHistory />}</details>
+    <Link className="text-link" to="/admin">{t('Back to administration')}<Icon name="arrow" size={16} /></Link>
+  </div>;
+}
+
+function AccessHistory() {
   const [offset, setOffset] = useState(0);
   const audit = useResource(`/admin/audit?offset=${offset}`);
-  return <div className="stack"><h1>{t("Analytics and access audit")}</h1><ResourceStatus resource={analytics} />
-    {analytics.data && Object.entries(analytics.data).filter(([k]) => k !== 'generated_at').map(([key, value]) => <section className="card" key={key}><h2>{key.replaceAll('_', ' ')}</h2>
-      {typeof value === 'object' ? <CategoryChart data={value} title={key.replaceAll('_', ' ')} /> : <p className="metric">{value}</p>}
-    </section>)}
-    <ClinicalOversight />
-    <h2>{t("Request audit")}</h2><p>{t("Route templates and response status only; no credentials or medical contents.")}</p><ResourceStatus resource={audit} />
-    {audit.data?.map(r => <div className="card" key={r.id}><p>{r.actor} · {r.method} · {r.status_code}</p><p>{r.route}</p><p>{new Date(r.created_at).toLocaleString()}</p></div>)}
-    <div className="nav"><button onClick={audit.retry}>{t("Refresh audit")}</button><button disabled={!offset} onClick={() => setOffset(n => n - 50)}>{t("Previous")}</button><button disabled={audit.data?.length !== 50} onClick={() => setOffset(n => n + 50)}>{t("Next")}</button></div>
-    <Link to="/admin">{t("Back to administration")}</Link>
+  function area(route) {
+    const names = { auth: 'Account access', accounts: 'Accounts', 'health-records': 'Health records', assessments: 'Assessments', appointments: 'Appointments', reports: 'Medical reports', messages: 'Messages', consultations: 'Video consultations', assistant: 'Assistant', medications: 'Medications', reminders: 'Reminders', family: 'Family access', symptoms: 'Symptoms', profile: 'Profile', notifications: 'Notifications' };
+    const match = String(route).split('/').find(part => names[part]);
+    return names[match] || 'Care workspace';
+  }
+  function outcome(code) {
+    return code < 400 ? 'Allowed' : [401, 403].includes(code) ? 'Access not granted' : code >= 500 ? 'Service unavailable' : code === 404 ? 'Page or record unavailable' : code === 422 ? 'Details need correction' : code === 429 ? 'Please try again later' : 'Request not completed';
+  }
+  return <div className="stack"><ResourceStatus resource={audit} />{audit.data?.length === 0 && <p>{t('No access history on this page.')}</p>}
+    {audit.data?.map(row => <article className="activity-row" key={row.id}><span className="activity-marker" /><div><strong>{row.actor}</strong><span>{t(area(row.route))} · {t(outcome(row.status_code))}</span></div><time dateTime={row.created_at}>{new Date(row.created_at).toLocaleString()}</time></article>)}
+    <div className="action-row"><button className="secondary" disabled={audit.loading} onClick={audit.retry}>{t('Refresh history')}</button><button className="secondary" disabled={!offset || audit.loading} onClick={() => setOffset(n => n - 50)}>{t('Previous')}</button><button className="secondary" disabled={audit.data?.length !== 50 || audit.loading} onClick={() => setOffset(n => n + 50)}>{t('Next')}</button></div>
   </div>;
 }
 

@@ -40,7 +40,7 @@ export function CarePlanPanel({ assessment, onChanged, viewerRole }) {
 function ReviewHistory({ path }) {
   const resource = useResource(path);
   return <><ResourceStatus resource={resource} />{resource.data?.length === 0 && <p>{t('No review changes yet.')}</p>}
-    {resource.data?.map(row => <div className="record" key={row.id}><strong>{reviewLabel(row.snapshot.status)}</strong><p className="muted text-sm">{row.doctor_name} · {date(row.created_at)} · v{row.version}</p><p>{row.snapshot.reason}</p></div>)}</>;
+    {resource.data?.map(row => <div className="record" key={row.id}><strong>{reviewLabel(row.snapshot.status)}</strong><p className="muted text-sm">{row.doctor_name} · {date(row.created_at)}</p><p>{row.snapshot.reason}</p></div>)}</>;
 }
 
 export function ClinicalReviewPanel({ assessment, appointmentId, viewerRole, onChanged }) {

@@ -60,8 +60,8 @@ it('explains 12-week PE coverage before submit while preserving the entered dura
   await screen.findByPlaceholderText('108–342'); fillHealth();
   fireEvent.change(screen.getByLabelText('Pregnancy duration (weeks)'), { target: { value: '12' } });
   expect(screen.getByRole('status')).toHaveTextContent('14–40');
-  expect(screen.getByRole('status')).toHaveTextContent('This is not a LOW result');
-  expect(screen.getByRole('status')).toHaveTextContent('pregnancy weeks are not an input');
+  expect(screen.getByRole('status')).toHaveTextContent('This does not mean LOW risk');
+  expect(screen.getByRole('status')).toHaveTextContent('Your pregnancy week will be saved exactly as entered.');
   expect(screen.getByRole('button', { name: 'Run complete assessment' })).toBeEnabled();
   fireEvent.click(screen.getByRole('button', { name: 'Save health record' }));
   await screen.findByRole('alert');

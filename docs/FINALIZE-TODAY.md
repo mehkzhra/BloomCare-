@@ -1,6 +1,6 @@
 # BloomCare — final delivery steps
 
-Release **1.2.0**, 21 October 2026. **For the requested free hosting without a domain, follow [FREE-DEPLOYMENT.md](FREE-DEPLOYMENT.md) first.** This older five-priority guide also retains the Windows and optional VPS checks. The agreed product modules are implemented. The included account features are: email verification, password reset and persisted login throttling. The remaining work is configuration and destination acceptance, plus independent clinical validation before medical claims. No public URL or real delivery/camera result has been verified here.
+Release **1.3.0**, 21 October 2026. **For the requested free hosting without a domain, follow [FREE-DEPLOYMENT.md](FREE-DEPLOYMENT.md) first.** This older five-priority guide also retains the Windows and optional VPS checks. The agreed product modules are implemented. The included account features are: email verification, password reset and persisted login throttling. The remaining work is configuration and destination acceptance, plus independent clinical validation before medical claims. No public URL or real delivery/camera result has been verified here.
 
 Monitoring, scheduled backups and rollback belong to the operational handover below. This checklist does not certify that no other defect can exist.
 
@@ -13,7 +13,7 @@ cd /d D:\Desktop\BloomCare
 .\scripts\update-final.cmd
 ```
 
-Wait for the **v1.2.0 complete update passed** message. The updater saves a database backup, tests in a separate PostgreSQL database, then applies additive migration **0013_account_security**. It preserves accounts/password hashes, patient records, reports, local configuration and active model/trust files. Original migrations are retained. The current schema has 31 tables.
+Wait for the **v1.3.0 complete update passed** message. The updater saves a database backup, tests in a separate PostgreSQL database, then applies additive migration **0013_account_security**. It preserves accounts/password hashes, patient records, reports, local configuration and active model/trust files. Original migrations are retained. The current schema has 31 tables.
 
 Start in separate CMD windows:
 
@@ -25,7 +25,7 @@ Start in separate CMD windows:
 .\scripts\start-frontend.cmd
 ```
 
-Ctrl+F5; verify **1.2.0** for interface and server in Help & support. Use separate browser profiles:
+Ctrl+F5; the maintainer can verify server **1.3.0** at `/api/health/live` and the interface version in `frontend/package.json`. Version diagnostics are absent from user pages. Use separate browser profiles:
 
 - Patient: register/sign in, save a record, assess, reload, upload/download a report and withdraw an incorrect record with a reason.
 - Doctor: website registration, admin approval, accept an appointment with selected shared records, review/note/follow-up and message. Unselected/revoked/removed records must be inaccessible.
@@ -58,8 +58,8 @@ Accepted email requests give the same response for eligible and unknown addresse
 Create a named backup, choosing a new filename if this already exists:
 
 ```bat
-.\scripts\database-backup.cmd backup --file "backups\before-public-1.2.0.dump"
-.\scripts\database-backup.cmd restore-test --file "backups\before-public-1.2.0.dump"
+.\scripts\database-backup.cmd backup --file "backups\before-public-1.3.0.dump"
+.\scripts\database-backup.cmd restore-test --file "backups\before-public-1.3.0.dump"
 ```
 
 `restore-test` creates a random **separate** database, restores the custom dump with errors treated as failures, reads core tables, checks report byte lengths and removes only that newly created database. It does not restore over the application database. A successful message verifies those checks; a full recovery rehearsal also needs a separate application instance reading a restored database and its matching model/trust files.
@@ -110,7 +110,7 @@ docker compose up -d --wait
 If this is a **new empty server database**, import the verified backup before starting the public API. The following restore is for that new destination, never an existing populated service:
 
 ```bash
-docker compose exec -T db sh -c 'pg_restore --exit-on-error --clean --if-exists --no-owner -U "$POSTGRES_USER" -d "$POSTGRES_DB"' < backups/before-public-1.2.0.dump
+docker compose exec -T db sh -c 'pg_restore --exit-on-error --clean --if-exists --no-owner -U "$POSTGRES_USER" -d "$POSTGRES_DB"' < backups/before-public-1.3.0.dump
 ```
 
 Start the public stack:

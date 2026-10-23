@@ -1,6 +1,17 @@
 # BloomCare delivery status
 
-Release **1.2.0**, reviewed **21 October 2026**. This distinguishes implemented source from checks that still require the destination environment.
+Release **1.3.0**, reviewed **22 October 2026**. This distinguishes implemented source from checks that still require the destination environment.
+
+## v1.3.0 interface delivery
+
+- Patient, doctor and admin pages show their own tasks. Quick actions and real saved counts make each area understandable at a glance; no invented health or reassurance score was added.
+- Model accuracy/evaluation, training comparisons, class scores, SHAP and raw setup commands are removed from user screens and assessment PDF content. Source evidence and model guides remain available to maintainers.
+- Plain screening notices retain the lack of clinical validation, actual readings, supported ranges, uncertain haemoglobin units and the need for doctor review. No model, clinical contract or prediction was changed.
+- Services use operational availability labels, with saved settings distinguished from actual delivery. Access history is loaded on demand and shows care areas/outcomes rather than raw routes and status codes.
+- All existing workflows remain accessible, including record deletion, consent, assistant history, WhatsApp sharing, video, reminders and family access. Help/About pages are role specific. Urdu translations accompany the new copy.
+- `scripts\update-ui.cmd` rebuilds the current interface without database changes. The complete source also includes the earlier Windows route fix and trusted administrator retirement command.
+
+Current automated checks: **311 backend passed + 1 PostgreSQL-only skip; 143 frontend passed; 11 ML passed**. Current browser preview was blocked by session security policy; the prior v1.2.0 visual review is not current v1.3.0 visual acceptance. See VERIFICATION.md.
 
 ## Implemented
 
@@ -8,13 +19,13 @@ Release **1.2.0**, reviewed **21 October 2026**. This distinguishes implemented 
 | --- | --- |
 | Three actors | Website patient/doctor registration and sign-in; doctor approval; admin user/application/activity oversight; backend role and ownership enforcement. |
 | Patient workspace | Overview, profile/due date, health-entry form, history, symptoms, medications/reminders, appointment requests and notifications. |
-| Assessment | Registered six-input maternal model, saved input/model snapshots, class scores and actual feature explanations. Separate PE stage when triggered; completeness and model-range guards. |
+| Assessment | Registered six-input maternal model and preserved input/model/score/explanation snapshots for developer traceability; user-facing categories, readings and next care actions. Separate PE stage when triggered; completeness and model-range guards. |
 | Clinical care | Patient-selected sharing, accepted/time-limited doctor access, review status/history, private or patient-visible notes with amendments, rescheduling and follow-up proposals. |
 | Communication | Report uploads/downloads and scoped sharing, messages, WebRTC signaling and local device checks, manual WhatsApp sharing, optional Twilio alerts. |
 | AI support | Separate consented Groq assistant with compact history; consented saved care-guide generation; clear timeout/provider failure states. |
 | Continuing care | Family invitations/revocation, timeline, care passport/PDF, search, analytics, English/Urdu and RTL. |
 | Record correction | Assessment-only withdrawal and full health-record withdrawal with linked results, reasons, audit metadata, active-view filtering and retained clinical notes. |
-| Interface | Original maternal-embrace SVG logo/favicon; warm ivory/teal/coral/lilac welcome and sign-in screens; three coordinated role workspaces with readable next steps, compact on-demand details and role-specific privacy text. |
+| Interface | Heart-and-bloom SVG logo/favicon; calm teal, blue and plum role accents; readable task-first workspaces with real care counts, on-demand details and role-specific help/about/privacy text. |
 | Engineering | Forward migrations, database backup command, cumulative updater, regression suites, pinned model provenance and recorded training comparisons. |
 
 Implementation does not by itself prove successful calls to external providers or suitability for patient diagnosis. See the executed evidence in [VERIFICATION.md](VERIFICATION.md).

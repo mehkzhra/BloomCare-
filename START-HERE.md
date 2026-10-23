@@ -1,6 +1,17 @@
-# BloomCare 1.2.0 — current Windows handover
+# BloomCare 1.3.0 — current Windows handover
 
-This combined update contains every delivered module. Version 1.2.0 adds a maternal-embrace logo/favicon, a colorful coordinated interface for the public site and all three roles, HTTPS Brevo recovery emails, and a full-app free Render + Neon deployment path. The previous email verification, password reset, authentication limits and restore-test workflow remain included.
+This combined source package includes all delivered modules plus the Windows API-routing and administrator-retirement fixes. Version 1.3.0 simplifies public, patient, doctor and admin pages: clear tasks, role accents, friendly icons, a heart-and-bloom favicon, real care counts and on-demand secondary details. Model evaluation/training/SHAP information stays in developer evidence. Clinical screening limits and doctor-review guidance remain visible in plain language.
+
+**For the already-working 1.2.0 database:** stop your server, extract into `D:\Desktop\BloomCare` and replace included files, then run:
+
+```bat
+cd /d D:\Desktop\BloomCare
+.\scripts\update-ui.cmd
+```
+
+This checks and builds the interface without changing the database, credentials or environment. Run `scripts\start-local.cmd` and open `http://127.0.0.1:8000`, then Ctrl+F5. This helper sets the built frontend and loopback-only HTTP settings for that CMD process without changing saved credentials or the database URL. Keep Docker Desktop running if you use the existing local PostgreSQL container.
+
+**For earlier installations needing the full cumulative updater:** follow the steps below.
 
 **Without a domain:** follow [FREE-DEPLOYMENT.md](docs/FREE-DEPLOYMENT.md). It explains each account, field and paste location in Roman Urdu, including how to initialize the first cloud administrator without a shared password.
 
@@ -25,7 +36,7 @@ Start these in separate CMD windows, then refresh with **Ctrl+F5**:
 .\scripts\start-frontend.cmd
 ```
 
-The footer should show **v1.2.0**. In **Help & support → Application version**, check that the server also reports **1.2.0**.
+Release diagnostics are intentionally absent from patient, doctor and admin pages. The maintainer can confirm **1.3.0** in `frontend/package.json` and at `http://127.0.0.1:8000/api/health/live`.
 
 Check a **12-week** record: the entered duration stays 12. Maternal screening uses the other six model inputs. If PE is triggered, its stage explains **14–40 weeks**, generates no PE category and offers doctor review. This is not a LOW PE result. Use [tested samples](docs/TEST-SAMPLES.md) for the supported demonstration paths.
 

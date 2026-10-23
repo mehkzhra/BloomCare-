@@ -4,7 +4,6 @@ import { Component, Suspense, createContext, lazy, useContext, useEffect, useRef
 import { Link, Navigate, NavLink, Route, Routes, useNavigate } from 'react-router-dom';
 import { BloomArt, Brand, Icon, InformationPage, PortalNavigation } from './ui.jsx';
 import { VideoHub } from './video-hub.jsx';
-import { APP_VERSION } from './release-check.jsx';
 import { AccountRecoveryPage } from './account-security.jsx';
 import { DoctorCaseWorkspace } from './analytics-ui.jsx';
 import { ConsultationPage } from './consultation.jsx';
@@ -122,19 +121,25 @@ function AccountPage({
   </div></div>;
 }
 function Home() {
-  return <div className="public-home stack"><section className="landing-hero"><div className="landing-copy"><span className="eyebrow"><span className="status-dot" />{t('BloomCare · Maternal health')}</span>
-    <h1>{t('A little care.')}<br /><em>{t('For every chapter.')}</em></h1>
-    <p className="landing-description">{t('A personal space for your pregnancy journey.')} {t('Keep your health information together, ready for a more connected care experience.')}</p>
-    <div className="action-row"><Link className="button" to="/register">{t('Create your account')}<Icon name="arrow" size={17} /></Link><Link className="text-link" to="/about">{t('Meet BloomCare')}<Icon name="arrow" size={17} /></Link></div>
-    <div className="landing-assurances"><span><Icon name="shield" size={16} />{t('Your records, your choice')}</span><span><Icon name="video" size={16} />{t('Connected care')}</span></div>
-  </div><div className="landing-visual"><BloomArt /><div className="care-caption"><span className="care-caption-icon"><Icon name="heart" size={21} /></span><span><strong>{t('Made for your journey')}</strong><small>{t('A little more connected, every day.')}</small></span></div></div></section>
-    <section className="home-introduction"><span className="eyebrow">{t('YOUR CARE, TOGETHER')}</span><h2>{t('Less searching. More caring.')}</h2><p>{t('From your first record to your next conversation, keep the important things close.')}</p></section>
+  return <div className="public-home stack">
+    <section className="landing-hero"><div className="landing-copy">
+      <span className="eyebrow"><span aria-hidden="true">🌷</span>{t('YOUR PREGNANCY CARE, TOGETHER')}</span>
+      <h1>{t('A clearer path.')}<br /><em>{t('A little more care.')}</em></h1>
+      <p className="landing-description">{t('Your pregnancy records, doctor appointments and everyday questions. One calm, connected space.')}</p>
+      <div className="action-row"><Link className="button" to="/register">{t('Start your care journey')}<Icon name="arrow" size={17} /></Link><Link className="text-link" to="/login">{t('Already a member? Sign in')}<Icon name="arrow" size={17} /></Link></div>
+      <div className="landing-assurances"><span><Icon name="shield" size={16} />{t('You choose what to share')}</span><span><Icon name="video" size={16} />{t('Meet your doctor online')}</span></div>
+    </div><div className="landing-visual"><BloomArt /><div className="care-caption"><span className="care-caption-icon" aria-hidden="true">🌿</span><span><strong>{t('Your care, one step at a time')}</strong><small>{t('Save a record. Plan a visit. Ask a question.')}</small></span></div></div></section>
+    <section className="home-introduction"><span className="eyebrow">{t('WHAT YOU CAN DO')}</span><h2>{t('Everything has a clear place.')}</h2><p>{t('Start with what you need today. Your care stays together.')}</p></section>
     <section className="feature-grid">{[
-      ['report', 'A clearer health story', 'Your observations, reports and medications, together in one personal record.', 'coral'],
-      ['video', 'Care, with a connection', 'Book a doctor, share selected records and meet through a video consultation.', 'teal'],
-      ['chat', 'A little more clarity', 'A separate assistant for your questions, with the context you choose to share.', 'violet'],
+      ['heart', 'Your health, organised', 'Save measurements, view screening results and keep reports, symptoms and medications together.', 'coral'],
+      ['video', 'Your doctor, connected', 'Book a visit, choose the records to share, then meet by video or message your doctor.', 'teal'],
+      ['chat', 'Your questions, welcomed', 'Ask the assistant to explain a record or help you prepare questions for your next visit.', 'violet'],
     ].map(([icon, title, text, tone], index) => <article className={'feature-card feature-' + tone} key={title}><div className="feature-top"><span className="feature-icon"><Icon name={icon} size={23} /></span><span className="feature-number">0{index + 1}</span></div><h2>{t(title)}</h2><p>{t(text)}</p></article>)}</section>
-    <section className="home-care-path"><div><span className="eyebrow">{t('ONE CONNECTED JOURNEY')}</span><h2>{t('Your next step, made simpler.')}</h2></div><ol>{[['Save your observations', 'Keep a clear personal record.'], ['Understand your assessment', 'View supported screening and next steps.'], ['Connect with your doctor', 'Choose what to share for your appointment.']].map(([title, description], i) => <li key={title}><span>{i + 1}</span><div><strong>{t(title)}</strong><p>{t(description)}</p></div></li>)}</ol><Link className="button secondary" to="/register">{t('Start with BloomCare')}<Icon name="arrow" size={16} /></Link></section>
+    <section className="home-care-path"><div><span className="eyebrow">{t('THREE ROLES. ONE CARE JOURNEY.')}</span><h2>{t('The right space for each person.')}</h2></div><ol>{[
+      ['Patients', 'Your records, results, appointments and questions.'],
+      ['Doctors', 'Your schedule, shared records and care reviews.'],
+      ['Administrators', 'Account approvals, care activity and service availability.'],
+    ].map(([title, description], i) => <li key={title}><span><Icon name={['heart', 'calendar', 'users'][i]} size={18} /></span><div><strong>{t(title)}</strong><p>{t(description)}</p></div></li>)}</ol><Link className="button secondary" to="/register">{t('Create your account')}<Icon name="arrow" size={16} /></Link></section>
   </div>;
 }
 function Layout() {
@@ -184,7 +189,7 @@ function Layout() {
       <PortalNavigation role={user.role} close={() => setDrawerOpen(false)} />
       <div className="sidebar-account"><span className="avatar">{user.full_name?.trim().split(/\s+/).slice(0, 2).map(part => part[0]).join('')}</span><div><strong>{user.full_name}</strong><small>{t(user.role === 'patient' ? 'Patient account' : user.role === 'doctor' ? 'Doctor account' : 'Administrator')}</small></div><button className="signout-button" onClick={logout}>{t('Sign out')}</button></div>
     </aside>{drawerOpen && <button className="drawer-backdrop" aria-label={t('Dismiss navigation').trim()} onClick={() => setDrawerOpen(false)} />}</>}
-    <div className="workspace"><header className="topbar">{user ? <div className="workspace-label"><button className="icon-button mobile-only" aria-label={t('Open navigation').trim()} aria-expanded={drawerOpen} aria-controls="portal-sidebar" onClick={() => setDrawerOpen(true)}><Icon name="menu" /></button><span>{t(user.role === 'patient' ? 'Your care workspace' : user.role === 'doctor' ? 'Doctor workspace' : 'Administration')}<small>{t('A little more connected, every day.')}</small></span></div> : <Brand />}
+    <div className="workspace"><header className="topbar">{user ? <div className="workspace-label"><button className="icon-button mobile-only" aria-label={t('Open navigation').trim()} aria-expanded={drawerOpen} aria-controls="portal-sidebar" onClick={() => setDrawerOpen(true)}><Icon name="menu" /></button><span>{t(user.role === 'patient' ? 'My pregnancy care' : user.role === 'doctor' ? 'My practice' : 'Administration')}<small>{t(user.role === 'patient' ? 'Records, appointments and support' : user.role === 'doctor' ? 'Appointments, reviews and follow-ups' : 'People, approvals and care activity')}</small></span></div> : <Brand />}
       <nav className="header-actions" aria-label="Workspace actions">
         {(user?.role === 'patient' || user?.role === 'doctor') && <Link className="button header-video" aria-label={t('Video consultation').trim()} to={`/${user.role}/consultations`}><Icon name="video" size={18} /><span>{t('Video consultation')}</span></Link>}
         {user && <NotificationBell />}<LanguageSelector />
@@ -200,9 +205,9 @@ function Layout() {
         <Route path="/account/forgot" element={<AccountRecoveryPage key="forgot" mode="forgot" />} />
         <Route path="/account/verify" element={<AccountRecoveryPage key="verify" mode="verify" />} />
         <Route path="/account/reset" element={<AccountRecoveryPage key="reset" mode="reset" onReset={() => setUser(null)} />} />
-        <Route path="/about" element={<InformationPage kind="about" />} />
+        <Route path="/about" element={<InformationPage kind="about" role={user?.role} />} />
         <Route path="/privacy" element={<InformationPage kind="privacy" role={user?.role} />} />
-        <Route path="/help" element={<InformationPage kind="help" />} />
+        <Route path="/help" element={<InformationPage kind="help" role={user?.role} />} />
         <Route path="/admin/services" element={<Protected role="admin"><ServiceSettingsPage /></Protected>} />
         <Route path="/patient" element={<Protected role="patient"><PatientPage user={user} /></Protected>} />
         <Route path="/patient/consultations" element={<Protected role="patient"><VideoHub role="patient" /></Protected>} />
@@ -236,7 +241,7 @@ function Layout() {
         <Route path="/admin/accounts" element={<Protected role="admin"><AdminAccounts /></Protected>} />
         <Route path="*" element={<div className="card"><h2>{t("Page not found")}</h2><Link to="/">{t("Go to overview")}</Link></div>} />
       </Routes></Suspense></ViewBoundary>}
-    </main><footer><span>© {new Date().getFullYear()} BloomCare · {t('Care that stays connected.')} <span className="release-version" title={t('Application version')}>v{APP_VERSION}</span></span><nav aria-label="Information"><Link to="/about">{t('About')}</Link><Link to="/privacy">{t('Privacy & sharing')}</Link><Link to="/help">{t('Help & support')}</Link></nav></footer></div></div>;
+    </main><footer><span>© {new Date().getFullYear()} BloomCare · {t('Care that stays connected.')}</span><nav aria-label="Information"><Link to="/about">{t('About')}</Link><Link to="/privacy">{t('Privacy & sharing')}</Link><Link to="/help">{t('Help & support')}</Link></nav></footer></div></div>;
 }
 export default function App() {
   useLanguage();
@@ -265,7 +270,7 @@ export default function App() {
       if (controller.signal.aborted) return;
       if (err.status === 401) setUser(null);
       else setSessionError(err.status === 503 || err.code === 'REQUEST_TIMEOUT'
-        ? err.message : 'Unable to connect to BloomCare. Check that the backend is running.');
+        ? err.message : 'Unable to reach BloomCare. Check your connection and try again.');
     }).finally(() => {
       if (!controller.signal.aborted) setLoading(false);
     });

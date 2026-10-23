@@ -78,20 +78,23 @@ it('loads the deletion log only when opened and includes no active result cards'
 });
 it('explains unsupported PE values without claiming a diagnosis or blaming missing inputs', () => {
   mount(<PEScreeningStage assessment={{ id: 'a1', health_record_id: 'r1', observations: { systolic_mmhg: 150 }, pe_status: 'OUTSIDE_COVERAGE', pe_input_issues: [{ name: 'systolic_mmhg', label: 'Systolic blood pressure', unit: 'mmHg', value: 150, minimum: 90, maximum: 130 }] }} capabilities={{ pe_model_ready: true }} viewerRole="doctor" />);
-  expect(screen.getByText('Model result unavailable')).toBeInTheDocument();
+  expect(screen.getByText('Doctor review needed')).toBeInTheDocument();
   expect(screen.getByText('150 mmHg')).toBeInTheDocument();
   expect(screen.getByText('90–130 mmHg')).toBeInTheDocument();
   expect(screen.getByText('No PE category was generated. This message does not confirm or rule out pre-eclampsia.')).toBeInTheDocument();
   expect(screen.queryByText('The patient has not completed the additional PE measurements.')).not.toBeInTheDocument();
 });
-it('shows the missing setup names and keeps a copied command ready for CMD', async () => {
+it('shows operational availability while keeping setup commands and variables out of admin pages', async () => {
   const writeText = vi.fn(async () => {}); vi.stubGlobal('navigator', { clipboard: { writeText } });
   vi.stubGlobal('fetch', vi.fn(async () => response({ services: { whatsapp: { status: 'NOT_CONFIGURED', label: 'Automatic alerts off', summary: 'Manual PDF sharing is available.', missing: ['TWILIO_AUTH_TOKEN'], command: 'scripts\\configure-whatsapp.cmd' } } })));
   mount(<ServiceSettingsPage />);
-  expect(await screen.findByText('TWILIO_AUTH_TOKEN')).toBeInTheDocument();
-  fireEvent.click(screen.getByRole('button', { name: 'Copy command' }));
-  expect(await screen.findByText('Command copied')).toBeInTheDocument();
-  expect(writeText).toHaveBeenCalledWith('scripts\\configure-whatsapp.cmd');
+  expect(await screen.findByText('Automatic alerts off')).toBeInTheDocument();
+  expect(screen.queryByText('TWILIO_AUTH_TOKEN')).not.toBeInTheDocument();
+  expect(screen.queryByText(/configure-whatsapp/)).not.toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'Copy command' })).not.toBeInTheDocument();
+  fireEvent.click(screen.getByText('How to check this service'));
+  expect(screen.getByText(/Manual sharing is available/)).toBeInTheDocument();
+  expect(writeText).not.toHaveBeenCalled();
 });
 it('checks local devices only on demand and releases all tracks when closed', async () => {
   const stop = vi.fn(); const getUserMedia = vi.fn(async () => ({ getTracks: () => [{ stop }] }));
@@ -99,7 +102,7 @@ it('checks local devices only on demand and releases all tracks when closed', as
   vi.stubGlobal('RTCPeerConnection', function Peer() {});
   vi.stubGlobal('fetch', vi.fn(async () => response({ status: 'DIRECT_ONLY', label: 'Direct connection mode', summary: 'Calls can use direct connections.' })));
   const view = mount(<VideoReadiness />);
-  expect(await screen.findByText('Direct connection mode')).toBeInTheDocument();
+  expect(await screen.findByText('Check before joining')).toBeInTheDocument();
   fireEvent.click(screen.getByText('Check this device'));
   const button = await screen.findByRole('button', { name: 'Check camera & microphone' });
   expect(getUserMedia).not.toHaveBeenCalled(); fireEvent.click(button);
@@ -111,7 +114,7 @@ it('releases a late camera stream after a pending device check was cancelled', a
   vi.stubGlobal('navigator', { mediaDevices: { getUserMedia: () => new Promise(resolve => { grant = resolve; }) } });
   vi.stubGlobal('RTCPeerConnection', function Peer() {});
   vi.stubGlobal('fetch', vi.fn(async () => response({ status: 'DIRECT_ONLY', label: 'Direct connection mode', summary: 'Calls can use direct connections.' })));
-  mount(<VideoReadiness />); await screen.findByText('Direct connection mode');
+  mount(<VideoReadiness />); await screen.findByText('Check before joining');
   fireEvent.click(screen.getByText('Check this device'));
   fireEvent.click(await screen.findByRole('button', { name: 'Check camera & microphone' }));
   fireEvent.click(screen.getByRole('button', { name: 'Cancel device check' }));

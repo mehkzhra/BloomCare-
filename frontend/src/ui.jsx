@@ -1,7 +1,6 @@
 import { t } from './i18n.js';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { privacyContent } from './privacy-content.js';
-import { ReleaseCheck } from './release-check.jsx';
 
 const paths = {
   overview: <><rect x="3" y="3" width="7" height="7" rx="2" /><rect x="14" y="3" width="7" height="7" rx="2" /><rect x="3" y="14" width="7" height="7" rx="2" /><rect x="14" y="14" width="7" height="7" rx="2" /></>,
@@ -26,7 +25,7 @@ export function Icon({ name, size = 20, ...props }) {
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>{paths[name] || paths.heart}</svg>;
 }
 export function Brand() {
-  return <Link to="/" className="brand" aria-label="BloomCare home"><img className="brand-mark" src="/bloomcare-mark.svg?v=1.2.0" width="40" height="40" alt="" /><span>Bloom<span className="brand-light">Care</span><small>{t('A little care. Every day.')}</small></span></Link>;
+  return <Link to="/" className="brand" aria-label="BloomCare home"><img className="brand-mark" src="/bloomcare-mark.svg?v=1.3.0" width="40" height="40" alt="" /><span>Bloom<span className="brand-light">Care</span><small>{t('A little care. Every day.')}</small></span></Link>;
 }
 export function BloomArt() {
   return <div className="bloom-art" aria-hidden="true"><svg viewBox="0 0 400 360" fill="none">
@@ -53,6 +52,25 @@ export function BloomArt() {
   </svg></div>;
 }
 
+export const activityLabel = action => ({
+  PATIENT_REGISTERED: 'Patient registered', DOCTOR_REGISTERED: 'Doctor registered',
+  DOCTOR_APPROVED: 'Doctor approved', DOCTOR_APPROVAL_REVOKED: 'Doctor approval revoked',
+  ACCOUNT_DISABLED: 'Account access disabled', ACCOUNT_ENABLED: 'Account access enabled',
+  PASSWORD_RESET_COMPLETED: 'Password reset', EMAIL_VERIFIED: 'Email verified',
+  ADMIN_RETIRED_VIA_LOCAL_TOOL: 'Administrator access retired', SIGNED_IN: 'Signed in', SIGNED_OUT: 'Signed out',
+  PROFILE_UPDATED: 'Profile updated', HEALTH_RECORD_SAVED: 'Health record saved',
+  HEALTH_RECORD_REMOVED: 'Health record removed', ASSESSMENT_SAVED: 'Assessment saved', ASSESSMENT_REMOVED: 'Assessment removed',
+  FAMILY_INVITED: 'Family member invited', FAMILY_ACCEPTED: 'Family invitation accepted', FAMILY_REVOKED: 'Family access revoked',
+  REMINDER_CREATED: 'Reminder created', ASSISTANT_QUESTION: 'Assistant question saved',
+  REPORT_UPLOADED: 'Report uploaded', REPORT_DELETED: 'Report deleted', REPORT_SHARED: 'Report shared',
+  MESSAGE_SENT: 'Message sent', CONSULTATION_STARTED: 'Consultation started', SYMPTOM_SAVED: 'Symptom saved',
+  MEDICATION_SAVED: 'Medication saved', MEDICATION_STATUS_UPDATED: 'Medication status updated',
+  ACCOUNT_EMAIL_SUBMITTED: 'Account email requested', ACCOUNT_EMAIL_FAILED: 'Account email needs attention',
+  APPOINTMENT_PENDING: 'Appointment requested', APPOINTMENT_ACCEPTED: 'Appointment accepted',
+  APPOINTMENT_REJECTED: 'Appointment declined', APPOINTMENT_CANCELLED: 'Appointment cancelled',
+  APPOINTMENT_COMPLETED: 'Appointment completed', CLINICIAN_NOTE_SAVED: 'Clinician note saved',
+})[action] || 'Care activity updated';
+
 const patientLinks = [
   ['Overview', '/patient', 'overview'], ['Health record', '/patient/health', 'heart'],
   ['Assessments', '/patient/assessments', 'assessment'], ['Appointments', '/patient/appointments', 'calendar'],
@@ -67,11 +85,11 @@ export function PortalNavigation({ role, close }) {
   const location = useLocation();
   const links = role === 'patient' ? patientLinks : role === 'doctor'
     ? [['Overview', '/doctor', 'overview'], ['Appointments', '/doctor/appointments', 'calendar'], ['Shared assessments', '/doctor/cases', 'assessment']]
-    : [['Overview', '/admin', 'overview'], ['Accounts', '/admin/accounts', 'users'], ['Analytics and audit', '/admin/oversight', 'assessment'], ['Connected services', '/admin/services', 'video']];
+    : [['Overview', '/admin', 'overview'], ['Accounts', '/admin/accounts', 'users'], ['Care activity', '/admin/oversight', 'assessment'], ['Service status', '/admin/services', 'video']];
   return <><div className="sidebar-caption">{t(role === 'patient' ? 'MY CARE' : role === 'doctor' ? 'PRACTICE' : 'ADMINISTRATION')}</div>
     <nav className="portal-nav" aria-label="Main navigation">{links.map(([label, path, icon]) => <NavLink key={path} to={path} end={path === `/${role}`} onClick={close}><Icon name={icon} /><span>{t(label)}</span><Icon name="chevron" size={14} className="nav-chevron" /></NavLink>)}</nav>
     {role === 'patient' && <details className="care-menu" key={location.pathname} open={careLinks.some(([, path]) => path === location.pathname)}><summary><Icon name="plus" size={18} />{t('More care tools')}</summary><nav aria-label="More care tools">{careLinks.map(([label, path]) => <NavLink key={path} to={path} onClick={close}>{t(label)}</NavLink>)}</nav></details>}
-    <div className="sidebar-note"><Icon name="shield" /><strong>{t(role === 'doctor' ? 'Care built on trust.' : role === 'admin' ? 'Accountable access.' : 'Your care. Your choice.')}</strong><p>{t(role === 'doctor' ? 'Access follows each patient’s active sharing choices.' : role === 'admin' ? 'Review approvals, service setup and audit activity.' : 'You decide which records to share with your care team.')}</p><Link to="/privacy" onClick={close}>{t('Privacy & sharing')}<Icon name="arrow" size={15} /></Link></div>
+    <div className="sidebar-note"><Icon name="shield" /><strong>{t(role === 'doctor' ? 'Care built on trust.' : role === 'admin' ? 'Accountable access.' : 'Your care. Your choice.')}</strong><p>{t(role === 'doctor' ? 'Access follows each patient’s active sharing choices.' : role === 'admin' ? 'Manage people, approvals and care activity.' : 'You decide which records to share with your care team.')}</p><Link to="/privacy" onClick={close}>{t('Privacy & sharing')}<Icon name="arrow" size={15} /></Link></div>
   </>;
 }
 
@@ -81,7 +99,7 @@ export function InformationPage({ kind, role }) {
     return <div className="information-page privacy-page stack"><header className="privacy-heading"><span className="privacy-symbol"><Icon name="shield" size={28} /></span><div><span className="eyebrow">{t('Privacy & sharing')} · {t(role === 'admin' ? 'Administrator' : role === 'doctor' ? 'Doctor account' : role === 'patient' ? 'Patient account' : 'BloomCare')}</span><h1>{t(content.heading)}</h1><p>{t(content.description)}</p></div></header><nav className="privacy-actions" aria-label={t('Privacy controls')}>{content.actions.map(([title, path]) => <Link className="button secondary" key={path} to={path}>{t(title)}<Icon name="arrow" size={16} /></Link>)}</nav><div className="privacy-grid">{content.sections.map(([title, body], index) => <section className="card privacy-section" key={title}><span className="privacy-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span><h2>{t(title)}</h2><p>{t(body)}</p></section>)}</div></div>;
   }
   const pages = {
-    about: ['About BloomCare', 'Care that stays connected.', [
+    about: ['About BloomCare', 'Pregnancy care, all in one place.', [
       ['One place for your health', 'Keep observations, medications, symptoms and medical reports together, with a timeline you can return to.'],
       ['A closer connection to your doctor', 'Request an appointment with an approved doctor, choose what to share, and continue the conversation through messages and video consultations.'],
       ['Answers, when you need them', 'The assistant helps explain your questions and selected records. Health assessments are a separate screening feature and do not replace clinical care.'],
@@ -89,10 +107,39 @@ export function InformationPage({ kind, role }) {
     help: ['Help & support', 'A clear next step, whenever you need one.', [
       ['Join a video consultation', 'Open Video consultation at the top of your workspace. Choose an accepted appointment with active access, allow camera and microphone, and join when your doctor starts the call.'],
       ['Share a report on WhatsApp', 'Open Reports and choose WhatsApp beside a report. On supported devices, select WhatsApp from the share menu. Otherwise, download the copy, open WhatsApp and attach it before sending.'],
-      ['Understand an assessment', 'Enter your actual measurements and known antenatal results in one form. Maternal categories or recorded warning indicators can open PE screening. Unsupported readings stay recorded for clinical review. A saved care guide and PDF report remain linked to your assessment.'],
-      ['Get help with your account', 'Check your selected sign-in role and contact your BloomCare administrator for account access or doctor approval.'],
+      ['Understand an assessment', 'Save your actual measurements to see a screening result and next steps. If more information or a doctor review is needed, your assessment will tell you. You can download a report or share it with your care team.'],
+      ['Get help with your account', 'Use Forgot password on the sign-in page to receive a reset link at your registered email. For doctor approval or account access, contact your BloomCare administrator.'],
     ]],
   };
-  const [label, heading, sections] = pages[kind];
-  return <div className="information-page stack"><header><span className="eyebrow">{t(label)}</span><h1>{t(heading)}</h1></header><div className="card stack">{sections.map(([title, body]) => <section key={title}><h2>{t(title)}</h2><p className="muted">{t(body)}</p></section>)}</div>{kind === 'help' && <ReleaseCheck />}<Link to="/">{t('Back to BloomCare')} →</Link></div>;
+  const roleSections = {
+    doctor: {
+      about: [
+        ['Your appointments', 'Respond to appointment requests, prepare for a visit and meet patients through accepted video appointments.'],
+        ['Records shared with you', 'Review only the records each patient selected for an active appointment. Save a review and clear care instructions.'],
+        ['Care that continues', 'Write patient-visible or private notes, add amendments, propose follow-ups and keep appointment messages together.'],
+      ],
+      help: [
+        ['Start a video consultation', 'Open Video consultation at the top of your workspace. Choose an accepted appointment with active access, allow camera and microphone, then start the call so your patient can join.'],
+        ['Review a patient assessment', 'Open Shared assessments or an accepted appointment. Read the saved measurements, add your review status and write the next care instructions.'],
+        ['Notes and follow-ups', 'Choose whether a note is visible to the patient before saving. Use an amendment to correct a saved note, or propose a follow-up for the patient to accept.'],
+        ['Your registration and account', 'An administrator must approve your registration before patient access is available. Use Forgot password on the sign-in page for a reset link at your registered email.'],
+      ],
+    },
+    admin: {
+      about: [
+        ['People and approvals', 'Find patient and doctor accounts, check doctor registrations and manage account access.'],
+        ['Care activity', 'Follow appointments, assessment review progress and account activity without opening private clinical contents.'],
+        ['Service availability', 'See which connected services are enabled and which need help from the person maintaining BloomCare.'],
+      ],
+      help: [
+        ['Approve a doctor', 'Open Accounts, filter for doctors awaiting approval, check their registration details and approve the correct person.'],
+        ['Manage account access', 'Find a person by name or email in Accounts. Confirm the selected person before disabling access or revoking doctor approval.'],
+        ['Follow care activity', 'Open Care activity for appointment and review summaries. Open Access history when you need to check who used a care area.'],
+        ['Check a connected service', 'Open Service status to see which services are enabled. Ask the person maintaining BloomCare to resolve an unavailable service.'],
+      ],
+    },
+  };
+  const [label, heading, defaultSections] = pages[kind];
+  const sections = roleSections[role]?.[kind] || defaultSections;
+  return <div className="information-page stack"><header><span className="eyebrow">{t(label)}</span><h1>{t(heading)}</h1></header><div className="card stack">{sections.map(([title, body]) => <section key={title}><h2>{t(title)}</h2><p className="muted">{t(body)}</p></section>)}</div><Link to="/">{t('Back to BloomCare')} →</Link></div>;
 }

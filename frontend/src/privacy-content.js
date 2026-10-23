@@ -27,12 +27,12 @@ export const privacyContent = {
   },
   admin: {
     heading: 'Access you can account for.',
-    description: 'Oversee accounts, approvals and service configuration with clear responsibility.',
+    description: 'Oversee accounts, approvals and care activity with clear responsibility.',
     actions: [['Manage account access', '/admin/accounts'], ['Review audit activity', '/admin/oversight'], ['Review connected services', '/admin/services']],
     sections: [
       ['Verify doctors before approval', 'Check registration details before enabling doctor access. Revoking approval or disabling an account blocks its protected workflows. These changes are recorded in account activity.'],
       ['Administrative oversight', 'Review account lists, appointment metadata, clinical review status, aggregate trends and audit events. Detailed clinical records, files and notes use the patient and approved-doctor access routes.'],
-      ['Provider configuration', 'Keep Groq, Twilio and TURN credentials in server configuration. This screen shows missing setting names, never secret values. A saved configuration still needs a real provider or two-device call check.'],
+      ['Connected care services', 'Check service availability and report any unavailable feature to the person maintaining BloomCare. Confirm an actual email, alert, assistant reply or video call before relying on it.'],
       ['Patient choices stay in force', 'Patients choose appointment records, report grants, family categories and provider consent. Do not treat account administration as permission to send or export their health information.'],
       ['Corrections and retention', 'Deleted assessments are excluded from active results and analytics. A dated reason and the original audit copy remain for accountability. Existing external copies and backups require separate retention handling.'],
       ['Handover responsibility', 'Protect server configuration and backups. Before public deployment, verify HTTPS, account permissions and your organisation’s retention and privacy requirements.'],
@@ -43,7 +43,7 @@ export const privacyContent = {
     description: 'Sign in to see the privacy controls and responsibilities for your account.',
     actions: [['Sign in to your account', '/login']],
     sections: [
-      ['Role-based access', 'Patients manage their records and sharing. Approved doctors access selected records through active accepted appointments. Administrators oversee accounts, approvals, service configuration and audit activity.'],
+      ['Role-based access', 'Patients manage their records and sharing. Approved doctors access selected records through active accepted appointments. Administrators oversee accounts, approvals, service availability and access activity.'],
       ['Sharing needs a choice', 'Assistant questions, care-guide generation and automatic care alerts ask for consent. A PDF shared outside BloomCare becomes a separate copy that cannot be recalled here.'],
       ['Saved history and corrections', 'Mistaken assessments can be removed from active history with a reason. An audit copy is retained. Ask your BloomCare administrator about the organisation’s privacy and retention policy.'],
     ],

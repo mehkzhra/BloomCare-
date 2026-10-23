@@ -1,6 +1,6 @@
 # BloomCare current architecture
 
-Release 1.2.0. The earlier incremental architecture plan is retained in `history.zip`; this page describes the implemented system.
+Release 1.3.0. The earlier incremental architecture plan is retained in `history.zip`; this page describes the implemented system.
 
 ## Runtime and source layout
 
@@ -62,3 +62,7 @@ Render runs one Python worker serving `/api/*` plus the built Vite SPA at the sa
 Cloud startup derives an exact origin from Render's injected HTTPS URL, migrates schema head and optionally bootstraps an administrator only on an empty database. The owner requests a reset link to establish a password. A generated 256-bit seed derives a stable domain-separated session key. Only this public Render adapter enables the edge-overwritten CF-Connecting-IP header for auth limits; raw X-Forwarded-For is ignored. The launcher disables generic Uvicorn proxy-header trust.
 
 Email delivery selects TLS SMTP or a fixed HTTPS Brevo endpoint. Both reuse the same one-use hashed token and session-revocation contract. Keys remain server-side. Email submission continues as an in-process background task, not a durable job queue; request a fresh link after interrupted delivery. One process hosts the reminder loop, which pauses when a free web host sleeps.
+
+## Interface boundaries (1.3.0)
+
+Role workspaces expose tasks, actual counts, screening categories/readings and clinician actions. Evaluation metrics, SHAP, training comparisons and setup command names are not rendered in the application. The original evidence and snapshot generation remain in developer modules/documents. Administrator oversight renders care areas and friendly outcomes; access history loads only when opened. It does not broaden clinical authorization.

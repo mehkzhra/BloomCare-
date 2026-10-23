@@ -71,7 +71,7 @@ export function HealthPage() {
     finally { setBusy(false); }
   }
   return <div className="card stack"><div className="workspace-heading"><div><span className="eyebrow">{t('One clear health record')}</span><h1 className="!text-3xl">{t('Add health observations')}</h1>
-    <p className="muted">{t('Enter actual measured values. Faint ranges show model coverage, not normal clinical ranges.')}</p></div><Link className="button secondary" to="/patient/history">{t('View health history')}<Icon name="arrow" size={16} /></Link></div>
+    <p className="muted">{t('Use your measured readings. The faint numbers are screening limits, not healthy ranges.')}</p></div><Link className="button secondary" to="/patient/history">{t('View health history')}<Icon name="arrow" size={16} /></Link></div>
     <form className="stack" onSubmit={submit}>
       <div className="unit-controls"><label>{t('Glucose unit')}<select value={glucoseUnit} onChange={e => changeUnit('glucose_mmol_l', e.target.value)} disabled={busy}><option>mg/dL</option><option>mmol/L</option></select></label>
         <label>{t('Temperature unit')}<select value={temperatureUnit} onChange={e => changeUnit('temperature_c', e.target.value)} disabled={busy}><option>°F</option><option>°C</option></select></label></div>
@@ -80,12 +80,13 @@ export function HealthPage() {
         const range = capabilities.data?.assessment_ranges?.[key] || [min, max];
         return <label key={key}>{t(label)}<input name={key} type="number" required min={displayValue(key, min)} max={displayValue(key, max)} step={step} placeholder={hint(range.map(v => displayValue(key, v)))} value={values[key] ?? ''} disabled={busy} onChange={e => setValues(v => ({ ...v, [key]: e.target.value }))} /></label>;
       })}</div>
-      {durationOutsidePE && <aside className="service-note" role="status"><strong>{t('Pregnancy duration and screening')}</strong>
-        <p>{t('Your pregnancy duration is saved as entered. Maternal screening uses your other measurements; pregnancy weeks are not an input to that model.')}</p>
-        <p>{t('The PE model supports pregnancy duration from')} {peWeeks.minimum}–{peWeeks.maximum} {t('weeks')}. {t('Outside that coverage, no PE category is generated. This is not a LOW result; discuss your observations with your clinician.')}</p>
+      {durationOutsidePE && <aside className="service-note" role="status"><strong>{t('Your pregnancy week and PE screening')}</strong>
+        <p>{t('Your pregnancy week will be saved exactly as entered.')}</p>
+        <p>{t('This PE screening is available for')} {peWeeks.minimum}–{peWeeks.maximum} {t('weeks')}. {t('For your recorded week, no PE category can be produced. This does not mean LOW risk. Your doctor can review your readings.')}</p>
       </aside>}
       <details className="explanation antenatal-inputs"><summary>{t('Antenatal and laboratory measurements')}</summary>
-        <p className="muted text-sm">{t('Enter known measurements for the PE stage. Leave unknown results empty; the system will ask for missing inputs if screening is triggered.')}</p>
+        <p className="muted text-sm">{t('Optional: add known results from your antenatal or lab record. Leave anything you do not know empty.')}</p>
+        <p className="muted text-sm">{t('The haemoglobin unit is not confirmed here. Check the original lab result with your doctor.')}</p>
         <div className="grid-form">{extra.map(([key, label, min, max, step]) => {
           const field = capabilities.data?.pe_input_fields?.find(f => f.name === key);
           return <label key={key}>{t(label)}<input type="number" name={'clinical_' + key} min={min} max={max} step={step} disabled={busy} placeholder={field ? hint([field.minimum, field.maximum]) : ''} /></label>;

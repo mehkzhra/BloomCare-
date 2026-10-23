@@ -81,5 +81,5 @@ export function ModelAvailability({
 }) {
   if (resource.loading || resource.error) return <ResourceStatus resource={resource} />;
   if (!resource.data?.pregnancy_model_ready) return <p className="service-note"><Icon name="assessment" size={17} />{t('Health screening is currently unavailable. Your records remain available.')}</p>;
-  return <p className="service-note"><span className="status-dot" />{t('Health screening is available for supported measurements.')} <Link to="/patient/assessments">{t('View assessments')} →</Link></p>;
+  return null;
 }

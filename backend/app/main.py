@@ -55,7 +55,7 @@ async def lifespan(_app):
             pass
 
 
-app = FastAPI(lifespan=lifespan, title="BloomCare API", version="1.2.0")
+app = FastAPI(lifespan=lifespan, title="BloomCare API", version="1.3.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -145,7 +145,7 @@ async def unexpected_error(_request: Request, _error: Exception):
 
 @app.get("/api/health/live")
 def live():
-    return {"status": "ok", "version": "1.2.0"}
+    return {"status": "ok", "version": "1.3.0"}
 
 
 @app.get("/api/health/ready")

@@ -1,4 +1,4 @@
-# BloomCare 1.2.0 — free website aur integrations ka setup
+# BloomCare 1.3.0 — free website aur integrations ka setup
 
 21 October 2026. Is guide ko isi order mein follow karein. Apna domain khareedna zaroori nahi: **Render Free web service + Neon Free PostgreSQL** use karein. Render aapko apna HTTPS `onrender.com` address dega. ZIP mein website, API aur dono screening stages ke liye ek combined Docker build aur `render.yaml` diya gaya hai.
 
@@ -26,7 +26,7 @@ cd /d D:\Desktop\BloomCare
 .\scripts\update-final.cmd
 ```
 
-Pehle servers stop karein, ZIP ki files isi project root mein replace karein; Docker Desktop running ho. Successful message **v1.2.0 complete update passed** hona chahiye. Phir backend/frontend alag CMD windows mein start karke Ctrl+F5 karein. Local accounts aur passwords preserve hote hain. Fresh install ke liye README ka foundation setup use karein.
+Pehle servers stop karein, ZIP ki files isi project root mein replace karein; Docker Desktop running ho. Successful message **v1.3.0 complete update passed** hona chahiye. Phir backend/frontend alag CMD windows mein start karke Ctrl+F5 karein. Local accounts aur passwords preserve hote hain. Fresh install ke liye README ka foundation setup use karein.
 
 Cloud upload ke liye **alag clean folder** banayein, e.g. `D:\Desktop\BloomCare-Cloud`. Isi downloaded ZIP ko wahan extract karein. Apni purani working installation ki `.env`, database, backups, reports, `.venv` ya `node_modules` copy na karein. `backend`, `frontend`, `ml`, `deploy`, `scripts`, `docs` aur `render.yaml` seedha repository root par hon; extra nested BloomCare folder nahi.
 
@@ -71,7 +71,7 @@ Sab se asaan route GitHub Desktop hai:
 1. GitHub par naya **private** repository `BloomCare-Cloud` banayein. Purani BloomCare repository ko overwrite karna zaroori nahi.
 2. GitHub Desktop se naya repo `D:\Desktop\BloomCare-Cloud` mein clone karein.
 3. ZIP ki clean contents is cloned folder ke root mein extract karein. Desktop ki Changes list mein source aur `render.yaml` dikhna chahiye. Kisi `.env` ya private runtime file ko commit na karein; ignore rules bhi included hain.
-4. Commit message `BloomCare 1.2.0 delivery` → **Push origin**. GitHub par root mein `render.yaml`, `deploy/render.Dockerfile` aur backend/frontend folders confirm karein.
+4. Commit message `BloomCare 1.3.0 delivery` → **Push origin**. GitHub par root mein `render.yaml`, `deploy/render.Dockerfile` aur backend/frontend folders confirm karein.
 
 ## 5. Render: website online karein, domain ki zaroorat nahi
 
@@ -91,7 +91,7 @@ Sab se asaan route GitHub Desktop hai:
 
 5. **Deploy/Apply** karein. Build dependencies install karega, frontend compile karega, bundled checksum-pinned public data se reviewed maternal model train/verify karega aur original PE forest include karega. Startup additive migrations head `0013_account_security` tak run karega. Local private model/trust upload ki zaroorat nahi.
 6. Live hone par Render ka **apna diya hua URL** kholein, e.g. `https://bloomcare-unique-name.onrender.com`. Yeh example hai, reserved/live address ka claim nahi. Actual URL Render page par copy karein. App isi actual origin ko recovery links aur allowed origins ke liye automatically use karegi.
-7. `/api/health/ready` par `{"status":"ready"}` aur Help & support mein interface/server **1.2.0** confirm karein. HTTPS URL hi use karein.
+7. `/api/health/ready` par `{"status":"ready"}` aur `/api/health/live` par server **1.3.0** confirm karein; interface version `frontend/package.json` mein hai. User pages par technical version diagnostics nahi hain. HTTPS URL hi use karein.
 
 **Pehla admin:** Empty database par bootstrap email se admin account banta hai, lekin koi default/shared password nahi hota. Website ke **Forgot password?** mein `BOOTSTRAP_ADMIN_EMAIL` wali email enter karein. Inbox ke link se apna password set karein; isse mailbox verification bhi complete hoti hai. Ab **Sign in as → Admin** se login karein. Login ke baad Render **Environment** se `BOOTSTRAP_ADMIN_EMAIL` remove karke redeploy kar sakti hain. Existing patient ko bootstrap se admin promote nahi kiya jata. Same initialized admin ke saath restarts idempotent hain.
 

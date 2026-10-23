@@ -1,39 +1,58 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { t } from './i18n.js';
 import { ResourceStatus, useResource } from './resources.jsx';
 import { Icon } from './ui.jsx';
 
-const names = { email: 'Account verification & recovery', groq: 'AI assistant & care guides', whatsapp: 'WhatsApp care alerts', video: 'Video consultations' };
-const labels = { CONNECTED: 'Connected', CONFIGURED: 'Settings saved', NOT_CONFIGURED: 'Not configured', NEEDS_SETUP: 'Not configured', DIRECT_ONLY: 'Direct connection mode', STUN_CONFIGURED: 'STUN settings saved', RELAY_CONFIGURED: 'Relay settings saved', INVALID: 'Fix network settings' };
-const icons = { database: 'report', email: 'shield', groq: 'chat', whatsapp: 'chat', video: 'video' };
+const names = { email: 'Account emails', groq: 'Assistant & care guides', whatsapp: 'WhatsApp care alerts', video: 'Video consultations' };
+const icons = { email: 'shield', groq: 'chat', whatsapp: 'chat', video: 'video' };
 
-export function ServiceOverview({ data }) {
-  return <><div className="service-row"><span className="service-icon"><Icon name="report" size={18} /></span><span><strong>{t('Database')}</strong><small>{t('Verified by this request')}</small></span><span className="service-badge">{t('Connected')}</span></div>{(data.service_configuration?.email ? ['email', 'groq', 'whatsapp', 'video'] : ['groq', 'whatsapp', 'video']).map(key => {
-    const item = data.service_configuration?.[key];
-    const status = item?.status || data.integrations?.[key];
-    const fallback = key === 'whatsapp' && ['NEEDS_SETUP', 'NOT_CONFIGURED'].includes(status) ? 'Automatic alerts off' : labels[status] || 'Check configuration';
-    return <div className="service-row" key={key}><span className="service-icon"><Icon name={icons[key]} size={18} /></span><span><strong>{t(names[key])}</strong></span><span className={'service-badge ' + (status === 'INVALID' ? 'service-error' : 'service-neutral')}>{t(item?.label || fallback)}</span></div>;
-  })}<Link className="text-link service-settings-link" to="/admin/services">{t('Check setup & next steps')}<Icon name="arrow" size={16} /></Link></>;
+// Saved availability states are not evidence that a message or call was delivered.
+function serviceState(name, status) {
+  if (status === 'INVALID') return { label: 'Needs attention', tone: 'attention' };
+  if (['NOT_CONFIGURED', 'NEEDS_SETUP'].includes(status)) return { label: name === 'whatsapp' ? 'Automatic alerts off' : 'Not available', tone: 'neutral' };
+  if (name === 'video') return { label: ['RELAY_CONFIGURED', 'STUN_CONFIGURED'].includes(status) ? 'Connection support enabled' : status === 'DIRECT_ONLY' ? 'Basic calling enabled' : 'Status unavailable', tone: 'neutral' };
+  return { label: ['CONNECTED', 'CONFIGURED'].includes(status) ? 'Enabled · check delivery' : 'Status unavailable', tone: 'neutral' };
 }
-
-function SetupCard({ name, item }) {
-  const [copied, setCopied] = useState(false), [error, setError] = useState('');
-  async function copy() {
-    try { await navigator.clipboard.writeText(item.command); setCopied(true); setError(''); }
-    catch { setError(t('Select and copy the command below.')); }
-  }
-  return <section className="card service-setup-card stack" id={name}><div className="panel-heading"><div><span className="eyebrow">{t('CONNECTED SERVICE')}</span><h2>{t(names[name])}</h2></div><span className={'service-badge ' + (item.status === 'INVALID' ? 'service-error' : 'service-neutral')}>{t(item.label)}</span></div><p>{t(item.summary)}</p>
-    {item.missing?.length > 0 && <div className="missing-settings"><strong>{t('Settings to complete')}</strong><ul>{item.missing.map(setting => <li key={setting}><code>{setting}</code></li>)}</ul></div>}
-    <div className="setup-command"><span>{t('Run in CMD from your BloomCare folder')}</span><code>{item.command}</code><button className="secondary" onClick={copy}>{t(copied ? 'Command copied' : 'Copy command')}</button>{error && <p role="status">{error}</p>}</div>
-    <p className="scope-note">{t('Restart the backend after saving settings, then refresh this page.')}</p>
-    <p className="scope-note">{t('Hosted installation: enter these settings in your hosting dashboard Environment, then redeploy.')}</p>
-    {name === 'video' ? <ol className="setup-checks"><li>{t('Use localhost on this computer or HTTPS for other devices.')}</li><li>{t('Request and accept an appointment; its access must still be active.')}</li><li>{t('The doctor starts the call. The patient opens the same accepted appointment.')}</li><li>{t('Allow camera and microphone on both devices. Test across the networks you will use.')}</li></ol> : name === 'whatsapp' ? <div className="stack"><p>{t('Manual sharing: the patient can download an assessment PDF and attach it in WhatsApp now.')}</p><ol className="setup-checks"><li>{t('Save your Twilio Account SID, Auth Token, approved sender and opted-in recipient numbers.')}</li><li>{t('For a sandbox sender, each recipient must join that sandbox first.')}</li><li>{t('For sandbox alerts, leave Content SID blank and send within 24 hours of the recipient’s join message. Custom templates require a registered sender.')}</li><li>{t('Outside an active WhatsApp service window, use an approved message template with the two BloomCare variables.')}</li><li>{t('The patient chooses a contact and consents to an alert. Refresh its delivery status afterwards.')}</li></ol></div> : name === 'groq' ? <p>{t('Check the saved Groq key, available model and provider quota with one consented question from the patient Assistant page.')}</p> : null}
-    {name === 'email' && <p className="scope-note">{t('Use the sign-in page to request verification and password-reset links. Test your inbox, expiry and one-time use before public onboarding.')}</p>}
-    <p className="service-note">{t('This checks saved configuration. Provider delivery and real calls need a live check.')}</p>
+function Badge({ name, status }) {
+  const state = serviceState(name, status);
+  return <span className={'service-badge service-' + state.tone}>{t(state.label)}</span>;
+}
+export function ServiceOverview({ data }) {
+  const services = data.service_configuration;
+  return <>
+    <div className="service-row"><span className="service-icon"><Icon name="report" size={18} /></span><span><strong>{t('Saved records')}</strong><small>{t('Available in this session')}</small></span><span className="service-badge">{t('Connected')}</span></div>
+    {(services?.email ? ['email', 'groq', 'whatsapp', 'video'] : ['groq', 'whatsapp', 'video']).map(name => <div className="service-row" key={name}>
+      <span className="service-icon"><Icon name={icons[name]} size={18} /></span><span><strong>{t(names[name])}</strong></span><Badge name={name} status={services?.[name]?.status || data.integrations?.[name]} />
+    </div>)}
+    <Link className="text-link service-settings-link" to="/admin/services">{t('View service status')}<Icon name="arrow" size={16} /></Link>
+  </>;
+}
+const descriptions = {
+  email: 'Verification and password reset links are sent to each person’s registered email address.',
+  groq: 'Patients can ask questions and request a care guide after choosing what to share.',
+  whatsapp: 'Patients can choose a contact and consent to an automatic care alert when this service is enabled.',
+  video: 'Patients and doctors meet through accepted appointments with active access.',
+};
+const checks = {
+  email: 'Use Forgot password with an account you own and check that the reset email arrives.',
+  groq: 'Ask one question from the patient Assistant page with consent, then check that a reply arrives.',
+  whatsapp: 'Manual sharing is available: download the report and attach it in WhatsApp. Automatic alerts need a separate delivery check.',
+  video: 'Use two devices to check a real call. The doctor starts it; both people allow camera and microphone.',
+};
+function ServiceCard({ name, item }) {
+  const needsAttention = ['INVALID', 'NEEDS_SETUP', 'NOT_CONFIGURED'].includes(item.status);
+  return <section className="card service-status-card stack" id={name}>
+    <div className="panel-heading"><div className="service-title"><span className="step-icon"><Icon name={icons[name]} size={22} /></span><h2>{t(names[name])}</h2></div><Badge name={name} status={item.status} /></div>
+    <p>{t(descriptions[name])}</p>
+    {needsAttention && <p className="service-action-note"><Icon name="clock" size={17} />{t('Ask the person maintaining BloomCare to enable or check this service.')}</p>}
+    <details className="explanation"><summary>{t('How to check this service')}</summary><p>{t(checks[name])}</p></details>
   </section>;
 }
 export function ServiceSettingsPage() {
   const resource = useResource('/admin/service-configuration');
-  return <div className="stack"><header className="workspace-heading"><div><span className="eyebrow">{t('ADMINISTRATION')}</span><h1>{t('Connected services')}</h1><p>{t('See what is ready, what needs configuration and how to finish setup.')}</p></div><button className="secondary" disabled={resource.loading} onClick={resource.retry}>{t('Refresh status')}</button></header><ResourceStatus resource={resource} />{resource.data?.services && <><p className="service-note">{t('Credentials are entered on your server. Secret values and contact numbers are hidden here.')}</p>{Object.entries(resource.data.services).map(([name, item]) => <SetupCard key={name} name={name} item={item} />)}</>}<Link to="/admin">{t('Back to administration')} →</Link></div>;
+  return <div className="stack"><header className="workspace-heading"><div><span className="eyebrow">{t('ADMINISTRATION')}</span><h1>{t('Service status')}</h1><p>{t('See which care services are enabled and where support is needed.')}</p></div><button className="secondary" disabled={resource.loading} onClick={resource.retry}>{t('Refresh status')}</button></header>
+    <ResourceStatus resource={resource} />
+    {resource.data?.services && <><p className="service-note">{t('Enabled means settings are saved. Confirm an actual email, reply, alert or call before relying on delivery.')}</p><div className="service-status-grid">{Object.entries(resource.data.services).filter(([name]) => names[name]).map(([name, item]) => <ServiceCard key={name} name={name} item={item} />)}</div></>}
+    <Link className="text-link" to="/admin">{t('Back to administration')}<Icon name="arrow" size={16} /></Link>
+  </div>;
 }

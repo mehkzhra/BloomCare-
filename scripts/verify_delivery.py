@@ -41,8 +41,8 @@ def main():
     if not {"removed_at", "removal_reason"}.issubset(health_columns):
         raise SystemExit("Health-record removal upgrade is incomplete. Run update-final.cmd.")
     frontend_version = json.loads((ROOT / "frontend/package.json").read_text())["version"]
-    if frontend_version != "1.2.0":
-        raise SystemExit("Mixed application files detected. Extract the combined v1.2.0 ZIP again.")
+    if frontend_version != "1.3.0":
+        raise SystemExit("Mixed application files detected. Extract the combined v1.3.0 ZIP again.")
     get_pe_model()
     explainer()
     for name in [
@@ -80,7 +80,7 @@ def main():
             raise SystemExit("Missing workspace asset: " + name)
     settings = get_settings()
     result = {
-        "version": "1.2.0",
+        "version": "1.3.0",
         "database_revision": revision,
         "frontend_version": frontend_version,
         "pe_forest_and_shap_verified": True,

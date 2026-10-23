@@ -1,10 +1,16 @@
 # BloomCare
 
-Connected maternal care for patients, doctors and administrators. Current release: **1.2.0**.
+Connected maternal care for patients, doctors and administrators. Current release: **1.3.0**.
 
-**No domain?** Use the included [free Render + Neon deployment guide](docs/FREE-DEPLOYMENT.md), with exact dashboard fields for email recovery, Groq, TURN and optional Twilio alerts. This release adds an original maternal-embrace favicon/logo and a coordinated colorful interface for all three roles.
+**Run locally on Windows:** follow [START-HERE.md](START-HERE.md) for the PostgreSQL setup and startup commands. An [optional Render + Neon deployment guide](docs/FREE-DEPLOYMENT.md) is included; a public deployment is not provisioned. The interface puts each role’s care tasks first. Model accuracy, training comparisons, class scores, SHAP and setup commands are absent from user pages; developer evidence stays in the source and model guides.
 
-The application connects observations, staged screening, clinical review, appointments, care guides, reports and conversations. All previously delivered modules remain included. This release adds email verification, one-use password recovery, persisted authentication limits, a safe isolated restore test and an optional public HTTPS template. Earlier pregnancy-duration guidance, training evidence and the simplified handover remain included.
+The application connects observations, staged screening, clinical review, appointments, care guides, reports and conversations. All previously delivered modules remain included. This release adds email verification, one-use password recovery, persisted authentication limits, a safe isolated restore test and an optional public HTTPS template. Earlier pregnancy-duration safeguards, developer training evidence and handover tools remain included.
+
+Private configuration, database backups and runtime model artifacts are excluded from this public source. The maintainer must supply the matching maternal and PE model artifacts before running model verification; preserve the working installation's model directories and trust file. See [model training](docs/MODEL-TRAINING.md) and [deployment/recovery](docs/DEPLOYMENT.md). This source push does not publish the PE explanation node weights or synthetic parity fixtures.
+
+## Interface update from the working 1.2.0 installation
+
+Stop the server, extract this combined ZIP into your existing BloomCare folder and replace included source files. Then run `scripts\update-ui.cmd`; it checks and rebuilds the frontend without changing the database or environment. Run `scripts\start-local.cmd`, open `http://127.0.0.1:8000` and Ctrl+F5. The helper serves the built interface and API together on this computer, without editing saved secrets. The complete updater below is available when updating an older database installation.
 
 ## Update on Windows
 
@@ -15,14 +21,14 @@ cd /d D:\Desktop\BloomCare
 .\scripts\update-final.cmd
 ```
 
-Restart `scripts\start-backend.cmd` and `scripts\start-frontend.cmd` in separate CMD windows, then Ctrl+F5. Confirm interface/server **1.2.0** in Help & support. Configuration, accounts, reports, database and active model/trust files are preserved. See [START-HERE.md](START-HERE.md).
+Restart `scripts\start-backend.cmd` and `scripts\start-frontend.cmd` in separate CMD windows, then Ctrl+F5. The maintainer can confirm server **1.3.0** at `/api/health/live`; release details are intentionally absent from the user interface. Configuration, accounts, reports, database and active model/trust files are preserved. See [START-HERE.md](START-HERE.md).
 
 ## Delivered workflows
 
-- Patient: profile, health entry/history, staged assessment and explanations, care guide, appointments, medications, reminders, symptoms, reports and separate assistant.
+- Patient: profile, health entry/history, staged screening results and next care actions, care guide, appointments, medications, reminders, symptoms, reports and separate assistant.
 - Doctor: website registration/approval, selected active shared records, review history, notes/amendments, follow-up, schedule, messages and video.
-- Admin: applications/accounts, operational activity, scoped analytics, service configuration and honest model evaluation/training evidence.
-- Continuing care: consent/revocation, PDF/passport/timeline, family access, manual WhatsApp sharing, optional automatic alerts, English/Urdu and RTL.
+- Admin: applications/accounts, operational activity, scoped care insights, approvals and service availability.
+- Continuing care: consent/revocation, PDF/passport/timeline, family access, manual WhatsApp sharing, optional patient-triggered Twilio care alerts, English/Urdu and RTL. Assessment results do not automatically send WhatsApp messages.
 
 Incorrect health records and linked assessments can be withdrawn from active care with a reason. Audit metadata and clinical notes remain. Role, ownership and sharing checks run on the backend.
 

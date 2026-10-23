@@ -1,5 +1,5 @@
 import { afterEach, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { HistoryPage } from './pages.jsx';
 import { HealthRecordRemoval, RemovedHealthRecords } from './assessment-removal.jsx';
@@ -73,17 +73,12 @@ it.each([[APP_VERSION, false], ['1.0.0', true]])('checks a server version on dem
   if (mismatch) expect(screen.getByRole('alert')).toHaveTextContent('versions differ');
   else expect(screen.getByText('The interface and server versions match.')).toBeInTheDocument();
 });
-it('retains honest technical metrics in the admin evidence panel on demand', async () => {
-  vi.stubGlobal('fetch', vi.fn(async url => {
-    if (url === '/api/admin/workspace') return response(emptyAdminWorkspace());
-    if (url === '/api/admin/model-evaluation') return response({ active_model: { version: 'maternal_rf_v0.2', source: { name: 'UCI Maternal Health Risk' }, evaluation: { accuracy: 0.7111, medium_recall: 0.3333, macro_f1: 0.667, held_out_rows: 90 }, limitations: ['Internal evaluation has not been clinically validated.'] } });
-    return response({ candidates: [], pe: { usable_rows: 90, exact_duplicates_removed: 113, test_accuracy: 0.7222 }, limitations: [] });
-  }));
+it('keeps the administrator focused on accounts and care rather than model metrics', async () => {
+  vi.stubGlobal('fetch', vi.fn(async () => response(emptyAdminWorkspace())));
   mount(<AdminWorkspace />); await screen.findByText('Applications are up to date');
+  expect(screen.queryByText('Model evaluation & evidence')).not.toBeInTheDocument();
   expect(screen.queryByText('71.1%')).not.toBeInTheDocument();
-  fireEvent.click(screen.getByText('Model evaluation & evidence'));
-  expect(await screen.findByText('71.1%')).toBeInTheDocument();
-  expect(screen.getByText('33.3%')).toBeInTheDocument();
-  fireEvent.click(screen.getByText('Training data and evaluation limitations'));
-  expect(within(screen.getByText('Training data and evaluation limitations').parentElement).getByText('Internal evaluation has not been clinically validated.')).toBeInTheDocument();
+  expect(screen.queryByText('33.3%')).not.toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'Manage accounts' })).toHaveAttribute('href', '/admin/accounts');
+  expect(fetch.mock.calls.some(([url]) => url.includes('model-evaluation') || url.includes('training-evidence'))).toBe(false);
 });

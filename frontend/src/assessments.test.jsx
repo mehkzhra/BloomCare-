@@ -77,7 +77,7 @@ describe('experimental assessment workflow', () => {
     expect(screen.queryByText('Saved measurements')).not.toBeInTheDocument();
   });
 
-  it('requests a saved record assessment and displays the API result, SHAP, and unavailable PE stage', async () => {
+  it('requests a saved record assessment and displays the saved result and care actions without developer scores', async () => {
     start();
     const button = await screen.findByRole('button', { name: 'Run assessment' });
     await waitFor(() => expect(button).toBeEnabled());
@@ -88,12 +88,13 @@ describe('experimental assessment workflow', () => {
     expect(screen.queryByText('71.1%')).not.toBeInTheDocument();
     expect(screen.queryByText('33.3%')).not.toBeInTheDocument();
     fireEvent.click(screen.getByText('Understanding this screening'));
-    expect(screen.getByText('The model can miss some medium-risk cases. Review the measurements and result with your clinician even when the category is LOW.')).toBeInTheDocument();
-    expect(screen.getByText('Model unavailable')).toBeInTheDocument();
-    expect(screen.getByText('82.0%')).toBeInTheDocument();
-    expect(screen.getByText(/not probabilities of complications/)).toBeInTheDocument();
-    fireEvent.click(screen.getByText('How measurements contributed to this result'));
-    expect(screen.getByText('+20.00 pp')).toBeInTheDocument();
+    expect(screen.getByText('This result helps you discuss your readings with your doctor. It cannot diagnose a condition or rule out complications, including when the category is LOW.')).toBeInTheDocument();
+    expect(screen.getByText('Screening unavailable')).toBeInTheDocument();
+    expect(screen.queryByText('82.0%')).not.toBeInTheDocument();
+    expect(screen.queryByText('Model class scores')).not.toBeInTheDocument();
+    expect(screen.queryByText(/SHAP/)).not.toBeInTheDocument();
+    expect(screen.queryByText(model.version)).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Book a doctor' })).toHaveAttribute('href', '/patient/appointments');
     const request = fetch.mock.calls.find(([url, options]) => url === '/api/patients/me/assessments' && options.method === 'POST');
     expect(JSON.parse(request[1].body)).toEqual({ health_record_id: record.id });
     expect(fetch.mock.calls.some(([url]) => url.endsWith('/pe'))).toBe(false);

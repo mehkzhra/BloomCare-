@@ -80,7 +80,7 @@ export function buildAssessmentPDF(jsPDF, report, fontBase64, arabicFontBase64) 
     section('Recorded antenatal and laboratory measurements');
     const clinicalLabels = {
       gravida: 'Number of pregnancies', parity: 'Number of previous births', bmi: 'BMI (kg/m2)',
-      hb: 'Haemoglobin (source model units undocumented)', fetal_weight_kg: 'Estimated fetal weight (kg)',
+      hb: 'Haemoglobin (unit not confirmed)', fetal_weight_kg: 'Estimated fetal weight (kg)',
       amniotic_fluid_level_cm: 'Amniotic fluid measurement (cm)', diabetes: 'Diagnosed diabetes',
       history_of_hypertension: 'History of hypertension', protein_uria: 'Protein in urine',
     };
@@ -90,42 +90,31 @@ export function buildAssessmentPDF(jsPDF, report, fontBase64, arabicFontBase64) 
   }
   section('Saved screening results');
   text(`Maternal category: ${a.maternal_risk}`, 13);
-  text(`Model: ${a.model.version}`, 9);
-  Object.entries(a.class_scores).forEach(([key, value]) => text(`${key} model score: ${(value * 100).toFixed(1)}%`, 9));
-  text(`PE stage: ${a.pe_status.replaceAll('_', ' ')}`);
+  const peStatus = { COMPLETED: 'Screening saved', AWAITING_INPUTS: 'More measurements needed', OUTSIDE_COVERAGE: 'Doctor review needed', UNAVAILABLE: 'Screening unavailable', NOT_REQUIRED: 'Additional screening not triggered' };
+  text(`Pre-eclampsia screening: ${peStatus[a.pe_status] || 'Review assessment'}`);
   if (a.pe_screening) {
-    text(`PE category: ${a.pe_screening.risk}`, 12);
-    text(`PE model: ${a.pe_screening.model.version}`, 9);
-    const fields = a.pe_screening.model.input_fields || [];
+    text(`Pre-eclampsia category: ${a.pe_screening.risk}`, 12);
+    const fields = a.pe_screening.model?.input_fields || [];
     Object.entries(a.pe_screening.observations).forEach(([key, value]) => {
       const field = fields.find(f => f.name === key);
-      text(`${field?.label || key}: ${typeof value === 'boolean' ? (value ? 'Yes' : 'No') : value} ${field?.unit || ''}`, 9);
+      text(`${field?.label || labels[key]?.[0] || key.replaceAll('_', ' ')}: ${typeof value === 'boolean' ? (value ? 'Yes' : 'No') : value} ${field?.unit || labels[key]?.[1] || ''}`, 9);
     });
-    text('HB units are not documented in the source model contract.', 9);
-  } else text(a.pe_reason, 9);
+    text('The haemoglobin unit has not been confirmed. Review the original lab result with your doctor.', 9);
+  } else text('No PE category was produced. This does not rule out pre-eclampsia; discuss your readings with your doctor.', 9);
   if (a.pe_input_issues?.length) {
-    text('Recorded values outside PE model coverage:', 10);
-    a.pe_input_issues.forEach(field => text(`${field.label}: ${field.value} ${field.unit || ''}; model coverage ${field.minimum}-${field.maximum} ${field.unit || ''}`, 9));
-    text('Model coverage is not a clinical normal range. Actual readings have been preserved.', 9);
-  }
-  for (const [name, explanation] of [['Maternal', a.explanation], ['PE', a.pe_screening?.explanation]]) {
-    if (!explanation) continue;
-    section(`${name} model explanation`);
-    text(`Explained category: ${explanation.explained_class}. Base score ${(explanation.base_score * 100).toFixed(1)}%; record score ${(explanation.model_score * 100).toFixed(1)}%.`, 9);
-    [...explanation.features].sort((x, z) => Math.abs(z.contribution) - Math.abs(x.contribution)).forEach(f => {
-      text(`${f.label}: ${f.contribution >= 0 ? '+' : ''}${(f.contribution * 100).toFixed(2)} percentage points`, 9);
-    });
-    text('SHAP explains model behavior, not medical causes.', 9);
+    text('Readings that need a doctor review:', 10);
+    a.pe_input_issues.forEach(field => text(`${field.label}: ${field.value} ${field.unit || ''}; supported screening range ${field.minimum}-${field.maximum} ${field.unit || ''}`, 9));
+    text('Screening limits are not healthy ranges. Actual readings have been preserved.', 9);
   }
   section('Personalized care plan');
   if (a.care_plan) {
-    text(`Saved ${new Date(a.care_plan.created_at).toLocaleString()} | ${a.care_plan.provider_model}`, 8);
+    text(`Saved ${new Date(a.care_plan.created_at).toLocaleString()}`, 8);
     if (!a.care_plan.current) text('This plan predates the current PE stage. Generate an updated guide before relying on its screening summary.', 9, '#984e30');
     text(a.care_plan.content);
   } else text('A personalized care plan has not been generated for this assessment.');
   section('Clinician review');
   const review = a.clinical_review;
-  text(`Review status: ${(review?.status || 'PENDING').replaceAll('_', ' ')}`);
+  text(`Review status: ${({ PENDING: 'Awaiting review', REVIEWED: 'Reviewed', URGENT_FOLLOW_UP: 'Urgent follow-up' })[review?.status] || 'Awaiting review'}`);
   if (review?.reason) text(review.reason);
   if (review?.follow_up_at) text(`Follow-up: ${new Date(review.follow_up_at).toLocaleString()}`);
   if (report.notes?.length) {
@@ -135,7 +124,7 @@ export function buildAssessmentPDF(jsPDF, report, fontBase64, arabicFontBase64) 
       text(n.body); y += 3;
     });
   }
-  section('Report information'); text(report.notice, 9);
+  section('Report information'); text('Screening has not been clinically validated. Results support a conversation with your doctor and do not diagnose or rule out complications.', 9);
   text('Only patient-visible notes are included. Prescriptions and treatment decisions remain with the clinician.', 9);
   const count = doc.getNumberOfPages();
   for (let number = 1; number <= count; number++) {

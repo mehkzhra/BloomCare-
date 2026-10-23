@@ -57,23 +57,19 @@ it('shows setup state accurately and links the admin to pending doctor applicati
   const data = emptyAdminWorkspace(); data.counts.pending_doctors = 1; data.pending_doctors = [{ id: 'd1', full_name: 'Dr Applicant', email: 'applicant@example.invalid', specialty: 'Obstetrics', registration_number: 'EXAMPLE-1' }];
   replies(data); mount(<AdminWorkspace />);
   await screen.findByText('Dr Applicant');
-  expect(screen.getByText('Direct connection mode')).toBeInTheDocument();
+  expect(screen.getByText('Basic calling enabled')).toBeInTheDocument();
   expect(screen.getByText('Automatic alerts off')).toBeInTheDocument();
-  expect(screen.getByRole('link', { name: 'Check setup & next steps' })).toHaveAttribute('href', '/admin/services');
+  expect(screen.getByRole('link', { name: 'View service status' })).toHaveAttribute('href', '/admin/services');
   expect(screen.getByRole('link', { name: 'Review applications' })).toHaveAttribute('href', '/admin/accounts?role=doctor&approval=pending&active=true');
   expect(screen.queryByText('Offline')).not.toBeInTheDocument();
 });
-it('loads model evidence only when the administrator opens it', async () => {
-  vi.stubGlobal('fetch', vi.fn(async url => {
-    if (url === '/api/admin/workspace') return response(emptyAdminWorkspace());
-    if (url === '/api/admin/model-evaluation') return response({ active_model: null });
-    return response({ candidates: [], pe: { usable_rows: 90, exact_duplicates_removed: 113, test_accuracy: 0.7222 }, limitations: [] });
-  }));
+it('keeps model evaluation and training evidence out of the administrator workspace', async () => {
+  replies(emptyAdminWorkspace());
   mount(<AdminWorkspace />); await screen.findByText('Applications are up to date');
-  expect(fetch.mock.calls.some(([url]) => url.includes('model-evaluation') || url.includes('training-evidence'))).toBe(false);
-  fireEvent.click(screen.getByText('Model evaluation & evidence'));
-  expect(await screen.findByText('Retraining comparison')).toBeInTheDocument();
-  expect(fetch.mock.calls.some(([url]) => url.endsWith('/training-evidence'))).toBe(true);
+  expect(fetch.mock.calls.map(([url]) => url)).toEqual(['/api/admin/workspace']);
+  expect(screen.queryByText('Model evaluation & evidence')).not.toBeInTheDocument();
+  expect(screen.queryByText('Held-out accuracy')).not.toBeInTheDocument();
+  expect(screen.getByRole('navigation', { name: 'Quick actions' }).querySelectorAll('a')).toHaveLength(3);
 });
 it('reports malformed dashboard data and retries instead of inventing empty-state success', async () => {
   let bad = true; vi.stubGlobal('fetch', vi.fn(async () => response(bad ? [] : emptyPatientWorkspace())));

@@ -84,7 +84,7 @@ describe('patient application flows', () => {
   it('shows an explicit connection error when the server is unavailable', async () => {
     fetch.mockRejectedValue(new Error('Network unavailable'));
     start('/');
-    await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent('Unable to connect'));
+    await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent('Unable to reach'));
   });
   it('leaves session loading after a timeout and can retry the connection', async () => {
     vi.useFakeTimers();
@@ -98,7 +98,7 @@ describe('patient application flows', () => {
       expect(screen.getByRole('alert')).toHaveTextContent('taking too long');
       expect(screen.queryByRole('status')).not.toBeInTheDocument();
       await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Retry connection' })); });
-      expect(screen.getByRole('heading', { name: 'A little care. For every chapter.' })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'A clearer path. A little more care.' })).toBeInTheDocument();
       expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     } finally { vi.useRealTimers(); }
   });

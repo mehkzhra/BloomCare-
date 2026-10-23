@@ -7,7 +7,7 @@ if not exist "%BLOOMCARE_PYTHON%" (
     echo Complete the existing BloomCare backend setup before this update.
     goto failed
 )
-echo BloomCare complete delivery update v1.2.0
+echo BloomCare complete delivery update v1.3.0
 echo Stop the backend and frontend servers before continuing this update.
 echo Checking dependencies and the existing database...
 "%BLOOMCARE_PYTHON%" -m pip check
@@ -53,7 +53,7 @@ echo Consolidating verified obsolete release files...
 if errorlevel 1 goto failed
 "%BLOOMCARE_PYTHON%" scripts\verify_delivery.py
 if errorlevel 1 goto failed
-echo BloomCare v1.2.0 complete update passed.
+echo BloomCare v1.3.0 complete update passed.
 echo Start backend and frontend in separate CMD windows, then refresh with Ctrl+F5.
 echo Read docs\DELIVERY-STATUS.md for provider setup and final live checks.
 popd
