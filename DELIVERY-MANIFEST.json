@@ -651,7 +651,7 @@
     {
       "path": "frontend/package-lock.json",
       "bytes": 140563,
-      "sha256": "a48da6df49a22b42ab2c0748716db736cdf4f20772f8763144263247ee859e72"
+      "sha256": "a726319d2f1a0c1595d23af6e085e53a53d55cbd6c61166a6a3e3e08c6bddb60"
     },
     {
       "path": "frontend/package.json",
