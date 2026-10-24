@@ -7,6 +7,7 @@ services:
     env_file: backend/.env
     environment:
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      PUBLIC_APP_URL: ${BLOOMCARE_PUBLIC_APP_URL:-http://127.0.0.1:8080}
       ALLOWED_ORIGINS: ${BLOOMCARE_ALLOWED_ORIGINS:-http://127.0.0.1:8080,http://localhost:8080}
     volumes:
       - ./ml/artifacts:/app/ml/artifacts:ro

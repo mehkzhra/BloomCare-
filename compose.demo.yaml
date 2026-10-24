@@ -1,0 +1,10 @@
+# Merge with compose.deploy.yaml for an explicitly started temporary HTTPS demo.
+# Set the exact generated HTTPS origin in this terminal before starting the stack.
+services:
+  api:
+    environment:
+      PUBLIC_APP_URL: ${BLOOMCARE_DEMO_ORIGIN:?Set BLOOMCARE_DEMO_ORIGIN to the generated HTTPS origin}
+      ALLOWED_ORIGINS: ${BLOOMCARE_DEMO_ORIGIN:?Set BLOOMCARE_DEMO_ORIGIN to the generated HTTPS origin}
+      COOKIE_SECURE: "true"
+      AUTH_REQUIRE_EMAIL_VERIFICATION: "true"
+      AUTH_PROXY_HEADER: "none"

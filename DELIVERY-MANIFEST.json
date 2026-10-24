@@ -3,7 +3,7 @@
   "date": "2026-10-22",
   "schema": "0013_account_security",
   "extract_into": "existing BloomCare project root",
-  "source_file_count": 242,
+  "source_file_count": 243,
   "cleanup": {
     "obsolete_paths": 66,
     "history": "docs/history.zip",
@@ -35,8 +35,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 5327,
-      "sha256": "2a718020cd4954ce19b2f628b3cc1bb61aeb5c2ab3c9bc262e93f0f18c06c216"
+      "bytes": 12672,
+      "sha256": "62716bd166e3344197cb29f4e1b5ba78b3aac9e135e672209d7be22bf0f2e2a6"
     },
     {
       "path": "START-HERE.md",
@@ -44,49 +44,9 @@
       "sha256": "062db77e79cfe60ea43f9bef38787453c6c57f9e8c817695718c492ee6c614b7"
     },
     {
-      "path": "compose.deploy.yaml",
-      "bytes": 809,
-      "sha256": "adb312eb0d3b3d55b8ff8806bf4f5975cb4ec9cc1fe3ff0d44cbb9b41965be8f"
-    },
-    {
-      "path": "compose.public.yaml",
-      "bytes": 1044,
-      "sha256": "94e02482310a494a5d81cf5df7745a38bee9659ef8470ec10f60b3b1c1f00859"
-    },
-    {
-      "path": "compose.yaml",
-      "bytes": 597,
-      "sha256": "7d2eac2fc5745164ded8a2645c2bb5e267e0bc38da83cb4185273251a795c81e"
-    },
-    {
-      "path": "render.yaml",
-      "bytes": 814,
-      "sha256": "be2e2bddefcf50859a4799318fcfd24adb1d56c415d6283e3119941eb535f334"
-    },
-    {
       "path": "backend/alembic.ini",
       "bytes": 531,
       "sha256": "f020c96e8e7d15b0957d1614180ffb18f8b0d615525abf650af62f0f927a1987"
-    },
-    {
-      "path": "backend/pyproject.toml",
-      "bytes": 210,
-      "sha256": "945677df5c14555dc1d1be5f72587b95e33e05c83c150f045e806c75a1112bc2"
-    },
-    {
-      "path": "backend/requirements-lock.txt",
-      "bytes": 733,
-      "sha256": "c82075607046c31e61366a4af30fdcf561a7d3815d9d8ec60f66f79748821c78"
-    },
-    {
-      "path": "backend/requirements.txt",
-      "bytes": 257,
-      "sha256": "46b3bdf02ad02b19635538bfc6f47647830c41b11513b4a6ba0d638df99eefe3"
-    },
-    {
-      "path": "backend/research-requirements.txt",
-      "bytes": 66,
-      "sha256": "919f2b95f9119f270f9536a09056e1d2a063b2ec2c38bd10a2b5df865bbb58ca"
     },
     {
       "path": "backend/app/__init__.py",
@@ -389,9 +349,39 @@
       "sha256": "2c7be410b96aaea207f373d925b1478367a7dfe3fc982a777e395fa6bce5bce0"
     },
     {
+      "path": "backend/pyproject.toml",
+      "bytes": 210,
+      "sha256": "945677df5c14555dc1d1be5f72587b95e33e05c83c150f045e806c75a1112bc2"
+    },
+    {
+      "path": "backend/requirements-lock.txt",
+      "bytes": 733,
+      "sha256": "c82075607046c31e61366a4af30fdcf561a7d3815d9d8ec60f66f79748821c78"
+    },
+    {
+      "path": "backend/requirements.txt",
+      "bytes": 257,
+      "sha256": "46b3bdf02ad02b19635538bfc6f47647830c41b11513b4a6ba0d638df99eefe3"
+    },
+    {
+      "path": "backend/research-requirements.txt",
+      "bytes": 66,
+      "sha256": "919f2b95f9119f270f9536a09056e1d2a063b2ec2c38bd10a2b5df865bbb58ca"
+    },
+    {
       "path": "backend/tests/conftest.py",
       "bytes": 3437,
       "sha256": "5559109d0b816b12a59bf891c97af14ccaea585e58dbf14d6a038da87909a0c5"
+    },
+    {
+      "path": "backend/tests/fixtures/README.md",
+      "bytes": 886,
+      "sha256": "b1d8287d0a246d63cd3dea9bf6e007e61c3f3600bc7e7c8b5c07f178e7491b91"
+    },
+    {
+      "path": "backend/tests/fixtures/maternal_risk_uci.csv",
+      "bytes": 30290,
+      "sha256": "a1f7025719f84715096e0d1f95ae2e56b57809b9b15449e1836c96a7d976ae9b"
     },
     {
       "path": "backend/tests/test_account_security.py",
@@ -514,14 +504,24 @@
       "sha256": "b3dc23245a378e8ad87e6ca7bd991ec5035eebd3c0209323de443a12d4e26a27"
     },
     {
-      "path": "backend/tests/fixtures/README.md",
-      "bytes": 886,
-      "sha256": "b1d8287d0a246d63cd3dea9bf6e007e61c3f3600bc7e7c8b5c07f178e7491b91"
+      "path": "compose.demo.yaml",
+      "bytes": 513,
+      "sha256": "ce3ddb502dcc2cf0598e67a580ebbc157c091bf8e77b0b4918a2cff160f58236"
     },
     {
-      "path": "backend/tests/fixtures/maternal_risk_uci.csv",
-      "bytes": 30290,
-      "sha256": "a1f7025719f84715096e0d1f95ae2e56b57809b9b15449e1836c96a7d976ae9b"
+      "path": "compose.deploy.yaml",
+      "bytes": 882,
+      "sha256": "f276a11e1723777ce1a4d60cd5b69bfadb92f8a6b9b6a1f8794eb019710ff756"
+    },
+    {
+      "path": "compose.public.yaml",
+      "bytes": 1044,
+      "sha256": "94e02482310a494a5d81cf5df7745a38bee9659ef8470ec10f60b3b1c1f00859"
+    },
+    {
+      "path": "compose.yaml",
+      "bytes": 597,
+      "sha256": "7d2eac2fc5745164ded8a2645c2bb5e267e0bc38da83cb4185273251a795c81e"
     },
     {
       "path": "deploy/Caddyfile",
@@ -657,11 +657,6 @@
       "path": "frontend/package.json",
       "bytes": 879,
       "sha256": "e64c664bd823fdbc0d0993609e8af209a462fc940e97966933ad0ab11f2d719a"
-    },
-    {
-      "path": "frontend/vite.config.js",
-      "bytes": 506,
-      "sha256": "33e9746eda81a9674f534ccfd45a7148c628e7b356b6c995d82e6c24869fd058"
     },
     {
       "path": "frontend/public/bloomcare-mark.svg",
@@ -969,6 +964,11 @@
       "sha256": "ea2ea0807e5ff5181b4cb22ff4231f0cbcab850716f508357a4b402f35edc9c8"
     },
     {
+      "path": "frontend/vite.config.js",
+      "bytes": 506,
+      "sha256": "33e9746eda81a9674f534ccfd45a7148c628e7b356b6c995d82e6c24869fd058"
+    },
+    {
       "path": "ml/.gitignore",
       "bytes": 75,
       "sha256": "5ab9fb29c09d28cae47b196ab3fdced7ddd7e523f7c59c9518c04cdb06d76156"
@@ -1019,6 +1019,11 @@
       "sha256": "75a92732fe1e6af1de2a5ca858f82dcc5e8f5df65c32694ef9c22becd7043157"
     },
     {
+      "path": "ml/reference-results/evaluation.json",
+      "bytes": 5096,
+      "sha256": "0b9ef402ef50df5e7ae946d8c9fd339be4f901b85c11cad1cc99209d65733915"
+    },
+    {
       "path": "ml/requirements.txt",
       "bytes": 187,
       "sha256": "a44d266dbec3e596ec2a615a87bb763089aade8ef93acad13dfc437509525cba"
@@ -1027,26 +1032,6 @@
       "path": "ml/retrain_legacy_pe.py",
       "bytes": 4894,
       "sha256": "7ac2334dacab2be12ca4394eca30bb490e6617098a7a4db92975d386ab6f5fd2"
-    },
-    {
-      "path": "ml/train_comparison.py",
-      "bytes": 10863,
-      "sha256": "13192f33821fcfb7249dc3bf21dd18d5dc2bf8a651464b4dc9a7b8eb654b8b57"
-    },
-    {
-      "path": "ml/train_maternal.py",
-      "bytes": 7212,
-      "sha256": "7615bf0b0c832b0a82b9ee22b9cdaccb22aeb478c599edb468f247d2dce9bfd0"
-    },
-    {
-      "path": "ml/verify_model.py",
-      "bytes": 2764,
-      "sha256": "a33b3ee7e842cabf4ec7fa32cac8b7763e5c190b134f9a1830b23db755bc625a"
-    },
-    {
-      "path": "ml/reference-results/evaluation.json",
-      "bytes": 5096,
-      "sha256": "0b9ef402ef50df5e7ae946d8c9fd339be4f901b85c11cad1cc99209d65733915"
     },
     {
       "path": "ml/tests/test_comparison.py",
@@ -1059,9 +1044,14 @@
       "sha256": "6cbb475381773178ff7276fa3c1818a8fecaf6209ef61dd79c45b33256c4d6e9"
     },
     {
-      "path": "ml/training_reports/source-review-2026-10-21.json",
-      "bytes": 9671,
-      "sha256": "87b6a2e0e97c9698be826f05592a6892d64a32ea3ba021ab3825b0c55bb5ec8d"
+      "path": "ml/train_comparison.py",
+      "bytes": 10863,
+      "sha256": "13192f33821fcfb7249dc3bf21dd18d5dc2bf8a651464b4dc9a7b8eb654b8b57"
+    },
+    {
+      "path": "ml/train_maternal.py",
+      "bytes": 7212,
+      "sha256": "7615bf0b0c832b0a82b9ee22b9cdaccb22aeb478c599edb468f247d2dce9bfd0"
     },
     {
       "path": "ml/training_reports/pe-v1.0.0/pe-retraining-report.json",
@@ -1069,9 +1059,24 @@
       "sha256": "ec9b24b72aa6f3e601b1bf7065ad93318a4002152c62e8f6fc276b656909ab67"
     },
     {
+      "path": "ml/training_reports/source-review-2026-10-21.json",
+      "bytes": 9671,
+      "sha256": "87b6a2e0e97c9698be826f05592a6892d64a32ea3ba021ab3825b0c55bb5ec8d"
+    },
+    {
       "path": "ml/training_reports/v1.0.0/comparison.json",
       "bytes": 13933,
       "sha256": "9a6030616acf1fd33969379efd5090a5e7cb8bef8c4f8a31d530db8d366396dc"
+    },
+    {
+      "path": "ml/verify_model.py",
+      "bytes": 2764,
+      "sha256": "a33b3ee7e842cabf4ec7fa32cac8b7763e5c190b134f9a1830b23db755bc625a"
+    },
+    {
+      "path": "render.yaml",
+      "bytes": 814,
+      "sha256": "be2e2bddefcf50859a4799318fcfd24adb1d56c415d6283e3119941eb535f334"
     },
     {
       "path": "scripts/benchmark_workspace.py",
