@@ -169,9 +169,34 @@ Docker builds and public connectivity require verification on the target PC; thi
 
 Current Hugging Face documentation requires a paid plan to create Docker Spaces and allows outbound requests on ports 80, 443 and 8080. Standard PostgreSQL on 5432 therefore needs a verified networking alternative; a normal Neon connection string is not a drop-in solution. Static Spaces cannot run this backend.
 
-For permanent hosting, choose a container host that supports PostgreSQL connectivity, configure private secrets and a stable HTTPS origin, and test persistence/recovery and real workflows. No hosted URL is claimed here.
+### Northflank with Neon
 
-Platform references checked **24 October 2026**: [Hugging Face Spaces](https://huggingface.co/docs/hub/en/spaces-overview), [Docker Spaces](https://huggingface.co/docs/hub/en/spaces-sdks-docker), [Cloudflare Quick Tunnels](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/).
+For hosting independent of the Windows PC, the Northflank Sandbox plan currently advertises no card requirement and always-on services within its free resource limits. This is a project/demo deployment; clinical validation and production operations remain separate requirements. Account eligibility and available capacity must be checked in the dashboard. This repository does not claim a completed Northflank deployment or a hosted URL.
+
+1. Sign in at [Northflank](https://app.northflank.com/) and select **Sandbox / Free**. Create a project and a **combined service** named `bloomcare` from this repository's `main` branch.
+2. Choose **Dockerfile**, path `/deploy/northflank.Dockerfile`, build context `/`. Expose **HTTP port 10000** publicly and copy the generated HTTPS origin from Networking. Use the free included compute allocation and one instance.
+3. In the **working Windows installation**, with the new helper copied into `scripts`, run:
+
+   ```bat
+   .\backend\.venv\Scripts\python.exe scripts\prepare_cloud_settings.py
+   ```
+
+   Enter the Northflank HTTPS origin, Neon PostgreSQL connection URL with SSL, and the administrator's real email/name. The database URL is hidden while typing. The helper reads the working email, Groq and video settings, generates a new cloud session key, and creates **`backend/.env.northflank`**. It preserves an existing export on reruns. The export is ignored by Git; import it into Northflank's **runtime environment variables**.
+4. Add these **runtime secret files**, uploading the existing local files individually. Keep them out of build arguments and public Git/image registries:
+
+   | Local file under `ml/artifacts/legacy_pe_v0.7.1` | Container mount path |
+   | --- | --- |
+   | `forest.json` | `/app/ml/artifacts/legacy_pe_v0.7.1/forest.json` |
+   | `manifest.json` | `/app/ml/artifacts/legacy_pe_v0.7.1/manifest.json` |
+   | `explanation-weights.json` | `/app/ml/artifacts/legacy_pe_v0.7.1/explanation-weights.json` |
+
+   The maternal model is trained and verified during the image build from the checksum-pinned public fixture. Private PE assets are excluded from the Dockerfile's source copies and mounted at runtime. Startup verifies both models before migrations and serving; missing or changed assets stop startup. The synthetic parity fixture is not needed in the running service.
+5. Deploy/restart after saving the runtime variables and files. Configure an HTTP readiness check on port **10000**, path **`/api/health/ready`**, with startup time allowed for Python imports and migrations. Wait for `{"status":"ready"}`, then open the generated origin.
+6. For a new empty Neon database, request **Forgot password** using `BOOTSTRAP_ADMIN_EMAIL` to establish the first administrator's password through that mailbox. Local accounts and records are not copied automatically. Existing database accounts are preserved; bootstrap cannot promote a patient or add a new administrator to an occupied database.
+
+The HTTPS origin and allowed origins must match. Use verified emails, keep API/provider keys in Northflank's runtime variables, and retain the private settings file for recovery. Authentication uses the conservative shared proxy limit (`AUTH_PROXY_HEADER=none`); do not enable Render-specific proxy trust on Northflank. Test login/recovery, both assessments, sharing, Groq and an actual cross-network video call at the hosted origin before sharing it for review. Finally, verify access from another device with the Windows PC off.
+
+Platform references checked **25 October 2026**: [Northflank pricing](https://northflank.com/pricing), [combined service setup](https://northflank.com/docs/v1/application/getting-started/build-and-deploy-your-code), [private runtime files](https://northflank.com/docs/v1/application/secure/upload-secret-files), [Hugging Face Spaces](https://huggingface.co/docs/hub/en/spaces-overview), [Cloudflare Quick Tunnels](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/).
 
 ## Security and recovery
 

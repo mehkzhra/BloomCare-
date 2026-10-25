@@ -2,6 +2,7 @@
 
 import importlib.util
 import json
+import shutil
 from pathlib import Path
 
 import anyio
@@ -252,3 +253,42 @@ def test_cloud_environment_derives_stable_key_from_render_seed_and_keeps_explici
     assert "AUTH_PROXY_HEADER" not in explicit
     with pytest.raises(ValueError, match="session seed"):
         module.configure_environment({"JWT_SECRET_SEED": "insufficient"})
+
+
+def test_cloud_custom_origin_aligns_csrf_and_recovery_without_trusting_proxy_headers():
+    script = Path(__file__).resolve().parents[2] / "deploy/start_cloud.py"
+    spec = importlib.util.spec_from_file_location("bloomcare_cloud_start_custom", script)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    environment = {
+        "PUBLIC_APP_URL": "https://bloomcare-example.code.run",
+        "JWT_SECRET": "private-secret-abcdefghijklmnopqrstuvwxyz-0123456789",
+    }
+    module.configure_environment(environment)
+    assert environment["PUBLIC_APP_URL"] == environment["ALLOWED_ORIGINS"]
+    assert "AUTH_PROXY_HEADER" not in environment
+    environment["ALLOWED_ORIGINS"] = "https://explicit.example.com"
+    module.configure_environment(environment)
+    assert environment["ALLOWED_ORIGINS"] == "https://explicit.example.com"
+
+
+def test_cloud_private_pe_files_must_exist_and_match_before_serving(tmp_path, monkeypatch):
+    from app.pe_model import PEModelUnavailable
+
+    from deploy import prepare_cloud_model
+
+    # This test isolates PE integrity from the separately verified maternal artifact.
+    monkeypatch.setattr(prepare_cloud_model, "load_registered_model", lambda *_: None)
+    with pytest.raises(PEModelUnavailable):
+        prepare_cloud_model.verify_runtime_models(tmp_path)
+    relative = Path("ml/artifacts/legacy_pe_v0.7.1")
+    source = Path(__file__).resolve().parents[2] / relative
+    target = tmp_path / relative
+    target.mkdir(parents=True)
+    for name in ["forest.json", "manifest.json", "explanation-weights.json"]:
+        shutil.copyfile(source / name, target / name)
+    prepare_cloud_model.verify_runtime_models(tmp_path)
+    assert not (target / "parity-fixtures.json").exists()
+    (target / "explanation-weights.json").write_text("{}")
+    with pytest.raises(ValueError, match="weights are missing or changed"):
+        prepare_cloud_model.verify_runtime_models(tmp_path)

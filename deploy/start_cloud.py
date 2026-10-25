@@ -1,4 +1,4 @@
-"""Render startup: derive the exact origin, migrate, bootstrap once, and serve."""
+"""Cloud startup: verify models, migrate, bootstrap once, and serve one HTTPS origin."""
 
 import hashlib
 import os
@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def configure_environment(environment):
-    origin = environment.get("RENDER_EXTERNAL_URL", "")
+    origin = environment.get("PUBLIC_APP_URL") or environment.get("RENDER_EXTERNAL_URL", "")
     if origin:
         environment.setdefault("PUBLIC_APP_URL", origin)
         environment.setdefault("ALLOWED_ORIGINS", origin)
@@ -30,7 +30,7 @@ def configure_environment(environment):
 
 def main():
     os.chdir(ROOT / "backend")
-    sys.path.insert(0, str(ROOT / "backend"))
+    sys.path[:0] = [str(ROOT / "backend"), str(ROOT)]
     try:
         configure_environment(os.environ)
         from app.config import get_settings
@@ -47,6 +47,9 @@ def main():
         port = int(os.environ.get("PORT", "10000"))
         if not 1 <= port <= 65535:
             raise ValueError("Invalid port")
+        from deploy.prepare_cloud_model import verify_runtime_models
+
+        verify_runtime_models()
         subprocess.run([sys.executable, "-m", "alembic", "upgrade", "head"], check=True)
         from app.cloud_setup import bootstrap_admin
 
@@ -58,7 +61,7 @@ def main():
         # Never print a database URL, provider key, or a validation input.
         raise SystemExit(
             f"Cloud startup stopped ({type(error).__name__}). "
-            "Check the deployment guide and settings."
+            "Check the private model mounts and deployment settings."
         ) from None
     os.execv(sys.executable, [
         sys.executable, "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0",

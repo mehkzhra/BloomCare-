@@ -1,5 +1,6 @@
 """Build the reviewed model from the bundled, checksum-pinned public fixture."""
 
+import argparse
 import hashlib
 import json
 import sys
@@ -18,7 +19,23 @@ from ml.train_maternal import train  # noqa: E402
 from ml.verify_model import verify  # noqa: E402
 
 
-def prepare(root=ROOT):
+def verify_pe(root=ROOT):
+    directory = root / "ml/artifacts/legacy_pe_v0.7.1"
+    load_pe_model(directory)
+    if hashlib.sha256((directory / "explanation-weights.json").read_bytes()).hexdigest() != (
+        WEIGHTS_SHA256
+    ):
+        raise ValueError("The original PE explanation weights are missing or changed")
+
+
+def verify_runtime_models(root=ROOT):
+    load_registered_model(
+        root / "ml/artifacts/maternal_rf_v0.2", root / "backend/model-trust.json"
+    )
+    verify_pe(root)
+
+
+def prepare(root=ROOT, *, maternal_only=False):
     source = root / "backend/tests/fixtures/maternal_risk_uci.csv"
     directory = root / "ml/artifacts/maternal_rf_v0.2"
     train(data_path=source, output_path=directory)
@@ -40,15 +57,17 @@ def prepare(root=ROOT):
     for name, (low, high) in model.manifest["observed_training_ranges"].items():
         within &= features[name].between(low, high)
     model.infer(features.loc[within].iloc[0].to_dict())
-    pe_directory = root / "ml/artifacts/legacy_pe_v0.7.1"
-    load_pe_model(pe_directory)
-    if hashlib.sha256((pe_directory / "explanation-weights.json").read_bytes()).hexdigest() != (
-        WEIGHTS_SHA256
-    ):
-        raise ValueError("The original PE explanation weights are missing or changed")
     print("Cloud maternal model built and verified, including real SHAP inference.")
-    print("The pinned original PE forest and explanation weights are included and verified.")
+    if not maternal_only:
+        verify_pe(root)
+        print("The pinned original PE forest and explanation weights are included and verified.")
+    else:
+        print(
+            "Cloud startup requires the private PE runtime files and verifies them before serving."
+        )
 
 
 if __name__ == "__main__":
-    prepare()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--maternal-only", action="store_true")
+    prepare(maternal_only=parser.parse_args().maternal_only)

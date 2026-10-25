@@ -3,7 +3,7 @@
   "date": "2026-10-22",
   "schema": "0013_account_security",
   "extract_into": "existing BloomCare project root",
-  "source_file_count": 243,
+  "source_file_count": 246,
   "cleanup": {
     "obsolete_paths": 66,
     "history": "docs/history.zip",
@@ -35,8 +35,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 12672,
-      "sha256": "62716bd166e3344197cb29f4e1b5ba78b3aac9e135e672209d7be22bf0f2e2a6"
+      "bytes": 16162,
+      "sha256": "04d21deabb0225df736e24a4672728bc81b499e600395b3a9c963d4529ec8e02"
     },
     {
       "path": "START-HERE.md",
@@ -420,8 +420,13 @@
     },
     {
       "path": "backend/tests/test_cloud_delivery.py",
-      "bytes": 11252,
-      "sha256": "bce414e9db5d0cf1ce2fa1b9c15b227d775e980ad97dc1be97500c582bbbcd47"
+      "bytes": 13219,
+      "sha256": "e8577c13e3d4a2e487946c493f91f7e92271078a15a9ecd01d6ae665f8f0887d"
+    },
+    {
+      "path": "backend/tests/test_cloud_settings.py",
+      "bytes": 2944,
+      "sha256": "c63c8dfcf5348148308333cf9d103f81e119794bb071e73330a2be35984f70dd"
     },
     {
       "path": "backend/tests/test_communication.py",
@@ -549,9 +554,14 @@
       "sha256": "dcbcf3ce454b4ad6dd457cc69bf44e92b23592dc6551cf1e7e31e7f5b11dfb20"
     },
     {
+      "path": "deploy/northflank.Dockerfile",
+      "bytes": 1130,
+      "sha256": "a583117cf9f13f082b06720560377f38ae4079864b36993a8fe0a36029a63e8a"
+    },
+    {
       "path": "deploy/prepare_cloud_model.py",
-      "bytes": 2282,
-      "sha256": "bc7fbc3df7b165a95d84a884f699ad6f6d1406e09d6b2f57502c399ed6db2711"
+      "bytes": 2874,
+      "sha256": "73046f611c5986bfa9290401d15a7396b83071679319fb5cf471997e1b5c02a6"
     },
     {
       "path": "deploy/render.Dockerfile",
@@ -560,8 +570,8 @@
     },
     {
       "path": "deploy/start_cloud.py",
-      "bytes": 2746,
-      "sha256": "bc2bfe54b3e6685796a746157c95ac0630c2239865f5bd8e74cdf5231cdccedb"
+      "bytes": 2914,
+      "sha256": "077b1c23142cf48889817f91d895b7800ce8c792eaf94debe827d59e275a26da"
     },
     {
       "path": "docs/ARCHITECTURE.md",
@@ -1177,6 +1187,11 @@
       "path": "scripts/prepare_backend.py",
       "bytes": 2409,
       "sha256": "ba0bf863c842ae745f99f92488bb457741f20d4ae991eff1ebf46885438f76ef"
+    },
+    {
+      "path": "scripts/prepare_cloud_settings.py",
+      "bytes": 4473,
+      "sha256": "1f8dcf72234a6cbd16706b7496ce70b5a3b0cd731c4142f42ea3dab5f4190daf"
     },
     {
       "path": "scripts/retire-admin.cmd",
