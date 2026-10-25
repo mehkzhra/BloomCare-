@@ -11,4 +11,5 @@ ml/artifacts/*
 !ml/artifacts/legacy_pe_v0.7.1/**
 ml/data
 backups
+private-builds
 .git

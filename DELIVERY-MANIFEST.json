@@ -3,7 +3,7 @@
   "date": "2026-10-22",
   "schema": "0013_account_security",
   "extract_into": "existing BloomCare project root",
-  "source_file_count": 246,
+  "source_file_count": 249,
   "cleanup": {
     "obsolete_paths": 66,
     "history": "docs/history.zip",
@@ -25,18 +25,18 @@
   "files": [
     {
       "path": ".dockerignore",
-      "bytes": 211,
-      "sha256": "2bd79db099257674b1141ee92bbd81db57512c86318aef1551682291823cb94f"
+      "bytes": 226,
+      "sha256": "82be73a1aeb3e2dbc96d5825d367fcf0094d5f17804592b2ce97e61611b9cc85"
     },
     {
       "path": ".gitignore",
-      "bytes": 222,
-      "sha256": "2f3c43041534d2fe230932b5bcf0a797fc382367279755778090c1334907dadd"
+      "bytes": 238,
+      "sha256": "c7032148ede5c35f76f4713887b326ddbebd4b640427957eba2deaa10932a49c"
     },
     {
       "path": "README.md",
-      "bytes": 16466,
-      "sha256": "e4cc0deaa3ef26b9991f4a56773ac1bf0d955fc5df08df0a4a705a427674be4a"
+      "bytes": 19260,
+      "sha256": "e87b6684eab2372490ba5ee84ea8dcbd538342a8ac595dffd5053bf4f569a131"
     },
     {
       "path": "START-HERE.md",
@@ -425,8 +425,13 @@
     },
     {
       "path": "backend/tests/test_cloud_settings.py",
-      "bytes": 2944,
-      "sha256": "c63c8dfcf5348148308333cf9d103f81e119794bb071e73330a2be35984f70dd"
+      "bytes": 4033,
+      "sha256": "317138c89dc4e9fa62f2b0c315f14057fdad8923da6916e14cdea6c4186752a6"
+    },
+    {
+      "path": "backend/tests/test_cloud_upload.py",
+      "bytes": 4472,
+      "sha256": "7cf016bbae3138c3741419164f3742c3c9235e4b3ff171d6c1b9c1019229ba8f"
     },
     {
       "path": "backend/tests/test_communication.py",
@@ -804,9 +809,14 @@
       "sha256": "fd1dae26544add5026deedf3c3841d8add8bb71916eb1bb4db381433397812f3"
     },
     {
+      "path": "frontend/src/consultation-polling.test.jsx",
+      "bytes": 2003,
+      "sha256": "d2a44d600d41e597ecbbaf875fc0f051308f6350ec66dacbc153d081c9ca0d54"
+    },
+    {
       "path": "frontend/src/consultation.jsx",
-      "bytes": 6312,
-      "sha256": "6de33bf48d8ba8391514147b84a5efddafc194cc374c629d4659599c36a8d63b"
+      "bytes": 6530,
+      "sha256": "792948ec0c92a18b0c269aa443d9f0280dadb5ccb95a70400bebbcbf84025078"
     },
     {
       "path": "frontend/src/delivery.test.jsx",
@@ -1190,8 +1200,13 @@
     },
     {
       "path": "scripts/prepare_cloud_settings.py",
-      "bytes": 4473,
-      "sha256": "1f8dcf72234a6cbd16706b7496ce70b5a3b0cd731c4142f42ea3dab5f4190daf"
+      "bytes": 5062,
+      "sha256": "d942b139640cfee610643b2f28181f2e0917b920acf22949abe96a243f145730"
+    },
+    {
+      "path": "scripts/prepare_cloud_upload.py",
+      "bytes": 5169,
+      "sha256": "37e43946edae4b46c201b134d1f91a6b110865e6304f7c2fba732da23f3ed3f1"
     },
     {
       "path": "scripts/retire-admin.cmd",

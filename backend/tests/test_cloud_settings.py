@@ -63,3 +63,28 @@ def test_invalid_cloud_settings_fail_without_echoing_credentials(overrides):
     with pytest.raises(ValueError) as error:
         values(**overrides)
     assert "synthetic" not in str(error.value)
+
+
+def test_snapdeploy_export_keeps_platform_managed_port_and_existing_keys_private(
+    tmp_path, monkeypatch, capsys
+):
+    backend = tmp_path / "backend"
+    backend.mkdir()
+    source = values()
+    source.pop("DATABASE_URL")
+    MODULE.save_private(source, backend / ".env")
+    monkeypatch.setattr(MODULE, "ROOT", tmp_path)
+    replies = iter([
+        "https://bloomcare-example.containers.snapdeploy.app", "owner@example.com", "Project Owner",
+    ])
+    monkeypatch.setattr("builtins.input", lambda *_: next(replies))
+    database = "postgresql://owner:synthetic-secret@db.neon.tech/db?sslmode=require"
+    monkeypatch.setattr(MODULE.getpass, "getpass", lambda *_: database)
+    MODULE.main("snapdeploy")
+    exported = dotenv_values(backend / ".env.snapdeploy", interpolate=False)
+    assert "PORT" not in exported
+    assert exported["DATABASE_URL"] == database
+    assert exported["PUBLIC_APP_URL"] == exported["ALLOWED_ORIGINS"]
+    text = capsys.readouterr().out
+    assert "synthetic-secret" not in text and exported["JWT_SECRET"] not in text
+    assert "SnapDeploy" in text

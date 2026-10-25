@@ -4,6 +4,7 @@ backend/.env
 !.env.example
 backend/model-trust.json
 backups/
+private-builds/
 *.dump
 *.dump.*
 *.backup

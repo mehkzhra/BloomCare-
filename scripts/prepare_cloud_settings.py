@@ -1,5 +1,6 @@
-"""Prepare private Northflank settings from the working Windows installation."""
+"""Prepare private hosting settings from the working Windows installation."""
 
+import argparse
 import getpass
 import json
 import os
@@ -78,14 +79,17 @@ def save_private(values, destination):
         output.write(text)
 
 
-def main():
+def main(provider="northflank"):
+    label = {"northflank": "Northflank", "snapdeploy": "SnapDeploy"}[provider]
     source = ROOT / "backend/.env"
-    destination = ROOT / "backend/.env.northflank"
+    destination = ROOT / f"backend/.env.{provider}"
     if not source.is_file():
         raise SystemExit("Run this from the working installation with backend/.env configured.")
     if destination.exists():
-        raise SystemExit("backend/.env.northflank already exists; reuse it to keep your cloud key.")
-    origin = input("Northflank public HTTPS URL (Networking): ").strip()
+        raise SystemExit(
+            f"backend/.env.{provider} already exists; reuse it to keep your cloud key."
+        )
+    origin = input(f"{label} public HTTPS URL: ").strip()
     database_url = getpass.getpass("Neon PostgreSQL URL (hidden while typing): ").strip()
     email = input("Administrator's real email: ").strip()
     name = input("Administrator name [BloomCare Administrator]: ").strip()
@@ -94,16 +98,23 @@ def main():
             dotenv_values(source, interpolate=False), origin=origin, database_url=database_url,
             email=email, name=name or "BloomCare Administrator",
         )
+        if provider == "snapdeploy":
+            values.pop("PORT")  # SnapDeploy manages PORT from the image's EXPOSE instruction.
         save_private(values, destination)
     except (ValueError, OSError) as error:
         message = (
             str(error) if isinstance(error, ValueError) else "Could not write private settings."
         )
         raise SystemExit(message) from None
-    print("Created backend/.env.northflank; no credentials were printed.")
-    print("Import it as Northflank runtime environment variables; it is ignored by Git.")
-    print("Mount the three private PE files separately before starting the deployment.")
+    print(f"Created backend/.env.{provider}; no credentials were printed.")
+    print(f"Use its values as {label} runtime environment variables; it is ignored by Git.")
+    if provider == "northflank":
+        print("Mount the three private PE files separately before starting the deployment.")
+    else:
+        print("Deploy the private cloud upload ZIP, which contains the verified PE runtime files.")
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--provider", choices=["northflank", "snapdeploy"], default="northflank")
+    main(parser.parse_args().provider)

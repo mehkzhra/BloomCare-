@@ -196,7 +196,27 @@ For hosting independent of the Windows PC, the Northflank Sandbox plan offers fr
 
 The HTTPS origin and allowed origins must match. Use verified emails, keep API/provider keys in Northflank's runtime variables, and retain the private settings file for recovery. Authentication uses the conservative shared proxy limit (`AUTH_PROXY_HEADER=none`); do not enable Render-specific proxy trust on Northflank. Test login/recovery, both assessments, sharing, Groq and an actual cross-network video call at the hosted origin before sharing it for review. Finally, verify access from another device with the Windows PC off.
 
-Platform references checked **25 October 2026**: [Northflank pricing](https://northflank.com/pricing), [combined service setup](https://northflank.com/docs/v1/application/getting-started/build-and-deploy-your-code), [private runtime files](https://northflank.com/docs/v1/application/secure/upload-secret-files), [Hugging Face Spaces](https://huggingface.co/docs/hub/en/spaces-overview), [Cloudflare Quick Tunnels](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/).
+### SnapDeploy private upload with Neon
+
+SnapDeploy's free account offers a PC-independent HTTPS endpoint with limits: **100 running hours/month**, **512 MB RAM**, sleep after about **15 idle minutes**, and roughly **one minute to wake on a browser visit**. The account dashboard and current quota must be checked before deploying. Free-tier traffic is limited to **100 requests/minute per IP per app**; WebSockets and always-on execution require a paid option. BloomCare uses HTTP signaling for its WebRTC calls. The private upload builds signaling polling at three seconds, while ordinary builds retain their existing interval. Sleeping containers do not run background reminders until the process resumes. Uploaded records remain in Neon across restarts.
+
+Use **Upload code** with the private source archive, rather than relying on the public repository to contain runtime model assets. To reproduce the archive from a clean source checkout and the working installation's PE files:
+
+```bat
+D:\Desktop\BloomCare\backend\.venv\Scripts\python.exe scripts\prepare_cloud_upload.py --model-dir "D:\Desktop\BloomCare\ml\artifacts\legacy_pe_v0.7.1"
+```
+
+The command verifies source checksums and all three pinned PE files, then creates `private-builds/BloomCare-Cloud-Upload.zip`. It puts the combined frontend/API Dockerfile at the archive root. The archive includes only application source, the public maternal training fixture and the three required PE assets; credentials, local database files, the existing maternal pickle/trust and extra parity data are excluded. Keep this archive private. Model training and verification run during the host's Docker build. Images built from source run on ARM64 on this provider, so the first real host build remains a required check.
+
+In the deploy form use the free **Small** container and HTTP port **10000**. Copy the exact assigned HTTPS origin. In the working Windows installation, with the current settings helper copied into `scripts`, run:
+
+```bat
+.\backend\.venv\Scripts\python.exe scripts\prepare_cloud_settings.py --provider snapdeploy
+```
+
+The helper creates private `backend/.env.snapdeploy`. Add its values to the container's runtime environment settings; SnapDeploy manages `PORT` itself. A new empty Neon database and first-administrator recovery work as described above. Confirm the assigned hostname instead of guessing that a particular app name is available. Validate `/api/health/ready`, real account recovery, both assessments, Groq, sharing and a cross-network video call before announcing the URL. Verify access with the Windows PC off. A free account dashboard is not proof of a completed deployment.
+
+Platform references checked **25 October 2026**: [Northflank pricing](https://northflank.com/pricing), [combined service setup](https://northflank.com/docs/v1/application/getting-started/build-and-deploy-your-code), [private runtime files](https://northflank.com/docs/v1/application/secure/upload-secret-files), [SnapDeploy free limits](https://snapdeploy.dev/docs/free-tier), [SnapDeploy deployment](https://snapdeploy.dev/docs/deployment), [Hugging Face Spaces](https://huggingface.co/docs/hub/en/spaces-overview), [Cloudflare Quick Tunnels](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/).
 
 ## Security and recovery
 

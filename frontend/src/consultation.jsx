@@ -113,7 +113,10 @@ export function ConsultationPage({
           setJoined(false);
           return;
         }
-        state.timer = setTimeout(poll, 1200);
+        const configuredDelay = Number(import.meta.env.VITE_CALL_SIGNAL_POLL_MS);
+        const delay = Number.isFinite(configuredDelay) && configuredDelay >= 1200
+          ? Math.min(configuredDelay, 10000) : 1200;
+        state.timer = setTimeout(poll, delay);
       }
       setJoined(true);
       setStatus('Waiting for participant');
