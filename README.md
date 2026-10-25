@@ -171,9 +171,9 @@ Current Hugging Face documentation requires a paid plan to create Docker Spaces 
 
 ### Northflank with Neon
 
-For hosting independent of the Windows PC, the Northflank Sandbox plan currently advertises no card requirement and always-on services within its free resource limits. This is a project/demo deployment; clinical validation and production operations remain separate requirements. Account eligibility and available capacity must be checked in the dashboard. This repository does not claim a completed Northflank deployment or a hosted URL.
+For hosting independent of the Windows PC, the Northflank Sandbox plan offers free resources, but **card verification may be mandatory before creating a service**, even when the account is marked Free. Its pricing headline is not sufficient to confirm card-free access: check the actual service creation form before continuing. This is a project/demo deployment; clinical validation and production operations remain separate requirements. This repository does not claim a completed Northflank deployment or a hosted URL.
 
-1. Sign in at [Northflank](https://app.northflank.com/) and select **Sandbox / Free**. Create a project and a **combined service** named `bloomcare` from this repository's `main` branch.
+1. Sign in at [Northflank](https://app.northflank.com/) and select **Sandbox / Free**. Confirm that you can meet the account verification requirements before setting up a service. If a card is required and unavailable, this route is blocked; the instructions below do not bypass that requirement. Otherwise, create a project and a **combined service** named `bloomcare` from this repository's `main` branch.
 2. Choose **Dockerfile**, path `/deploy/northflank.Dockerfile`, build context `/`. Expose **HTTP port 10000** publicly and copy the generated HTTPS origin from Networking. Use the free included compute allocation and one instance.
 3. In the **working Windows installation**, with the new helper copied into `scripts`, run:
 
