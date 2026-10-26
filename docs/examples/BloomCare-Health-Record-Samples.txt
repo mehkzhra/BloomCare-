@@ -1,0 +1,54 @@
+BLOOMCARE — HEALTH RECORD TEST SAMPLES
+Synthetic demonstration records — not real patient reports or medical advice.
+
+HOW TO USE
+1. Sign in as a demo patient and open Add health observations.
+2. Select glucose unit mg/dL and temperature unit °F.
+3. Enter one record below, then select Run complete assessment.
+4. Repeat with a new health record for each risk category.
+5. Leave optional clinical/PE indicators empty for these maternal-risk tests.
+
+These are manual-entry samples, not a supported file-import format.
+Uploading this text under Reports will not automatically run an assessment.
+
+Expected results were verified using the local cloud-build maternal_rf_v0.2 model.
+The deployed model itself was not queried; a different model version may give different results.
+Pregnancy duration is set to 28 weeks for the demo; it is not a maternal classifier input.
+PE screening requires separate additional measurements; an incomplete PE result is expected here.
+LOW/MEDIUM/HIGH below are model outputs, not clinical diagnoses or normal reference ranges.
+
+RECORD — LOW MATERNAL RISK
+Age: 35 years
+Pregnancy duration: 28 weeks
+Systolic blood pressure: 100 mmHg
+Diastolic blood pressure: 70 mmHg
+Blood glucose: 138.6 mg/dL
+  Alternative: 7.7 mmol/L (only if mmol/L is selected)
+Body temperature: 98 °F
+Heart rate: 66 beats/minute
+Expected maternal-risk result: LOW
+Optional PE indicators: leave empty
+
+RECORD — MEDIUM MATERNAL RISK
+Age: 29 years
+Pregnancy duration: 28 weeks
+Systolic blood pressure: 130 mmHg
+Diastolic blood pressure: 70 mmHg
+Blood glucose: 142.2 mg/dL
+  Alternative: 7.9 mmol/L (only if mmol/L is selected)
+Body temperature: 98 °F
+Heart rate: 78 beats/minute
+Expected maternal-risk result: MEDIUM
+Optional PE indicators: leave empty
+
+RECORD — HIGH MATERNAL RISK
+Age: 30 years
+Pregnancy duration: 28 weeks
+Systolic blood pressure: 140 mmHg
+Diastolic blood pressure: 100 mmHg
+Blood glucose: 270 mg/dL
+  Alternative: 15 mmol/L (only if mmol/L is selected)
+Body temperature: 98 °F
+Heart rate: 70 beats/minute
+Expected maternal-risk result: HIGH
+Optional PE indicators: leave empty

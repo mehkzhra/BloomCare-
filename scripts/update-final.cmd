@@ -55,7 +55,7 @@ if errorlevel 1 goto failed
 if errorlevel 1 goto failed
 echo BloomCare v1.3.0 complete update passed.
 echo Start backend and frontend in separate CMD windows, then refresh with Ctrl+F5.
-echo Read docs\DELIVERY-STATUS.md for provider setup and final live checks.
+echo Read docs\DEPLOYMENT.md for provider setup and final live checks.
 popd
 endlocal
 exit /b 0

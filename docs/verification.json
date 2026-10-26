@@ -51,7 +51,7 @@
     "clinical or external model validation",
     "v1.3.0 running-browser desktop/mobile visual acceptance"
   ],
-  "operator_guide": "docs/FINALIZE-TODAY.md",
+  "operator_guide": "docs/DEPLOYMENT.md",
   "cloud_build": "Python model build/integrity/inference stage executed locally with pinned fixture and pinned original PE files; actual Docker build on Render not executed.",
   "visual_review": {
     "current_browser": "blocked by session security policy; no current visual acceptance claimed",

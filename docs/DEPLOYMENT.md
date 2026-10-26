@@ -1,65 +1,104 @@
-# BloomCare deployment handover — v1.2.0
+# BloomCare deployment and recovery
 
-**No purchased domain:** start with [FREE-DEPLOYMENT.md](FREE-DEPLOYMENT.md). The new Render Dockerfile serves Vite and FastAPI at one HTTPS origin with an external Neon database, a build-time locally trained trusted maternal model, the pinned PE forest, Brevo HTTPS email and first-admin mailbox recovery. No live deployment or credentials are bundled.
+This is the single current operations guide. Local Windows and cloud deployments share the same application but have separate configuration and, unless explicitly pointed to the same instance, separate databases.
 
-The Windows application is the working installation. Included container files provide an **optional local release stack**, not an already provisioned public deployment. Native Windows/container execution and hosted HTTPS were not run in this environment. Follow [DELIVERY-STATUS.md](DELIVERY-STATUS.md) for remaining checks.
+## Current hosted address
 
-## Local release stack
+https://bloomcare.containers.snapdeploy.app
 
-1. Complete `scripts\update-final.cmd` and save a database backup. Stop native frontend/backend processes.
-2. Keep the existing database/network running:
+As of 26 October 2026, the address and port 10000 are assigned. Supplied logs show Uvicorn starting successfully on 0.0.0.0:10000 and later receiving a graceful shutdown. Readiness following the latest start remains unconfirmed. Earlier account registration and administrator password recovery were reported working on the previous cloud address. Do not infer that every feature has passed on the new address.
+
+## Local Windows
+
+For the working installation, run `scripts\update-ui.cmd`, then `scripts\start-local.cmd`; open http://127.0.0.1:8000. The helper uses local HTTP only for that process. Docker Desktop is needed when the configured database is the local Compose PostgreSQL service.
+
+For older schemas, first back up and then run `scripts\update-final.cmd`. It checks dependencies, makes a local database backup, applies migrations, runs checks and performs hash-protected legacy cleanup. Do not point local-only setup/backup helpers at Neon and assume they manage its hosted database.
+
+For a local release stack:
 
 ```bat
-docker compose up -d --wait
-```
-
-3. Confirm that the locally trained `ml\artifacts\maternal_rf_v0.2` and `backend\model-trust.json` exist if assessments are enabled. They are mounted read-only. The ZIP preserves existing runtime files and does not ship private trust or an executable maternal model.
-4. Build/start the release services:
-
-```bat
+docker compose up -d --wait db
 docker compose -f compose.deploy.yaml up -d --build
-curl.exe --fail http://127.0.0.1:8080/api/health/ready
 ```
 
-Open `http://127.0.0.1:8080`. Check registration, all three role sessions, record entry, assessment, consented care guide, a selected-record consultation episode, upload/download and deletion. Restore a backup into a separate test database and verify its data before relying on recovery.
+Open http://127.0.0.1:8080. The Compose stack requires the working private configuration, model artifacts and `bloomcare-fresh_default` network. A tunnel to this stack depends on the PC remaining on; cloud hosting does not.
 
-The stack reuses external network `bloomcare-fresh_default` and database service `db:5432`; web is exposed only at `127.0.0.1:8080`. API/database credentials come from the existing local configuration. Reports are stored in the database as `MedicalReport.content`; their bytes are covered by a complete database backup. A new uploads volume is not needed for this implementation.
+## Private cloud image
 
-## Public HTTPS configuration
-
-For the optional self-managed/VPS route, choose the hosting environment and domain, then configure its TLS reverse proxy to the loopback web port. In `backend\.env`, set `COOKIE_SECURE=true`. Set the **same exact HTTPS origin** for native settings and the release Compose override:
-
-```text
-# backend/.env
-ALLOWED_ORIGINS=https://your-domain.example
-COOKIE_SECURE=true
-
-# root .env, used only as the Compose interpolation override
-BLOOMCARE_ALLOWED_ORIGINS=https://your-domain.example
-```
-
-Use the actual domain; do not retain the example. Restart/recreate the API after changing configuration. Keep the generated JWT secret private and stable across ordinary restarts; plan deliberate rotation separately. Keep database/API ports private and apply host access rules. The backend enforces origin and session checks independently of navigation. Do not print `docker compose config` into a shared log because resolved configuration can include credentials.
-
-The Compose file now permits the origin override above; without it, its default remains the local port-8080 origins. HTTPS/cookie/origin behavior must be checked at the real URL. Review the outer proxy's forwarding, body-size and timeout settings. Its logs must not capture private query strings or request bodies; the included API/web access logs are disabled.
-
-Configure the actual Groq key/model and run `scripts\check-groq.cmd`. Use `scripts\configure-integrations.cmd webrtc` for the intended ICE/STUN/TURN service and `scripts\check-services.cmd` for non-secret configuration status. A configuration result does not verify connectivity. Test a real two-device call, including network changes and denied permissions.
-
-Email verification, self-service password reset, session revocation after reset and persisted login throttling are now implemented. Configure SMTP using `scripts\configure-integrations.cmd email`, or Brevo HTTPS using `scripts\configure-integrations.cmd email-brevo` and verify real inbox delivery. Use `compose.public.yaml` for the direct Caddy HTTPS variant; it sets the public origin, secure cookies and required email verification automatically from `BLOOMCARE_DOMAIN`. The API stays private. See [FINALIZE-TODAY.md](FINALIZE-TODAY.md) for the complete ordered setup, safe restore test and acceptance steps.
-
-Manual WhatsApp sharing is a browser/device handoff. Automatic alerts additionally require Twilio configuration, recipient consent and the appropriate sender/template setup; use `scripts\configure-whatsapp.cmd`. Verify queued, delivered, failed and uncertain states honestly. Provider credentials and TLS/hosting accounts are not included in the ZIP.
-
-## Operations and recovery
-
-- Schedule database backups outside the application machine and test restoration. Preserve the matching source, schema version, original model manifests/artifacts and private trust registry for recovery; protect their credentials separately.
-- Run one API process initially: the current reminder loop is process local. Multiple workers would require an explicit shared job/locking design before claiming exactly-once notification behavior.
-- Monitor `/api/health/live`, `/api/health/ready`, application errors, disk/database capacity and provider failures. Configure request/connection limits at the chosen edge and test them with login and upload behavior.
-- Keep a rollback package and matching verified database backup. Audit-preserving migrations are forward-only; do not assume a downgrade will undo clinical changes.
-- Run expected-load and authorization checks against the deployed stack. The retained 100-account/10-client SQLite benchmark is scoped historical evidence, not production capacity proof.
-
-Stop only the local release services with:
+Use the existing approved private Docker image when available. A source clone does not include private PE assets. To prepare a source build with those assets, from the clean checkout run with the working installation's Python:
 
 ```bat
-docker compose -f compose.deploy.yaml down
+D:\Desktop\BloomCare\backend\.venv\Scripts\python.exe scripts\prepare_cloud_upload.py --model-dir "D:\Desktop\BloomCare\ml\artifacts\legacy_pe_v0.7.1"
 ```
 
-Do not add a volume-deletion option to database teardown unless deliberate data deletion is intended. The deployment status remains **destination verification pending** until the public URL, persistence/recovery and live workflows have been checked.
+Extract the resulting private ZIP into a separate build directory. Its root Dockerfile builds the UI and verifies models; it is not the generic Python upload route. From that extracted directory:
+
+```bat
+docker buildx build --platform linux/arm64 --provenance=false --load --progress=plain -t bloomcare-cloud:latest .
+docker image save -o D:\Desktop\BloomCare-Cloud-Image.tar bloomcare-cloud:latest
+```
+
+Upload the image privately. Do not publish runtime PE models, private archives, settings or data to a public repository/registry. For the SnapDeploy signed PUT route, this session succeeded with `Content-Type: application/x-tar`; `application/octet-stream` returned SignatureDoesNotMatch. A successful upload is HTTP 200, not merely curl exit code 0. Request container name `bloomcare` where available, and confirm the assigned URL rather than guessing it.
+
+## Cloud environment
+
+Copy working credentials privately. When replacing a container, preserve the same database and JWT secret. Values in the Windows `.env` do not automatically become hosting variables.
+
+| Variable | Value / meaning |
+| --- | --- |
+| `DATABASE_URL` | Existing Neon PostgreSQL connection URL, with required SSL settings |
+| `JWT_SECRET` | Existing strong private session secret |
+| `PUBLIC_APP_URL` | `https://bloomcare.containers.snapdeploy.app` for this assigned deployment |
+| `ALLOWED_ORIGINS` | Exactly the same origin, without a trailing slash or extra origins |
+| `COOKIE_SECURE` | `true` |
+| `AUTH_REQUIRE_EMAIL_VERIFICATION` | `true` |
+| `AUTH_PROXY_HEADER` | `none` for this host; do not enable Render-specific trust |
+| `BLOOMCARE_RESEARCH_ASSESSMENTS` | `true`, with matching approved artifacts |
+| `BOOTSTRAP_ADMIN_EMAIL` | Existing cloud administrator's login email, or the first owner's reachable email on an empty database |
+| `BOOTSTRAP_ADMIN_NAME` | Administrator name |
+| `EMAIL_PROVIDER` | `brevo` |
+| `EMAIL_FROM` | Brevo verified sender address |
+| `BREVO_API_KEY` | Private working Brevo key |
+| `GROQ_API_KEY` | Private working Groq key |
+| `GROQ_MODEL` | Exact working model ID from the existing configuration |
+| `PORT` | `10000`; hosting target/listening port must match |
+| `WEBRTC_ICE_SERVERS` | Optional working ICE JSON; absent defaults to `[]`, which is not a promise of cross-network connectivity |
+
+No Twilio credentials are required for manual WhatsApp sharing. Save all variables before starting. Preserve quotes inside JSON; do not surround plain dashboard values with extra quotes.
+
+The initial administrator receives a random unknown password. Use Forgot Password with `BOOTSTRAP_ADMIN_EMAIL` to set it via the inbox. Changing this variable does not rename or promote an existing account. On an existing database, supplying a different bootstrap email may stop startup. Patient and doctor accounts created only on local PostgreSQL do not automatically exist on Neon.
+
+## Health and troubleshooting
+
+- `/api/health/live`: API process responds.
+- `/api/health/ready`: required database tables are accessible; this does not test providers or clinical model validity.
+- If assessments are unavailable, check the saved `BLOOMCARE_RESEARCH_ASSESSMENTS=true` setting and refresh after the container restarts. In an authenticated browser, `/api/capabilities` exposes `pregnancy_model_ready` and `pe_model_ready`. A healthy database alone does not enable either model. If the switch is already enabled and readiness is false, inspect model loading logs; do not retrain or bypass artifact verification.
+- A generic port warning is not proof of a port mismatch. Compare the configured target port, `PORT`, complete application logs and hosting stop reason.
+- `Cloud startup stopped (ValueError)` can mean environment, bootstrap or model validation failed. Do not delete models or the database based on this generic message.
+- `Application startup complete` and `Uvicorn running on http://0.0.0.0:10000` confirm startup, but not external routing or ongoing availability.
+- If server startup succeeds and the host then terminates it, inspect the deployment health/stop reason before repeating deployments.
+
+Check the provider's current dashboard quotas. Free sleeping hosts cannot process reminders while stopped; HTTP video signalling also consumes request quota. See [SnapDeploy limits](https://snapdeploy.dev/docs/free-tier) and [API reference](https://snapdeploy.dev/api). This project does not promise a free always-on service.
+
+## Backup and restore
+
+For the local Docker database:
+
+```bat
+.\scripts\database-backup.cmd backup
+.\scripts\database-backup.cmd restore-test --file "backups\YOUR_BACKUP_FILENAME.dump"
+```
+
+The restore test uses a temporary database. Hosted Neon backups require an export/restore workflow for the actual Neon database; test restoration in a separate database/branch rather than overwriting live data. Report bytes live in PostgreSQL, so complete data backups include them. Preserve configuration and approved model artifacts separately and privately.
+
+## Acceptance before sharing
+
+1. Verify readiness and page access from another device with the Windows PC off.
+2. Test patient registration/verification, approved doctor access and administrator login.
+3. Request and complete password recovery using a real inbox; confirm the link uses the new origin.
+4. Run the [maternal and PE examples](TEST-SAMPLES.md), then check coverage rejection and record withdrawal.
+5. Upload/download a report; verify selected sharing, revocation and access denial from another account.
+6. Test Groq, a real two-device video call on different networks and the mobile layout.
+7. Confirm backup restore and monitor hosting limits. Keep old deployment rollback options until checks pass.
+
+Vercel compatibility was reviewed, not implemented: the current 5 MB report limit exceeds its documented 4.5 MB Function payload limit, and the 30-second reminder loop needs a different scheduling design. No all-features Vercel deployment is claimed.

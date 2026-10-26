@@ -4,16 +4,21 @@ Synthetic demonstration inputs, not treatment targets or medical advice. Use sep
 
 ## Maternal categories
 
-Leave optional antenatal values unknown. Pregnancy duration **24 weeks**, temperature **98°F**, heart rate **76** except HIGH **86**.
+Use a new health record for each category. Leave optional antenatal values unknown. Select glucose **mg/dL** and temperature **°F**.
 
 | Field | Expected LOW | Expected MEDIUM | Expected HIGH |
 | --- | --- | --- | --- |
-| Age | 23 | 35 | 25 |
-| Systolic / diastolic BP | 90 / 60 | 120 / 60 | 130 / 80 |
-| Glucose in mg/dL | 126.18 | 109.8 | 270 |
-| Equivalent glucose in mmol/L | 7.01 | 6.1 | 15 |
+| Age (years) | 35 | 29 | 30 |
+| Pregnancy duration (weeks) | 28 | 28 | 28 |
+| Systolic / diastolic BP (mmHg) | 100 / 70 | 130 / 70 | 140 / 100 |
+| Glucose (mg/dL) | 138.6 | 142.2 | 270 |
+| Alternative glucose (mmol/L) | 7.7 | 7.9 | 15 |
+| Temperature (°F) | 98 | 98 | 98 |
+| Heart rate (beats/minute) | 66 | 78 | 70 |
 
-These were verified against the unchanged registered configuration in the earlier demonstration run; fresh training reproduced its fixed evaluation. They are not a claim about diagnosis.
+Verified on 26 October 2026 against the available local cloud-build `maternal_rf_v0.2` artifact, including its real SHAP inference. The deployed model was not queried. These maternal-only records do not promise completed PE screening.
+
+[Download/read the maternal examples](examples/BloomCare-Health-Record-Samples.txt).
 
 ## PE categories
 
@@ -29,6 +34,8 @@ Common core record for all three: age **25**, duration **24 weeks**, BP **120/80
 | Estimated fetal weight, kg | 1.2 | 1.2 | 1.5 |
 | Protein in urine | No | Yes | Yes |
 | Amniotic fluid measurement, cm | 12 | 12 | 5 |
+
+[Download/read full PE records](examples/BloomCare-PE-Test-Samples.txt). All three cases were verified on 26 October 2026 with maternal HIGH and PE LOW/MEDIUM/HIGH respectively using the local cloud-build artifacts. PE status is expected to be `COMPLETED` when all inputs are submitted through the full workflow.
 
 HB's clinical unit was not documented in the original source. Do not infer a unit or use this table to choose real clinical inputs. The active imported PE forest is unchanged by retraining.
 

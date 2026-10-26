@@ -1,6 +1,6 @@
 # BloomCare model tooling
 
-The current application has two separate stages: a locally trained maternal pipeline and the owner-authorized original PE forest exported to pinned JSON. Model data/coverage and validation limits are explained in [MODEL-TRAINING.md](../docs/MODEL-TRAINING.md) and [PE-MODEL.md](../docs/PE-MODEL.md). Current installation instructions are in [START-HERE.md](../START-HERE.md).
+The current application has two separate stages: a locally trained maternal pipeline and the owner-authorized original PE forest exported to pinned JSON. Model data/coverage and validation limits are explained in [MODEL-TRAINING.md](../docs/MODEL-TRAINING.md) and [PE-MODEL.md](../docs/PE-MODEL.md). Current installation instructions are in [START-HERE.md](../README.md).
 
 ## Commands
 
@@ -29,6 +29,6 @@ The first command creates the fixed maternal artifact only if absent, otherwise 
 
 Fresh source review reproduced 71.11% maternal accuracy and 72.22% PE grouped comparison accuracy. Historical partitions were already evaluated; these are not new external tests. No active model or trust file was replaced.
 
-Pregnancy weeks are not a maternal input. PE observed duration is 14–40 weeks; neither the current data nor the 15-row alternative establishes 12-week PE support. Actual observations remain saved and unsupported inference is withheld. See [delivery status](../docs/DELIVERY-STATUS.md).
+Pregnancy weeks are not a maternal input. PE observed duration is 14–40 weeks; neither the current data nor the 15-row alternative establishes 12-week PE support. Actual observations remain saved and unsupported inference is withheld. See [delivery status](../docs/DEPLOYMENT.md).
 
 UCI source: Ahmed, M. (2020), *Maternal Health Risk*, DOI https://doi.org/10.24432/C5DP5D, CC BY 4.0. Reviewed CSV SHA-256: `a1f7025719f84715096e0d1f95ae2e56b57809b9b15449e1836c96a7d976ae9b`. The source-review report records the repository copy's newline-only difference and exact workbook hashes.

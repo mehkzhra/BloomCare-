@@ -1,9 +1,9 @@
 {
   "release": "1.3.0",
-  "date": "2026-10-22",
+  "date": "2026-10-26",
   "schema": "0013_account_security",
   "extract_into": "existing BloomCare project root",
-  "source_file_count": 249,
+  "source_file_count": 247,
   "cleanup": {
     "obsolete_paths": 66,
     "history": "docs/history.zip",
@@ -30,18 +30,13 @@
     },
     {
       "path": ".gitignore",
-      "bytes": 238,
-      "sha256": "c7032148ede5c35f76f4713887b326ddbebd4b640427957eba2deaa10932a49c"
+      "bytes": 334,
+      "sha256": "5c52dfdaf2153ed642ab2638c58bb0ff7cb01aea42ffe90d403eeb2ea526e7fd"
     },
     {
       "path": "README.md",
-      "bytes": 19260,
-      "sha256": "e87b6684eab2372490ba5ee84ea8dcbd538342a8ac595dffd5053bf4f569a131"
-    },
-    {
-      "path": "START-HERE.md",
-      "bytes": 3455,
-      "sha256": "062db77e79cfe60ea43f9bef38787453c6c57f9e8c817695718c492ee6c614b7"
+      "bytes": 10229,
+      "sha256": "a0ef78823a0608eb6ee3bd169ede30dabb0188bf8cc19e502bb2cc945788ca00"
     },
     {
       "path": "backend/alembic.ini",
@@ -584,24 +579,9 @@
       "sha256": "990e65d4a3e14861b7dc14e32f3c761b05681548804239baa9bf49514ca36a6f"
     },
     {
-      "path": "docs/DELIVERY-STATUS.md",
-      "bytes": 12884,
-      "sha256": "3c7748f67cb9e4aa2e239dc3a21fbc91ef6754ca2673be81b0726525abbfe269"
-    },
-    {
       "path": "docs/DEPLOYMENT.md",
-      "bytes": 6101,
-      "sha256": "49b903676f42c046bd401277171378663cf584201fb9d005c64805c510b2a7f4"
-    },
-    {
-      "path": "docs/FINALIZE-TODAY.md",
-      "bytes": 13762,
-      "sha256": "cf10de682d1d461ab27009a6c96d15a918bc059e96e43a02b9c5a9035310cdd1"
-    },
-    {
-      "path": "docs/FREE-DEPLOYMENT.md",
-      "bytes": 18261,
-      "sha256": "35e0a499200625f8835248d66ca97742235467d19c12f3114b0587db31fafe81"
+      "bytes": 8041,
+      "sha256": "dc27e0821e57943b03f2990d7bd59cca2146c70c78333d661be01b7a0fe587d7"
     },
     {
       "path": "docs/MODEL-TRAINING.md",
@@ -610,23 +590,23 @@
     },
     {
       "path": "docs/PE-MODEL.md",
-      "bytes": 3433,
-      "sha256": "ff3755171cc143921164e20afee2031ac9265a7c4db20b4b2803291d2021a327"
+      "bytes": 3429,
+      "sha256": "05d3bae55f18c461680dfa4248046d139a7d3f6e727429b7fd6bca6f97e043ef"
     },
     {
       "path": "docs/RECRUITER-WALKTHROUGH.md",
-      "bytes": 4454,
-      "sha256": "7f8e16c6e2e2d8a535c64ec808605bf0e003d516522428a693247a5d629fba54"
+      "bytes": 4444,
+      "sha256": "29d9885dae49f6060d275aca869bf30864919574d6853164a0aaa5b89968406f"
     },
     {
       "path": "docs/REQUIREMENTS.md",
-      "bytes": 32123,
-      "sha256": "d15a91bff8e00e4ed00a4d5b6dd764b060aa1a8fc939c2d96d7b40cb0b25611f"
+      "bytes": 32118,
+      "sha256": "ecf9f7cdc9e283b573298643100efae85b054a2464c554ac7ceb8256144b6405"
     },
     {
       "path": "docs/TEST-SAMPLES.md",
-      "bytes": 3026,
-      "sha256": "2e9dd969a553a65394f634095d1ba14d5f1d8e5ad95cc5118a7bc47d964f6976"
+      "bytes": 3615,
+      "sha256": "e046b16199f376f482597c65d1f45a5a35e50f2192eda73105b7c60dafc91b14"
     },
     {
       "path": "docs/THIRD-PARTY-ASSETS.md",
@@ -637,6 +617,16 @@
       "path": "docs/VERIFICATION.md",
       "bytes": 3092,
       "sha256": "d951ef2910dba08f0d8a49f14851e0d4e56360cce999e71cb0906e36270a116c"
+    },
+    {
+      "path": "docs/examples/BloomCare-Health-Record-Samples.txt",
+      "bytes": 2106,
+      "sha256": "841e1d6bca4b2420c56ec2fae3e2cfecc0aa0b7b532cd834e83debab2f20d8f8"
+    },
+    {
+      "path": "docs/examples/BloomCare-PE-Test-Samples.txt",
+      "bytes": 3626,
+      "sha256": "b70d6ed5584ebb5e10de5f43b49f22c6faa6f1f37a570bc8e82bcbf7fc4ad3b7"
     },
     {
       "path": "docs/history.zip",
@@ -650,8 +640,8 @@
     },
     {
       "path": "docs/verification.json",
-      "bytes": 2607,
-      "sha256": "3a93f312c5b7d7354e3dd0796caa84acea1fb9c501f445fe5f7bb7892501fd8d"
+      "bytes": 2603,
+      "sha256": "18581668fb84e2bdc6cf9acdd4fe777ed0a1f7013f7f1a11a29fac9cafc6a536"
     },
     {
       "path": "frontend/eslint.config.js",
@@ -1000,8 +990,8 @@
     },
     {
       "path": "ml/README.md",
-      "bytes": 2921,
-      "sha256": "92415038585afc42a5a8606fc783b943e713832270b60527b8d91cb365e473d3"
+      "bytes": 2912,
+      "sha256": "70c6f51f523da7e026c3ff3e4154b2fcfd419a357559ebf1884978a4263c640c"
     },
     {
       "path": "ml/__init__.py",
@@ -1250,8 +1240,8 @@
     },
     {
       "path": "scripts/update-final.cmd",
-      "bytes": 2665,
-      "sha256": "e7bfb5cbf67f750c5decc7d877999673efa43f1d18c425239c3af0484e70ebfe"
+      "bytes": 2660,
+      "sha256": "14ee1f0d172817d91dfce1db50d65f5b14de8afdf2eaf96fc106bb3d4c802b10"
     },
     {
       "path": "scripts/update-ui.cmd",

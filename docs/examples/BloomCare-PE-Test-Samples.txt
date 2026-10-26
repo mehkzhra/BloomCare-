@@ -1,0 +1,90 @@
+BLOOMCARE — PE SCREENING TEST SAMPLES
+Synthetic demonstration records. Not real patient reports, treatment targets or clinical diagnoses.
+
+HOW TO USE
+Sign in as a demo patient. Open Add health observations.
+Select glucose mg/dL and temperature °F. Enter one complete record below.
+Expand the additional antenatal/clinical inputs and fill every listed field.
+Select Run complete assessment. Use a new record for each case.
+These are manual-entry examples, not an import format. Report upload does not run predictions.
+
+VERIFICATION
+All three samples returned maternal HIGH and the specified separate PE category in the available local cloud-build models on 26 October 2026. The live app was not queried.
+Maternal model: maternal_rf_v0.2. PE model: bloomcare_legacy_pe_v0.7.1.
+The maternal HIGH result is intentional: it opens the separate PE stage.
+A PE LOW result does not cancel a maternal HIGH result.
+HB units are undocumented in the original PE source; enter the demo number only for synthetic testing. Do not label it g/dL or apply it to real patient data.
+
+RECORD — EXPECTED PE LOW
+Age: 25 years
+Pregnancy duration: 24 weeks
+Systolic blood pressure: 120 mmHg
+Diastolic blood pressure: 80 mmHg
+Blood glucose: 162 mg/dL (9 mmol/L if that unit is selected)
+Body temperature: 98.6 °F (37 °C if that unit is selected)
+Heart rate: 80 beats/minute
+Additional inputs:
+  Number of pregnancies: 2
+  Number of previous births: 1
+  BMI (kg/m²): 24.5
+  Diagnosed diabetes: No
+  History of hypertension: No
+  HB (original source scale; unit unconfirmed): 10.5
+  Estimated fetal weight (kg): 1.2
+  Protein in urine: No
+  Amniotic fluid measurement (cm): 12
+Expected maternal risk: HIGH
+Expected PE risk: LOW
+Expected PE status: COMPLETED
+
+RECORD — EXPECTED PE MEDIUM
+Age: 25 years
+Pregnancy duration: 24 weeks
+Systolic blood pressure: 120 mmHg
+Diastolic blood pressure: 80 mmHg
+Blood glucose: 162 mg/dL (9 mmol/L if that unit is selected)
+Body temperature: 98.6 °F (37 °C if that unit is selected)
+Heart rate: 80 beats/minute
+Additional inputs:
+  Number of pregnancies: 2
+  Number of previous births: 1
+  BMI (kg/m²): 35
+  Diagnosed diabetes: Yes
+  History of hypertension: Yes
+  HB (original source scale; unit unconfirmed): 8.5
+  Estimated fetal weight (kg): 1.2
+  Protein in urine: Yes
+  Amniotic fluid measurement (cm): 12
+Expected maternal risk: HIGH
+Expected PE risk: MEDIUM
+Expected PE status: COMPLETED
+
+RECORD — EXPECTED PE HIGH
+Age: 25 years
+Pregnancy duration: 24 weeks
+Systolic blood pressure: 120 mmHg
+Diastolic blood pressure: 80 mmHg
+Blood glucose: 162 mg/dL (9 mmol/L if that unit is selected)
+Body temperature: 98.6 °F (37 °C if that unit is selected)
+Heart rate: 80 beats/minute
+Additional inputs:
+  Number of pregnancies: 4
+  Number of previous births: 2
+  BMI (kg/m²): 28
+  Diagnosed diabetes: Yes
+  History of hypertension: Yes
+  HB (original source scale; unit unconfirmed): 10
+  Estimated fetal weight (kg): 1.5
+  Protein in urine: Yes
+  Amniotic fluid measurement (cm): 5
+Expected maternal risk: HIGH
+Expected PE risk: HIGH
+Expected PE status: COMPLETED
+
+COVERAGE TEST (SEPARATE FOURTH RECORD)
+Copy any record above and change pregnancy duration only to 12 weeks.
+Expected: maternal HIGH, PE OUTSIDE_COVERAGE; no PE risk category.
+The saved duration must remain 12. Do not change real observations to force a result.
+
+If the PE stage asks for more inputs, check that all nine additional fields were entered.
+These samples use BP 120/80 because the current PE model only covers systolic 90–130 and diastolic 20–90 mmHg. Those bounds describe training coverage, not healthy clinical ranges.

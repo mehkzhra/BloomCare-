@@ -1,78 +1,80 @@
 <p align="center">
-  <img src="frontend/public/bloomcare-mark.svg" width="72" height="72" alt="BloomCare logo">
+  <img src="frontend/public/bloomcare-mark.svg" width="80" alt="BloomCare heart and bloom logo">
 </p>
+<h1 align="center">🌸 BloomCare</h1>
+<p align="center"><strong>Connected maternal care, with a workspace for every role.</strong></p>
+<p align="center">React · FastAPI · PostgreSQL · Machine learning · English & Urdu</p>
 
-<h1 align="center">BloomCare</h1>
+BloomCare brings pregnancy observations, risk screening, clinician review and care coordination into one application. Patients manage their records, doctors review information shared with them, and administrators oversee access and activity.
 
-<p align="center">A connected maternal care workspace for patients, doctors and administrators.</p>
-<p align="center"><strong>Version 1.3.0 · React · FastAPI · PostgreSQL · English & Urdu</strong></p>
+**[🌐 Hosted address](https://bloomcare.containers.snapdeploy.app)** · [🚀 Setup](#-get-started-on-windows) · [☁️ Deployment](docs/DEPLOYMENT.md) · [🧪 Demo inputs](docs/TEST-SAMPLES.md) · [🏗️ Architecture](docs/ARCHITECTURE.md)
 
-BloomCare connects health observations, maternal risk screening, clinical review, appointments, reports and conversations. Patients manage their care records, doctors review the records shared with them, and administrators manage accounts and operational activity.
+> Hosting status, 26 October 2026: the `bloomcare` address is assigned. The latest supplied logs show successful application startup followed by shutdown; readiness after the most recent start has not been confirmed. This link is not a claim of continuous availability.
 
-[Features](#features) · [Windows setup](#windows-setup) · [Configuration](#configuration) · [Docker and live access](#docker-and-live-access) · [Verification](#verification) · [Developer guides](#developer-guides)
+## ✨ What you can do
 
-## Features
-
-| Workspace | Main tasks |
+| Workspace | Features |
 | --- | --- |
-| **Patient** | Profile and pregnancy details, health records and assessments, appointments, reports and PDFs, assistant, medications and reminders, symptoms and family access. |
-| **Doctor** | Website registration and approval, shared patient records, clinical reviews and notes, follow-up proposals, availability, messages and video consultations. |
-| **Administrator** | Doctor approvals, account management, operational summaries, activity and audit history, service availability. |
+| 🩷 **Patient** | Pregnancy profile, health records, maternal and indicated PE screening, assessment history, appointments, reports, care messages, medications, symptoms, family access and a separate assistant. |
+| 🩺 **Doctor** | Register for approval, manage availability, review shared records, add clinical reviews and notes, propose follow-ups, message patients and join video consultations. |
+| 🛡️ **Administrator** | Approve doctors, manage accounts, inspect operational activity and audit records, and check integration availability. |
 
-- **Screening and review:** maternal screening, a PE stage when indicated, coverage checks and clinician review.
-- **Record correction:** withdraw an incorrect record or assessment with a reason while retaining audit metadata and clinical notes.
-- **Connected care:** selected-record sharing, appointments, follow-up, messaging and video calls.
-- **Documents:** report uploads, assessment PDFs, a health passport and manual WhatsApp/device sharing.
-- **Assistant:** separate, consent-based questions and assessment care guidance through Groq.
-- **Continuity:** medication reminders in Notifications while the backend runs, a care timeline and controlled family access.
-- **Interface:** English/Urdu, right-to-left support, responsive pages and secondary history shown on demand.
+- **One assessment flow:** save actual observations, run maternal screening, and complete the separate PE stage when indicated and within coverage.
+- **Correct mistakes:** withdraw a health record or assessment with a reason; audit metadata and clinical notes are retained.
+- **Share selectively:** grant access to chosen records, revoke sharing and export readable reports or a health passport.
+- **Talk and coordinate:** appointment-linked video, care messages and consent-based Groq assistance.
+- **Stay organised:** care timelines, medication notifications and compact, on-demand history.
+- **Use your language:** English/Urdu text, right-to-left support and responsive role-specific pages.
 
-Manual WhatsApp sharing needs no Twilio account. The optional Twilio care alert requires the user to choose a contact, consent and submit it; assessments do not automatically send WhatsApp messages.
+Manual WhatsApp sharing does not require Twilio. Automatic WhatsApp alerts are not enabled by this setup; optional provider-driven alerts require configuration, consent and a submitted action. Medication reminders are processed while the backend is running, including after it resumes from sleep.
 
-## Technology
+## 🧭 How the care flow works
+
+1. A patient registers, verifies their email and records health observations.
+2. The maternal model returns a screening category for supported measurements.
+3. Where indicated, the separate PE stage checks additional observations and its coverage.
+4. The patient shares selected information and books a consultation.
+5. An approved doctor reviews the information and records clinical guidance.
+
+The assistant answers questions separately from the screening models. It does not decide either classifier's category.
+
+## 🧰 Technology
 
 | Layer | Implementation |
 | --- | --- |
-| Frontend | React 19, Vite, React Router, Tailwind CSS |
-| Backend | Python 3.12, FastAPI, Pydantic |
-| Database | PostgreSQL 16, SQLAlchemy, Alembic |
-| Screening | Local maternal Random Forest and pinned legacy PE classifier |
-| Services | Groq, Brevo or TLS SMTP, WebRTC |
-| Checks | pytest, Vitest, Testing Library, Ruff, ESLint |
-| Packaging | Windows helpers and Docker Compose |
+| Interface | React 19, Vite, React Router, Tailwind CSS |
+| API | Python 3.12, FastAPI, Pydantic |
+| Data | PostgreSQL, SQLAlchemy, Alembic migrations |
+| Screening | Trained maternal Random Forest with SHAP explanations; pinned original PE forest |
+| Integrations | Brevo or TLS SMTP, Groq, WebRTC |
+| Quality checks | pytest, Vitest, Testing Library, Ruff, ESLint |
+| Delivery | Windows helpers, Docker images and Docker Compose |
 
-The chatbot is separate from the screening models. Its source default is `openai/gpt-oss-20b`; `GROQ_MODEL` determines the configured provider model.
+**Neon is hosted PostgreSQL.** Local Docker PostgreSQL and Neon are different instances of the same database technology. Database models, migrations and backup tooling remain required. Accounts do not transfer automatically between instances.
 
-## Windows setup
+## 🚀 Get started on Windows
 
-### Requirements
+### Prerequisites
 
-- Git, Python **3.12**, Node.js **24+** and Docker Desktop with Compose.
-- Matching, maintainer-approved model artifacts for the complete assessment workflow.
-- Email/Groq credentials for the corresponding services.
+- Python **3.12**, Node.js **24+**, Git; Docker Desktop for the local PostgreSQL setup.
+- Maintainer-approved model assets for the complete screening workflow.
+- Private provider credentials for email and assistant features.
 
-The public repository excludes private configuration, database backups, runtime model artifacts and the model trust registry. A fresh clone requires these setup steps; it does not contain accounts or shared passwords.
+The public repository intentionally excludes secrets, database dumps and private runtime models. A clean clone alone does not include accounts or an activated assessment model.
 
-### Run an existing installation
+### Existing working installation
 
-From the working project root, start these in **separate Command Prompt terminals**:
-
-```bat
-.\scripts\start-backend.cmd
-```
+From the project root in CMD:
 
 ```bat
-.\scripts\start-frontend.cmd
+.\scripts\update-ui.cmd
+.\scripts\start-local.cmd
 ```
 
-Open **http://127.0.0.1:5173**. The API runs at **http://127.0.0.1:8000**. Keep Docker Desktop running for local PostgreSQL.
-
-Use [START-HERE.md](START-HERE.md) to select an updater for older installations. Initial setup deliberately refuses to overwrite existing `.env` files.
+Open **http://127.0.0.1:8000**. This serves the built UI and API together. Keep the configured database available. For a full older-installation schema update, back up first and use `scripts\update-final.cmd`; read [deployment and recovery](docs/DEPLOYMENT.md).
 
 <details>
-<summary><strong>First-time installation from source</strong></summary>
-
-Run from the directory where you want a new checkout:
+<summary><strong>First-time source installation</strong></summary>
 
 ```bat
 git clone https://github.com/mehkzhra/BloomCare-.git BloomCare
@@ -87,161 +89,46 @@ cd backend
 cd ..
 ```
 
-Before enabling assessments, supply the approved maternal artifact directory, matching `backend\model-trust.json` and pinned PE artifact directory under `ml\artifacts`. Follow the [model guide](docs/MODEL-TRAINING.md) and [PE guide](docs/PE-MODEL.md) for training, activation and verification. Candidate training does not automatically replace active models.
+Supply the approved maternal artifact and matching `backend/model-trust.json`, plus the pinned PE files under `ml/artifacts`. Follow [model setup](docs/MODEL-TRAINING.md) and the [PE contract](docs/PE-MODEL.md). Training candidates does not automatically activate them.
 
-Create the first trusted administrator with your own reachable email:
+Create the first local administrator using a reachable email:
 
 ```bat
 .\scripts\create-admin.cmd --email your-real-email@example.com --name "BloomCare Administrator"
 ```
 
-The helper prompts for a password without displaying it. Start both services using the commands above.
+The helper securely prompts for a password. Then build and start using the existing-installation commands above.
+
+For development with hot reload, run `scripts\start-backend.cmd` and `scripts\start-frontend.cmd` in separate terminals; the frontend is at **http://127.0.0.1:5173**.
 
 </details>
 
-Patients and doctors register on the website. Doctor access requires administrator approval; public registration cannot create an administrator. Configured account email delivery supports verification and one-use password reset links. Resetting a password invalidates earlier sessions.
+Patients and doctors register through the website. Doctors require approval. Public registration cannot create an administrator. Cloud first-admin setup uses mailbox password recovery rather than a shared default password.
 
-## Configuration
+## 🔐 Configuration and privacy
 
-| Private file | Purpose |
+| Configuration | Purpose |
 | --- | --- |
-| Root `.env` | Local Docker database name, user and password |
-| `backend/.env` | Database URL, session secret, origins and integrations |
-| `backend/model-trust.json` | Identity and integrity checks for the activated maternal model |
+| Root `.env` | Local Docker PostgreSQL credentials |
+| `backend/.env` | Local API settings and integrations |
+| Hosting environment variables | Cloud database, secure sessions, public origin and service keys |
+| `backend/model-trust.json` | Integrity registration for the active maternal model |
 
-| Settings | Variables |
-| --- | --- |
-| Database | `DATABASE_URL` |
-| Sessions/origins | `JWT_SECRET`, `JWT_MINUTES`, `PUBLIC_APP_URL`, `ALLOWED_ORIGINS`, `COOKIE_SECURE` |
-| Email | `EMAIL_PROVIDER`, `EMAIL_FROM`, `BREVO_API_KEY`, or the selected provider's `SMTP_*` settings |
-| Verification | `AUTH_REQUIRE_EMAIL_VERIFICATION` |
-| Assistant | `GROQ_API_KEY`, `GROQ_MODEL` |
-| Video networking | `WEBRTC_ICE_SERVERS` |
-| Model activation | `BLOOMCARE_RESEARCH_ASSESSMENTS` and matching registered artifacts |
+Keep `DATABASE_URL`, `JWT_SECRET`, `BREVO_API_KEY`, `GROQ_API_KEY` and any TURN credentials private. Never place them in frontend variables or commit them. `BOOTSTRAP_ADMIN_EMAIL` is the admin login address; `EMAIL_FROM` is the verified sending address.
 
-Use `scripts\configure-integrations.cmd` for supported guided configuration modes. Keep keys on the backend, preserve working secrets and restart after environment changes. User passwords are stored as hashes in PostgreSQL, not in `.env`.
+Password hashes use Argon2. Sessions use HttpOnly cookies; public hosting requires secure cookies and exact HTTPS origins. Backend role, ownership and sharing checks protect records. Password reset revokes earlier sessions, and login throttling persists in PostgreSQL.
 
-The local database listens on `127.0.0.1:5433`. Neon is optional for an external database and is not required locally.
+See the [deployment guide](docs/DEPLOYMENT.md) for the complete cloud settings table, backup steps and acceptance checks.
 
-## Docker and live access
+## 🧪 Testing and demo records
 
-Docker packages and runs BloomCare. Public access also requires a host or tunnel.
+- [Maternal LOW / MEDIUM / HIGH inputs](docs/examples/BloomCare-Health-Record-Samples.txt)
+- [PE LOW / MEDIUM / HIGH inputs](docs/examples/BloomCare-PE-Test-Samples.txt)
+- [Coverage and correction checks](docs/TEST-SAMPLES.md)
 
-### Local Docker release
+These are synthetic manual-entry examples, not patient data or clinical targets. Uploading them in Reports does not run an assessment. Results were checked against the available local cloud-build models, not queried from the live site.
 
-From the **working installation**, with its configuration and model artifacts available:
-
-```bat
-docker compose up -d --wait db
-docker compose -f compose.deploy.yaml up -d --build
-```
-
-Open **http://127.0.0.1:8080**. Nginx serves the frontend and proxies `/api` to FastAPI. The stack reuses `bloomcare-fresh_default`, mounts local model artifacts read-only and keeps API/database ports private.
-
-### Temporary HTTPS demo
-
-A Cloudflare Quick Tunnel provides a temporary URL without a domain. The computer, Docker, internet connection and tunnel must stay running; restarting the tunnel changes its URL. This is a demonstration route, not permanent managed hosting.
-
-After starting the local database, run this in a dedicated terminal and leave it open:
-
-```bat
-docker run --rm --network bloomcare-fresh_default cloudflare/cloudflared:latest tunnel --no-autoupdate --url http://web:80
-```
-
-Copy the printed HTTPS `trycloudflare.com` origin. In a second Command Prompt terminal, from the working project root, replace the example with that exact address:
-
-```bat
-set "BLOOMCARE_DEMO_ORIGIN=https://your-generated-name.trycloudflare.com"
-docker compose -f compose.deploy.yaml -f compose.demo.yaml up -d --build
-```
-
-The demo overlay aligns email links and allowed origins, enables secure cookies and requires verified account emails. Configure working email delivery and verify every demo account before login. Authentication requests share a conservative proxy-level limit in this demo mode. Use synthetic records and test login/recovery, assessments, sharing and a real two-device call at the public URL.
-
-Stop the tunnel with Ctrl+C. To restore local HTTP container settings, run this from a new terminal:
-
-```bat
-docker compose -f compose.deploy.yaml up -d --force-recreate api
-```
-
-Docker builds and public connectivity require verification on the target PC; this README update does not claim they have run.
-
-### Hosted deployment
-
-Current Hugging Face documentation requires a paid plan to create Docker Spaces and allows outbound requests on ports 80, 443 and 8080. Standard PostgreSQL on 5432 therefore needs a verified networking alternative; a normal Neon connection string is not a drop-in solution. Static Spaces cannot run this backend.
-
-### Northflank with Neon
-
-For hosting independent of the Windows PC, the Northflank Sandbox plan offers free resources, but **card verification may be mandatory before creating a service**, even when the account is marked Free. Its pricing headline is not sufficient to confirm card-free access: check the actual service creation form before continuing. This is a project/demo deployment; clinical validation and production operations remain separate requirements. This repository does not claim a completed Northflank deployment or a hosted URL.
-
-1. Sign in at [Northflank](https://app.northflank.com/) and select **Sandbox / Free**. Confirm that you can meet the account verification requirements before setting up a service. If a card is required and unavailable, this route is blocked; the instructions below do not bypass that requirement. Otherwise, create a project and a **combined service** named `bloomcare` from this repository's `main` branch.
-2. Choose **Dockerfile**, path `/deploy/northflank.Dockerfile`, build context `/`. Expose **HTTP port 10000** publicly and copy the generated HTTPS origin from Networking. Use the free included compute allocation and one instance.
-3. In the **working Windows installation**, with the new helper copied into `scripts`, run:
-
-   ```bat
-   .\backend\.venv\Scripts\python.exe scripts\prepare_cloud_settings.py
-   ```
-
-   Enter the Northflank HTTPS origin, Neon PostgreSQL connection URL with SSL, and the administrator's real email/name. The database URL is hidden while typing. The helper reads the working email, Groq and video settings, generates a new cloud session key, and creates **`backend/.env.northflank`**. It preserves an existing export on reruns. The export is ignored by Git; import it into Northflank's **runtime environment variables**.
-4. Add these **runtime secret files**, uploading the existing local files individually. Keep them out of build arguments and public Git/image registries:
-
-   | Local file under `ml/artifacts/legacy_pe_v0.7.1` | Container mount path |
-   | --- | --- |
-   | `forest.json` | `/app/ml/artifacts/legacy_pe_v0.7.1/forest.json` |
-   | `manifest.json` | `/app/ml/artifacts/legacy_pe_v0.7.1/manifest.json` |
-   | `explanation-weights.json` | `/app/ml/artifacts/legacy_pe_v0.7.1/explanation-weights.json` |
-
-   The maternal model is trained and verified during the image build from the checksum-pinned public fixture. Private PE assets are excluded from the Dockerfile's source copies and mounted at runtime. Startup verifies both models before migrations and serving; missing or changed assets stop startup. The synthetic parity fixture is not needed in the running service.
-5. Deploy/restart after saving the runtime variables and files. Configure an HTTP readiness check on port **10000**, path **`/api/health/ready`**, with startup time allowed for Python imports and migrations. Wait for `{"status":"ready"}`, then open the generated origin.
-6. For a new empty Neon database, request **Forgot password** using `BOOTSTRAP_ADMIN_EMAIL` to establish the first administrator's password through that mailbox. Local accounts and records are not copied automatically. Existing database accounts are preserved; bootstrap cannot promote a patient or add a new administrator to an occupied database.
-
-The HTTPS origin and allowed origins must match. Use verified emails, keep API/provider keys in Northflank's runtime variables, and retain the private settings file for recovery. Authentication uses the conservative shared proxy limit (`AUTH_PROXY_HEADER=none`); do not enable Render-specific proxy trust on Northflank. Test login/recovery, both assessments, sharing, Groq and an actual cross-network video call at the hosted origin before sharing it for review. Finally, verify access from another device with the Windows PC off.
-
-### SnapDeploy private upload with Neon
-
-SnapDeploy's free account offers a PC-independent HTTPS endpoint with limits: **100 running hours/month**, **512 MB RAM**, sleep after about **15 idle minutes**, and roughly **one minute to wake on a browser visit**. The account dashboard and current quota must be checked before deploying. Free-tier traffic is limited to **100 requests/minute per IP per app**; WebSockets and always-on execution require a paid option. BloomCare uses HTTP signaling for its WebRTC calls. The private upload builds signaling polling at three seconds, while ordinary builds retain their existing interval. Sleeping containers do not run background reminders until the process resumes. Uploaded records remain in Neon across restarts.
-
-Use **Upload code** with the private source archive, rather than relying on the public repository to contain runtime model assets. To reproduce the archive from a clean source checkout and the working installation's PE files:
-
-```bat
-D:\Desktop\BloomCare\backend\.venv\Scripts\python.exe scripts\prepare_cloud_upload.py --model-dir "D:\Desktop\BloomCare\ml\artifacts\legacy_pe_v0.7.1"
-```
-
-The command verifies source checksums and all three pinned PE files, then creates `private-builds/BloomCare-Cloud-Upload.zip`. It puts the combined frontend/API Dockerfile at the archive root. The archive includes only application source, the public maternal training fixture and the three required PE assets; credentials, local database files, the existing maternal pickle/trust and extra parity data are excluded. Keep this archive private. Model training and verification run during the host's Docker build. Images built from source run on ARM64 on this provider, so the first real host build remains a required check.
-
-In the deploy form use the free **Small** container and HTTP port **10000**. Copy the exact assigned HTTPS origin. In the working Windows installation, with the current settings helper copied into `scripts`, run:
-
-```bat
-.\backend\.venv\Scripts\python.exe scripts\prepare_cloud_settings.py --provider snapdeploy
-```
-
-The helper creates private `backend/.env.snapdeploy`. Add its values to the container's runtime environment settings; SnapDeploy manages `PORT` itself. A new empty Neon database and first-administrator recovery work as described above. Confirm the assigned hostname instead of guessing that a particular app name is available. Validate `/api/health/ready`, real account recovery, both assessments, Groq, sharing and a cross-network video call before announcing the URL. Verify access with the Windows PC off. A free account dashboard is not proof of a completed deployment.
-
-Platform references checked **25 October 2026**: [Northflank pricing](https://northflank.com/pricing), [combined service setup](https://northflank.com/docs/v1/application/getting-started/build-and-deploy-your-code), [private runtime files](https://northflank.com/docs/v1/application/secure/upload-secret-files), [SnapDeploy free limits](https://snapdeploy.dev/docs/free-tier), [SnapDeploy deployment](https://snapdeploy.dev/docs/deployment), [Hugging Face Spaces](https://huggingface.co/docs/hub/en/spaces-overview), [Cloudflare Quick Tunnels](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/).
-
-## Security and recovery
-
-- Backend role, ownership and sharing checks control access to records and actions.
-- Passwords use Argon2; sessions use HttpOnly cookies; authentication limits persist in PostgreSQL.
-- Uploaded report bytes are stored in PostgreSQL and included in complete database backups.
-- Keep configuration, model artifacts and backups outside public source control and maintain an off-machine recovery copy.
-
-Create a local database backup:
-
-```bat
-.\scripts\database-backup.cmd backup
-```
-
-Use its printed filename for an isolated restore check:
-
-```bat
-.\scripts\database-backup.cmd restore-test --file "backups\YOUR_BACKUP_FILENAME.dump"
-```
-
-This restores into a temporary database and checks core tables and report lengths. Full recovery also requires matching source, configuration, model files and a separately checked application instance. After a Git history cleanup, use a clean clone for future pushes.
-
-## Verification
-
-With the required private configuration and model assets available:
+With the required private test configuration and approved model assets installed:
 
 ```bat
 backend\.venv\Scripts\python.exe -m ruff check backend scripts ml deploy --config backend\pyproject.toml
@@ -252,26 +139,27 @@ npm.cmd --prefix frontend test
 npm.cmd --prefix frontend run build
 ```
 
-Recorded release checks on **22 October 2026**: backend **311 passed / 1 PostgreSQL-only skip**, frontend **143 passed**, ML **11 passed**, plus lint and the production frontend build. [Verification evidence](docs/VERIFICATION.md) records their scope; these results do not certify live hosting or clinical performance.
+Historical test evidence and its limitations are in [VERIFICATION.md](docs/VERIFICATION.md). Passing software tests does not establish clinical validity or live provider availability.
 
-## Screening scope
+## 🧠 Screening scope
 
-Screening categories support review; they are not a diagnosis. The retained models have not been independently clinically validated. Coverage, measurement definitions and evaluation limits require resolution before clinical use.
+The maternal classifier uses six observations; **pregnancy duration is not one of its inputs**. A saved 12-week record remains 12 weeks. The separate PE model supports observed pregnancy durations of **14–40 weeks**, together with its other measurement bounds. Outside coverage produces no PE category; it must not be treated as LOW risk.
 
-The maternal model uses six inputs and does not use pregnancy duration. A saved **12-week** record remains 12 weeks. If PE screening is required, its classifier cannot return a category outside **14–40 weeks**. An unavailable PE result is not LOW risk. Actual observations must not be changed to obtain a prediction.
+The models have not completed independent clinical validation. Original PE outcome definitions and HB units remain unresolved. Screening supports review and is not a diagnosis. Never alter real observations to make them fit the model.
 
-## Developer guides
+## 📁 Repository map
 
-| Guide | Contents |
+| Directory | Contents |
 | --- | --- |
-| [Architecture](docs/ARCHITECTURE.md) | Components, data flows and boundaries |
-| [Requirements](docs/REQUIREMENTS.md) | Implementation traceability |
-| [Model training](docs/MODEL-TRAINING.md) | Source review, reproducibility and evaluation limits |
-| [PE model](docs/PE-MODEL.md) | Pinned source, feature contract and coverage |
-| [Test samples](docs/TEST-SAMPLES.md) | Supported demo inputs and boundary cases |
-| [Deployment](docs/DEPLOYMENT.md) | Containers, HTTPS and recovery |
-| [Verification](docs/VERIFICATION.md) | Recorded checks and their limits |
-| [Recruiter walkthrough](docs/RECRUITER-WALKTHROUGH.md) | Product and engineering walkthrough |
-| [Asset licences](docs/THIRD-PARTY-ASSETS.md) | Font/PDF dependencies and redistribution |
+| `frontend/` | UI, translations, browser-side reports and component tests |
+| `backend/` | API, permissions, database models, migrations and tests |
+| `ml/` | Reproducible training, contracts and evaluation evidence |
+| `deploy/` | Container startup, model preparation and server configuration |
+| `scripts/` | Windows startup, setup, backups and maintainer utilities |
+| `docs/` | Focused technical guides and synthetic examples |
 
-Historical notes are consolidated in `docs/history.zip`. Source checksums are recorded in `DELIVERY-MANIFEST.json`.
+## 📚 Engineering notes
+
+[Architecture](docs/ARCHITECTURE.md) · [Requirements](docs/REQUIREMENTS.md) · [Deployment](docs/DEPLOYMENT.md) · [Model training](docs/MODEL-TRAINING.md) · [PE model](docs/PE-MODEL.md) · [Verification](docs/VERIFICATION.md) · [Walkthrough](docs/RECRUITER-WALKTHROUGH.md) · [Third-party licences](docs/THIRD-PARTY-ASSETS.md)
+
+Superseded ZIP handover pages have been consolidated into this README and the deployment guide. `docs/history.zip` is retained because the Windows legacy-cleanup utility verifies archived hashes before removing old files. `DELIVERY-MANIFEST.json` protects source integrity during private image packaging.

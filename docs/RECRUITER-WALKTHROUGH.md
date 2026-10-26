@@ -53,4 +53,4 @@ evidence; do not describe it as a clinically certified diagnostic system or clai
 that every SRS performance target has been proven.
 
 
-Current delivery: **1.0.3**. Add a 12-week demonstration: the source duration stays 12, maternal scores do not depend on it, and a triggered PE stage displays its unsupported duration without creating a category. Demonstrate health-record deletion with linked-result withdrawal, retained notes and on-demand metadata. Current verification and deployment gaps are in [VERIFICATION.md](VERIFICATION.md) and [DELIVERY-STATUS.md](DELIVERY-STATUS.md).
+Current delivery: **1.3.0**. Add a 12-week demonstration: the source duration stays 12, maternal scores do not depend on it, and a triggered PE stage displays its unsupported duration without creating a category. Demonstrate health-record deletion with linked-result withdrawal, retained notes and on-demand metadata. Current verification and deployment gaps are in [VERIFICATION.md](VERIFICATION.md) and [DEPLOYMENT.md](DEPLOYMENT.md).

@@ -32,4 +32,4 @@ These bounds and unusual source values require data/clinical review; they are no
 
 The original 162/41 split has 25 test rows matching fitting inputs, so its 90.24% nominal score is not independent evaluation. Fresh deduplicated/grouped retraining reproduced 72.22% accuracy on 18 historical test rows and was not activated. Source origin/licensing for medical reuse, HB units, confirmed outcomes and independent clinical validation remain unresolved. Scores are uncalibrated category scores, not disease probabilities.
 
-Supported results retain actual feature explanations and selected-record access checks. An unavailable model does not erase previously saved results. Use the [current updater](../START-HERE.md), [test samples](TEST-SAMPLES.md) and [verification record](VERIFICATION.md).
+Supported results retain actual feature explanations and selected-record access checks. An unavailable model does not erase previously saved results. Use the [current updater](../README.md), [test samples](TEST-SAMPLES.md) and [verification record](VERIFICATION.md).
