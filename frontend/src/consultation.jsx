@@ -61,7 +61,8 @@ export function ConsultationPage({
         stream,
         after: 0,
         closed: false,
-        candidates: []
+        candidates: [],
+        pollFailures: 0
       };
       runtime.current = state;
       localVideo.current.srcObject = stream;
@@ -72,7 +73,7 @@ export function ConsultationPage({
       peer.onconnectionstatechange = () => {
         if (!state.closed) {
           setStatus(peer.connectionState);
-          if (peer.connectionState === 'failed') setError(t('The devices could not connect. Check both participants’ network access; your administrator may need to configure a TURN relay.'));
+          if (peer.connectionState === 'failed') setError(t('The video could not connect. Check your internet connection and try joining again. Contact support if the problem continues.'));
         }
       };
       const signal = (kind, payload) => api(`/consultations/${state.id}/signals`, {
@@ -92,8 +93,30 @@ export function ConsultationPage({
       }
       async function poll() {
         if (state.closed) return;
+        let items;
         try {
-          const items = await api(`/consultations/${state.id}/signals?after=${state.after}`);
+          items = await api(`/consultations/${state.id}/signals?after=${state.after}`);
+        } catch (err) {
+          if (state.closed) return;
+          const transient = [429, 502, 503, 504].includes(err.status)
+            || err.code === 'REQUEST_TIMEOUT' || err instanceof TypeError;
+          state.pollFailures += 1;
+          if (transient && state.pollFailures <= 4 && !(err.retryAfterSeconds > 60)) {
+            setError(t('Connection interrupted. Reconnecting to the consultation…'));
+            state.timer = setTimeout(poll, Math.max(
+              3000 * 2 ** (state.pollFailures - 1), (err.retryAfterSeconds || 0) * 1000
+            ));
+            return;
+          }
+          setError(err.message);
+          stopLocal();
+          setJoined(false);
+          return;
+        }
+        if (state.closed) return;
+        if (state.pollFailures) setError('');
+        state.pollFailures = 0;
+        try {
           for (const item of items) {
             if (state.closed) return;
             if (item.kind === 'offer' && role === 'patient') {
@@ -108,6 +131,7 @@ export function ConsultationPage({
             state.after = item.id;
           }
         } catch (err) {
+          if (state.closed) return;
           setError(err.message);
           stopLocal();
           setJoined(false);
@@ -115,7 +139,7 @@ export function ConsultationPage({
         }
         const configuredDelay = Number(import.meta.env.VITE_CALL_SIGNAL_POLL_MS);
         const delay = Number.isFinite(configuredDelay) && configuredDelay >= 1200
-          ? Math.min(configuredDelay, 10000) : 1200;
+          ? Math.min(configuredDelay, 10000) : 3000;
         state.timer = setTimeout(poll, delay);
       }
       setJoined(true);
@@ -152,6 +176,6 @@ export function ConsultationPage({
       <section className="card"><h2>{t("Remote video")}</h2><video ref={remoteVideo} autoPlay playsInline className="call-video" /></section></div>
     <div className="nav"><button disabled={busy || joined} onClick={join}>{role === 'doctor' ? t("Start consultation") : t("Join consultation")}</button>
       <button disabled={!joined} onClick={end}>{t("End consultation")}</button></div>
-    <p className="muted">{t("Direct connections work on compatible local networks. Different networks may require administrator-configured STUN/TURN servers.")}</p>
+    <p className="muted">{t("Keep this page open during your consultation. Use a stable internet connection and allow camera and microphone access.")}</p>
   </div>;
 }

@@ -15,7 +15,7 @@ afterEach(() => {
 
 test.each([
   ['3000', 3000],
-  ['not-a-number', 1200]
+  ['not-a-number', 3000]
 ])('call signaling respects the hosting interval %s and stops after leaving', async (value, delay) => {
   vi.useFakeTimers();
   vi.stubEnv('VITE_CALL_SIGNAL_POLL_MS', value);
@@ -47,4 +47,34 @@ test.each([
   expect(polls()).toBe(2);
   expect(stop).toHaveBeenCalledOnce();
   expect(close).toHaveBeenCalledOnce();
+});
+
+test.each([503, 403])('signaling failure %s only reconnects when temporary', async status => {
+  vi.useFakeTimers();
+  const stop = vi.fn();
+  const close = vi.fn();
+  vi.stubGlobal('navigator', { mediaDevices: { getUserMedia: vi.fn().mockResolvedValue({ getTracks: () => [{ stop }] }) } });
+  vi.stubGlobal('RTCPeerConnection', class { addTrack() {} close = close; });
+  let polls = 0;
+  api.mockImplementation(async path => {
+    if (path.endsWith('/consultation')) return { id: 'call-1', ice_servers: [] };
+    if (++polls === 1) throw Object.assign(new Error('Unavailable'), { status });
+    return [];
+  });
+  const page = render(<MemoryRouter initialEntries={['/patient/appointments/a/call']}>
+    <Routes><Route path="/patient/appointments/:appointmentId/call" element={<ConsultationPage role="patient" />} /></Routes>
+  </MemoryRouter>);
+  await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Join consultation' })));
+  if (status === 503) {
+    expect(close).not.toHaveBeenCalled();
+    expect(stop).not.toHaveBeenCalled();
+    await act(async () => vi.advanceTimersByTime(3000));
+    expect(polls).toBe(2);
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  } else {
+    expect(close).toHaveBeenCalledOnce();
+    await act(async () => vi.advanceTimersByTime(3000));
+    expect(polls).toBe(1);
+  }
+  page.unmount();
 });

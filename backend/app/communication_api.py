@@ -328,17 +328,22 @@ def notifications(
         .where(Notification.recipient_id == user.id, Notification.read.is_(False))
     )
 
-    def assessment_record(notification):
-        if not notification.assessment_id or user.role != "patient":
-            return None
+    # Fetch references once instead of issuing up to 50 queries on every poll.
+    assessment_records = {}
+    if user.role == "patient":
         from app.models import Assessment
 
-        assessment = db.get(Assessment, notification.assessment_id)
-        return (
-            assessment.health_record_id
-            if assessment and assessment.patient_id == user.id and assessment.removed_at is None
-            else None
-        )
+        ids = {row.assessment_id for row in rows if row.assessment_id}
+        if ids:
+            assessment_records = dict(
+                db.execute(
+                    select(Assessment.id, Assessment.health_record_id).where(
+                        Assessment.id.in_(ids),
+                        Assessment.patient_id == user.id,
+                        Assessment.removed_at.is_(None),
+                    )
+                ).all()
+            )
 
     return {
         "unread_count": unread,
@@ -347,7 +352,7 @@ def notifications(
                 "id": r.id,
                 "kind": r.kind,
                 "appointment_id": r.appointment_id,
-                "health_record_id": assessment_record(r),
+                "health_record_id": assessment_records.get(r.assessment_id),
                 "read": r.read,
                 "created_at": utc(r.created_at),
             }

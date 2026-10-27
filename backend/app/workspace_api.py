@@ -30,8 +30,13 @@ from app.security import require_role
 router = APIRouter(prefix="/api")
 
 
-def count(db, model, *criteria):
-    return db.scalar(select(func.count()).select_from(model).where(*criteria))
+def count(model, *criteria):
+    return select(func.count()).select_from(model).where(*criteria).scalar_subquery()
+
+
+def totals(db, values):
+    """Independent dashboard totals share one database round trip."""
+    return dict(zip(values, db.execute(select(*values.values())).one(), strict=True))
 
 
 def appointments(db, user, limit=4):
@@ -87,27 +92,28 @@ def patient_workspace(user: User = Depends(require_role("patient")), db: Session
     ).all()
     return {
         "generated_at": utc_now(),
-        "counts": {
-            "records": count(
-                db,
-                HealthRecord,
-                HealthRecord.patient_id == user.id,
-                HealthRecord.removed_at.is_(None),
-            ),
-            "assessments": count(
-                db, Assessment, Assessment.patient_id == user.id, Assessment.removed_at.is_(None)
-            ),
-            "reports": count(db, MedicalReport, MedicalReport.patient_id == user.id),
-            "medications": count(
-                db,
-                MedicationEntry,
-                MedicationEntry.patient_id == user.id,
-                MedicationEntry.active.is_(True),
-            ),
-            "unread_notifications": count(
-                db, Notification, Notification.recipient_id == user.id, Notification.read.is_(False)
-            ),
-        },
+        "counts": totals(
+            db,
+            {
+                "records": count(
+                    HealthRecord,
+                    HealthRecord.patient_id == user.id,
+                    HealthRecord.removed_at.is_(None),
+                ),
+                "assessments": count(
+                    Assessment, Assessment.patient_id == user.id, Assessment.removed_at.is_(None)
+                ),
+                "reports": count(MedicalReport, MedicalReport.patient_id == user.id),
+                "medications": count(
+                    MedicationEntry,
+                    MedicationEntry.patient_id == user.id,
+                    MedicationEntry.active.is_(True),
+                ),
+                "unread_notifications": count(
+                    Notification, Notification.recipient_id == user.id, Notification.read.is_(False)
+                ),
+            },
+        ),
         "records": [
             {"id": r.id, "observations": r.observations, "created_at": timestamp(r.created_at)}
             for r in records
@@ -150,25 +156,26 @@ def doctor_workspace(user: User = Depends(require_role("doctor")), db: Session =
     )
     now = utc_now()
     result.update(
-        counts={
-            "requests": count(
-                db,
-                Appointment,
-                Appointment.doctor_id == user.id,
-                Appointment.status == "PENDING",
-                Appointment.scheduled_at >= now,
-            ),
-            "confirmed": count(
-                db,
-                Appointment,
-                Appointment.doctor_id == user.id,
-                Appointment.status == "ACCEPTED",
-                Appointment.scheduled_at >= now,
-            ),
-            "patients": db.scalar(select(func.count()).select_from(people)),
-            "awaiting_review": analytics["review_statuses"].get("PENDING", 0),
-            "urgent": analytics["review_statuses"].get("URGENT_FOLLOW_UP", 0),
-        },
+        counts=totals(
+            db,
+            {
+                "requests": count(
+                    Appointment,
+                    Appointment.doctor_id == user.id,
+                    Appointment.status == "PENDING",
+                    Appointment.scheduled_at >= now,
+                ),
+                "confirmed": count(
+                    Appointment,
+                    Appointment.doctor_id == user.id,
+                    Appointment.status == "ACCEPTED",
+                    Appointment.scheduled_at >= now,
+                ),
+                "patients": db.scalar(select(func.count()).select_from(people)),
+                "awaiting_review": analytics["review_statuses"].get("PENDING", 0),
+                "urgent": analytics["review_statuses"].get("URGENT_FOLLOW_UP", 0),
+            },
+        ),
         appointments=appointments(db, user, 5),
         priority_cases=(
             doctor_cases(db, user, "", None, "URGENT_FOLLOW_UP", 0)[:3]
@@ -210,22 +217,34 @@ def admin_workspace(_user: User = Depends(require_role("admin")), db: Session = 
     events = db.scalars(
         select(AccountEvent).order_by(AccountEvent.created_at.desc(), AccountEvent.id).limit(5)
     ).all()
+    actor_names = (
+        dict(
+            db.execute(
+                select(User.id, User.full_name).where(User.id.in_({e.actor_id for e in events}))
+            ).all()
+        )
+        if events
+        else {}
+    )
     settings = get_settings()
     return {
         "generated_at": utc_now(),
-        "counts": {
-            "patients": count(db, User, User.role == "patient"),
-            "doctors": count(db, User, User.role == "doctor"),
-            "active_accounts": count(db, User, User.active.is_(True)),
-            "assessments": count(db, Assessment, Assessment.removed_at.is_(None)),
-            "removed_assessments": count(db, Assessment, Assessment.removed_at.is_not(None)),
-            "pending_doctors": db.scalar(
-                select(func.count()).select_from(pending_query.subquery())
-            ),
-            "urgent": reviews.get("URGENT_FOLLOW_UP", 0),
-            "awaiting_review": reviews.get("PENDING", 0),
-            "appointments": count(db, Appointment),
-        },
+        "counts": totals(
+            db,
+            {
+                "patients": count(User, User.role == "patient"),
+                "doctors": count(User, User.role == "doctor"),
+                "active_accounts": count(User, User.active.is_(True)),
+                "assessments": count(Assessment, Assessment.removed_at.is_(None)),
+                "removed_assessments": count(Assessment, Assessment.removed_at.is_not(None)),
+                "pending_doctors": db.scalar(
+                    select(func.count()).select_from(pending_query.subquery())
+                ),
+                "urgent": reviews.get("URGENT_FOLLOW_UP", 0),
+                "awaiting_review": reviews.get("PENDING", 0),
+                "appointments": count(Appointment),
+            },
+        ),
         "pending_doctors": [
             account_out(u)
             for u in db.scalars(pending_query.order_by(User.created_at, User.id).limit(5))
@@ -235,7 +254,7 @@ def admin_workspace(_user: User = Depends(require_role("admin")), db: Session = 
         "recent_activity": [
             {
                 "id": e.id,
-                "actor": db.get(User, e.actor_id).full_name,
+                "actor": actor_names.get(e.actor_id, "Deleted account"),
                 "action": e.action,
                 "created_at": timestamp(e.created_at),
             }

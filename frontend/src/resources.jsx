@@ -1,53 +1,46 @@
 import { useEffect, useState } from 'react';
 import { api } from './api.js';
 import { t } from './i18n.js';
-export function useResource(path, {
-  pollMs = 0,
-  validate
-} = {}) {
-  const [state, setState] = useState({
-    data: null,
-    error: '',
-    loading: true
-  });
+export function useResource(path, { pollMs = 0, validate } = {}) {
+  const [state, setState] = useState({ data: null, error: '', loading: true });
   const [attempt, setAttempt] = useState(0);
-  const key = `${path}:${attempt}`;
-  useEffect(() => {
-    if (!pollMs) return;
-    const timer = setInterval(() => setAttempt(n => n + 1), pollMs);
-    return () => clearInterval(timer);
-  }, [pollMs]);
   useEffect(() => {
     const controller = new AbortController();
-    api(path, {
-      signal: controller.signal
-    }).then(data => {
-      if (validate && !validate(data)) throw new Error('The workspace response could not be read. Refresh and try again.');
-      if (!controller.signal.aborted) setState({
-        data,
-        error: '',
-        loading: false,
-        key
-      });
-    }).catch(err => {
-      if (!controller.signal.aborted) setState({
-        data: null,
-        error: err.message,
-        loading: false,
-        key
-      });
-    });
-    return () => controller.abort();
-  }, [path, key, validate]);
-  const current = state.key === key ? state : {
-    data: null,
-    error: '',
-    loading: true
-  };
-  return {
-    ...current,
-    retry: () => setAttempt(n => n + 1)
-  };
+    let timer;
+    let pending = false;
+    async function refresh() {
+      if (pending || controller.signal.aborted) return;
+      clearTimeout(timer);
+      pending = true;
+      try {
+        const data = await api(path, { signal: controller.signal });
+        if (validate && !validate(data)) throw new Error('The workspace response could not be read. Refresh and try again.');
+        if (!controller.signal.aborted) setState({ data, error: '', loading: false, path });
+      } catch (err) {
+        if (!controller.signal.aborted) setState(previous => ({
+          data: previous.path === path && ![401, 403].includes(err.status) ? previous.data : null,
+          error: err.message, loading: false, path
+        }));
+      } finally {
+        pending = false;
+        if (pollMs && !controller.signal.aborted && !document.hidden) timer = setTimeout(refresh, pollMs);
+      }
+    }
+    function visibilityChanged() {
+      clearTimeout(timer);
+      if (!document.hidden) refresh();
+    }
+    refresh();
+    if (pollMs) document.addEventListener('visibilitychange', visibilityChanged);
+    return () => {
+      controller.abort();
+      clearTimeout(timer);
+      document.removeEventListener('visibilitychange', visibilityChanged);
+    };
+  }, [path, attempt, pollMs, validate]);
+  // Keep only this mounted view's data. A different resource must never show it.
+  const current = state.path === path ? state : { data: null, error: '', loading: true };
+  return { ...current, retry: () => setAttempt(n => n + 1) };
 }
 export function ResourceStatus({
   resource

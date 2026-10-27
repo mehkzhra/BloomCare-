@@ -102,3 +102,11 @@ The restore test uses a temporary database. Hosted Neon backups require an expor
 7. Confirm backup restore and monitor hosting limits. Keep old deployment rollback options until checks pass.
 
 Vercel compatibility was reviewed, not implemented: the current 5 MB report limit exceeds its documented 4.5 MB Function payload limit, and the 30-second reminder loop needs a different scheduling design. No all-features Vercel deployment is claimed.
+
+## Performance update (27 October 2026)
+
+Readiness now checks its 25 required tables in one SQL statement. Dashboard totals and notification assessment references are batched; notification polling no longer loads full assessment relationships for each row. Access auditing remains enabled, with its PostgreSQL timeouts set together.
+
+Background refresh retains visible records, runs sequentially, and pauses polling while the tab is hidden. Consultation signal reads retry bounded temporary failures without closing the video immediately; permission failures and ended consultations still stop. Mutating requests are never automatically replayed. Default signalling interval is three seconds. Public frontend files support gzip compression. Only fingerprinted public JS/CSS/font assets receive immutable browser caching; HTML and authenticated API responses remain no-store.
+
+These are source changes: a GitHub push does not replace an image already uploaded to SnapDeploy. Pull the commit, run `python scripts/prepare_cloud_upload.py`, extract the newly generated private ZIP into a fresh build directory, and rebuild the ARM64 image before uploading it. Keep existing environment values and the live database. Never upload the old TAR expecting new code. Retest readiness, notification refresh and a two-device consultation after deployment. Free-host sleep/wake delays and database/network latency require live measurements; the code changes do not guarantee removal of every 503.

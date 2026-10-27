@@ -80,8 +80,12 @@ def persist_audit(request, status_code):
         try:
             with SessionLocal() as db:
                 if db.bind.dialect.name == "postgresql":
-                    db.execute(text("SET LOCAL lock_timeout = '3s'"))
-                    db.execute(text("SET LOCAL statement_timeout = '5s'"))
+                    db.execute(
+                        text(
+                            "SELECT set_config('lock_timeout', '3s', true), "
+                            "set_config('statement_timeout', '5s', true)"
+                        )
+                    )
                 db.add(
                     AccessAudit(
                         actor_id=getattr(request.state, "actor_id", None),
@@ -108,7 +112,8 @@ async def response_security(request: Request, call_next):
         raise
     await asyncio.to_thread(persist_audit, request, response.status_code)
     response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["Cache-Control"] = "no-store"
+    if not getattr(request.state, "public_static_asset", False):
+        response.headers["Cache-Control"] = "no-store"
     response.headers["Referrer-Policy"] = "no-referrer"
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["Permissions-Policy"] = "camera=(self), microphone=(self), geolocation=()"
@@ -152,7 +157,7 @@ def live():
 def ready():
     try:
         with engine.connect() as connection:
-            for table in (
+            tables = (
                 "users",
                 "account_events",
                 "symptom_entries",
@@ -178,8 +183,14 @@ def ready():
                 "whatsapp_alerts",
                 "email_action_tokens",
                 "auth_rate_buckets",
-            ):
-                connection.execute(text(f"SELECT 1 FROM {table} LIMIT 1"))
+            )
+            # Check every required table in one round trip, without fetching records.
+            connection.execute(
+                text(
+                    "SELECT "
+                    + ", ".join(f"EXISTS (SELECT 1 FROM {table} LIMIT 1)" for table in tables)
+                )
+            )
     except Exception:
         return JSONResponse(status_code=503, content={"status": "database_not_ready"})
     return {"status": "ready"}
