@@ -1,9 +1,9 @@
 {
   "release": "1.3.0",
-  "date": "2026-10-27",
+  "date": "2026-10-28",
   "schema": "0013_account_security",
   "extract_into": "existing BloomCare project root",
-  "source_file_count": 249,
+  "source_file_count": 253,
   "cleanup": {
     "obsolete_paths": 66,
     "history": "docs/history.zip",
@@ -32,6 +32,11 @@
       "path": ".gitignore",
       "bytes": 334,
       "sha256": "5c52dfdaf2153ed642ab2638c58bb0ff7cb01aea42ffe90d403eeb2ea526e7fd"
+    },
+    {
+      "path": "Dockerfile",
+      "bytes": 1026,
+      "sha256": "63a28e41703552d38de09db18bb25a7eeb7bdb3f852d7f3496df0a1a86459229"
     },
     {
       "path": "README.md",
@@ -484,6 +489,11 @@
       "sha256": "d397b8ca50ab7f98cde5cafa77719b2c61aec5ecb51870902d1bd4dab0dd09d9"
     },
     {
+      "path": "backend/tests/test_private_models.py",
+      "bytes": 3170,
+      "sha256": "92a3e8a787c85390392759593215fc42289dccf03c6bb3e3cd6f4c83edb44eb1"
+    },
+    {
       "path": "backend/tests/test_project_cleanup.py",
       "bytes": 3360,
       "sha256": "1da1b2807ca88c15312c6012b3a97a7a65bf62f32e606dcc064b2eefefad1f3a"
@@ -569,14 +579,19 @@
       "sha256": "73046f611c5986bfa9290401d15a7396b83071679319fb5cf471997e1b5c02a6"
     },
     {
+      "path": "deploy/private_models.py",
+      "bytes": 3773,
+      "sha256": "1dff4862d2af68ff3fe1b691cb21a8e0ebccde83567e16bc635708ec64fc991c"
+    },
+    {
       "path": "deploy/render.Dockerfile",
-      "bytes": 985,
-      "sha256": "da3b02f506eaa77b7eadbf2deadc2dd89c64ce26ca06c120050a97afc8890f2f"
+      "bytes": 1010,
+      "sha256": "2520e9801b9be848a92236cccde3e96fc2b28843580cbcb27140aedb8f83ed6d"
     },
     {
       "path": "deploy/start_cloud.py",
-      "bytes": 2914,
-      "sha256": "077b1c23142cf48889817f91d895b7800ce8c792eaf94debe827d59e275a26da"
+      "bytes": 3031,
+      "sha256": "860951b4659a230caf8bf20f05947fe941fda12c95cddcfdc30a9c22389a57f9"
     },
     {
       "path": "docs/ARCHITECTURE.md",
@@ -585,8 +600,8 @@
     },
     {
       "path": "docs/DEPLOYMENT.md",
-      "bytes": 9526,
-      "sha256": "d9972cd3209b5ecaf9ab1c7c2e2a8e229d8315a790d817cb28fbbb9ddfb06cd5"
+      "bytes": 11577,
+      "sha256": "329cb8b01bfbd933ff08856937c2e7df4476d145dd5d67268283500cb1ad0dd6"
     },
     {
       "path": "docs/MODEL-TRAINING.md",
@@ -1205,8 +1220,13 @@
     },
     {
       "path": "scripts/prepare_cloud_upload.py",
-      "bytes": 5169,
-      "sha256": "37e43946edae4b46c201b134d1f91a6b110865e6304f7c2fba732da23f3ed3f1"
+      "bytes": 5205,
+      "sha256": "255d5f91db309a3bfaa563d1db9131644402ae7db4011a57fa908318ceed66e9"
+    },
+    {
+      "path": "scripts/provision_cloud_models.py",
+      "bytes": 1341,
+      "sha256": "6515b2e22f1b0462bc64a9101a6bfb355d9e7933a92116babd919c625ea59504"
     },
     {
       "path": "scripts/retire-admin.cmd",

@@ -14,7 +14,7 @@ COPY ml/requirements.txt /app/ml/requirements.txt
 RUN python -m pip install --no-cache-dir -r backend/requirements.txt -r backend/research-requirements.txt
 COPY backend/ /app/backend/
 COPY ml/ /app/ml/
-COPY deploy/prepare_cloud_model.py deploy/start_cloud.py /app/deploy/
+COPY deploy/prepare_cloud_model.py deploy/start_cloud.py deploy/private_models.py /app/deploy/
 COPY --from=frontend /web/dist/ /app/frontend/dist/
 RUN python deploy/prepare_cloud_model.py
 RUN useradd --create-home bloomcare && chown -R bloomcare:bloomcare /app

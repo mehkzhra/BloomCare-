@@ -48,7 +48,9 @@ def main():
         if not 1 <= port <= 65535:
             raise ValueError("Invalid port")
         from deploy.prepare_cloud_model import verify_runtime_models
+        from deploy.private_models import ensure_private_models
 
+        ensure_private_models(settings.database_url)
         verify_runtime_models()
         subprocess.run([sys.executable, "-m", "alembic", "upgrade", "head"], check=True)
         from app.cloud_setup import bootstrap_admin

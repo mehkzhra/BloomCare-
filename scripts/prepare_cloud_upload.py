@@ -53,6 +53,7 @@ def runtime_source(name):
         return len(path.parts) == 2 and (path.suffix == ".py" or path.name == "requirements.txt")
     return name in {
         ".dockerignore", "deploy/prepare_cloud_model.py", "deploy/start_cloud.py",
+        "deploy/private_models.py",
         "deploy/render.Dockerfile",
     }
 
