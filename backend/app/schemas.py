@@ -168,6 +168,7 @@ class AssessmentOut(BaseModel):
     ]
     pe_reason: str
     pe_input_issues: list[dict] = Field(default_factory=list)
+    blood_pressure_guidance: dict | None = None
     pe_screening: PEScreeningOut | None = None
     clinical_indicators: dict | None = None
     care_plan: dict | None = None

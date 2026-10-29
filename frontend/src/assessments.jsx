@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { api } from './api.js';
 import { ResourceStatus, useResource } from './pages.jsx';
 import { Icon } from './ui.jsx';
+import { BloodPressureNotice, bloodPressureAction } from './blood-pressure-notice.jsx';
 import { PEScreeningStage } from './pe-screening.jsx';
 import { AssessmentReportActions, CarePlanPanel, ClinicalReviewPanel, WhatsAppAssessmentAlert } from './clinical-ui.jsx';
 import { RecordFilters } from './search-ui.jsx';
@@ -21,6 +22,7 @@ export function AssessmentCard({
   const peRequired = assessment.pe_required ?? ['MEDIUM', 'HIGH'].includes(assessment.maternal_risk);
   if (removed) return <section className="card success" role="status">{t('Assessment deleted from active history.')} <Link to="/patient/health">{t('Add a corrected health record')} →</Link></section>;
   return <article className="card stack assessment-result">
+    <BloodPressureNotice observations={assessment.observations} saved />
     <div className="assessment-stages"><span><b className="stage-number">1</b>{t('Maternal risk screening')}</span>{peRequired && <><Icon name="arrow" size={15} /><span className="pending-stage"><b className="stage-number">2</b>{t('Pre-eclampsia screening')}</span></>}</div>
     <div className="assessment-heading"><div><span className="eyebrow">{t(viewerRole === 'doctor' ? 'Patient assessment' : 'Your assessment result')}</span>
       <h2 className="!text-2xl">{t("Screening category:")}{assessment.maternal_risk}</h2></div>
@@ -28,7 +30,7 @@ export function AssessmentCard({
     <div className="assessment-record-toolbar"><p className="muted text-sm m-0">{t("Saved")}{new Date(assessment.created_at).toLocaleString()}</p>{viewerRole === 'patient' && <AssessmentRemoval assessmentId={assessment.id} onRemoved={() => { setRemoved(true); onRemoved?.(assessment.id); }} />}</div>
     <p className="screening-notice">{t('Screening has not been clinically validated. This result supports a doctor conversation; it is not a diagnosis.')}</p>
     {peRequired ? <PEScreeningStage assessment={assessment} capabilities={peCapabilities} viewerRole={viewerRole} onChanged={setLatest} /> : <p className="muted text-sm">{t('PE review was not triggered by this result. A low category does not rule out pre-eclampsia.')}</p>}
-    <section className="result-next-step"><span className="step-icon"><Icon name="calendar" size={20} /></span><div><strong>{t('Your next step')}</strong><p>{t(viewerRole === 'doctor' ? 'Review the recorded readings and add your clinical assessment below.' : assessment.clinical_review?.status === 'URGENT_FOLLOW_UP' ? 'Read your doctor’s follow-up instructions below and arrange the requested care.' : 'Review your readings and this result with your doctor, even when the category is LOW.')}</p></div>{viewerRole === 'patient' && <Link className="text-link" to="/patient/appointments">{t('Book a doctor')}<Icon name="arrow" size={15} /></Link>}</section>
+    <section className="result-next-step"><span className="step-icon"><Icon name="calendar" size={20} /></span><div><strong>{t('Your next step')}</strong><p>{t(viewerRole === 'doctor' ? 'Review the recorded readings and add your clinical assessment below.' : assessment.clinical_review?.status === 'URGENT_FOLLOW_UP' ? 'Read your doctor’s follow-up instructions below and arrange the requested care.' : 'Review your readings and this result with your doctor, even when the category is LOW.')}</p></div>{viewerRole === 'patient' && bloodPressureAction(assessment.observations) !== 'IMMEDIATE_MATERNITY_REVIEW' && <Link className="text-link" to="/patient/appointments">{t('Book a doctor')}<Icon name="arrow" size={15} /></Link>}</section>
     <details className="explanation"><summary>{t('View saved measurements')}</summary><Measurements values={assessment.observations} /></details>
     <CarePlanPanel assessment={assessment} onChanged={setLatest} viewerRole={viewerRole} />
     <ClinicalReviewPanel assessment={assessment} onChanged={setLatest} viewerRole={viewerRole} appointmentId={appointmentId} />
@@ -83,7 +85,7 @@ function RecordAssessment({
     {location.state?.carePlanError && <p className="banner" role="alert">{t('The assessment was saved. The care plan could not be prepared:')}{location.state.carePlanError}</p>}
     {removedNotice && <p className="success" role="status">{t('Assessment deleted from active history.')} <Link to="/patient/health">{t('Add a corrected health record')} →</Link></p>}
     <section className="card stack"><ResourceStatus resource={record} />{record.data && <>
-      <div className="assessment-record-toolbar"><h2>{t("Saved measurements")}</h2><HealthRecordRemoval recordId={recordId} onRemoved={() => navigate('/patient/history', { state: { recordRemoved: true } })} /></div><Measurements values={record.data.observations} />
+      <div className="assessment-record-toolbar"><h2>{t("Saved measurements")}</h2><HealthRecordRemoval recordId={recordId} onRemoved={() => navigate('/patient/history', { state: { recordRemoved: true } })} /></div><BloodPressureNotice observations={record.data.observations} saved /><Measurements values={record.data.observations} />
       </>}
       <ResourceStatus resource={capabilities} />
       {capabilities.data && !capabilities.data.pregnancy_model_ready && <div className="banner">{t("New assessments are currently unavailable. Previously saved results remain readable.")}</div>}

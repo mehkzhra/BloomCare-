@@ -70,8 +70,8 @@ it('requires an explicit answer for all boolean measurements', () => {
 
 it('keeps actual out-of-range saved readings and directs the patient to review', () => {
   start({ ...assessment, observations: { ...observations, systolic_mmhg: 145 } });
-  expect(screen.getByRole('alert')).toHaveTextContent('No PE category can be produced');
-  expect(screen.getByRole('alert')).toHaveTextContent('145');
+  expect(screen.getByText(/These saved readings need a doctor review/)).toHaveTextContent('No PE category can be produced');
+  expect(screen.getByRole('alert', { name: /Blood pressure care guidance/ })).toHaveTextContent('145');
   expect(screen.queryByRole('form')).not.toBeInTheDocument();
   expect(fetch).not.toHaveBeenCalled();
 });
@@ -108,4 +108,10 @@ it('shows a failed PE request without a made-up category and permits retry', asy
   expect(await screen.findByRole('alert')).toHaveTextContent('No PE result was saved');
   expect(screen.queryByText(/PE screening category:/)).not.toBeInTheDocument();
   await waitFor(() => expect(screen.getByRole('button', { name: 'Complete PE screening' })).toBeEnabled());
+});
+
+it('keeps urgent BP guidance above a LOW category without routine appointment links', () => {
+  start({ ...assessment, maternal_risk: 'LOW', observations: { ...observations, systolic_mmhg: 170, diastolic_mmhg: 110 } });
+  expect(screen.getByRole('alert', { name: /Blood pressure care guidance/ })).toHaveTextContent('Seek urgent maternity care now');
+  expect(screen.queryByRole('link', { name: 'Arrange a doctor review' })).not.toBeInTheDocument();
 });

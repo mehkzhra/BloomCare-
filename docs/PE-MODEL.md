@@ -33,3 +33,11 @@ These bounds and unusual source values require data/clinical review; they are no
 The original 162/41 split has 25 test rows matching fitting inputs, so its 90.24% nominal score is not independent evaluation. Fresh deduplicated/grouped retraining reproduced 72.22% accuracy on 18 historical test rows and was not activated. Source origin/licensing for medical reuse, HB units, confirmed outcomes and independent clinical validation remain unresolved. Scores are uncalibrated category scores, not disease probabilities.
 
 Supported results retain actual feature explanations and selected-record access checks. An unavailable model does not erase previously saved results. Use the [current updater](../README.md), [test samples](TEST-SAMPLES.md) and [verification record](VERIFICATION.md).
+
+## High blood pressure workflow (2026-10-29)
+
+The form, saved record and assessment display independent blood-pressure care guidance even when screening cannot run. Systolic >=140 OR diastolic >=90 triggers same-day maternity contact; systolic >=160 OR diastolic >=110 triggers immediate maternity/emergency care guidance. Severe readings suppress routine appointment links in the assessment/PE stage. Advice distinguishes current from historical readings and remains visible before 20 weeks and alongside LOW model categories. Actual measurements are preserved.
+
+Thresholds follow [NICE NG133](https://www.nice.org.uk/guidance/ng133/chapter/recommendations) and its [gestational hypertension summary](https://www.nice.org.uk/guidance/ng133/resources/gestational-hypertension-pdf-8720711394). Same-day contact wording is a conservative application routing policy. This rule is not a PE diagnosis, classifier output, or substitute for clinical assessment; lower readings do not exclude PE or concerning symptoms.
+
+This change fixes the dead-end workflow, not the model's evidence gap. PE inference still declines unsupported measurements. Wider inference requires appropriately licensed, documented data with confirmed outcomes, adequate coverage, patient-separated evaluation and independent clinical validation. No range widening, clipping, invented training examples or replacement model is included.

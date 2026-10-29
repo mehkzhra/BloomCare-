@@ -4,6 +4,7 @@ import { api } from './api.js';
 import { t, useLanguage } from './i18n.js';
 import { useResource } from './resources.jsx';
 import { Icon } from './ui.jsx';
+import { BloodPressureNotice } from './blood-pressure-notice.jsx';
 
 const basic = [
   ['age_years', 'Age (years)', 10, 65, 1], ['gestational_weeks', 'Pregnancy duration (weeks)', 0, 45, 'any'],
@@ -72,6 +73,8 @@ export function HealthPage() {
   }
   return <div className="card stack"><div className="workspace-heading"><div><span className="eyebrow">{t('One clear health record')}</span><h1 className="!text-3xl">{t('Add health observations')}</h1>
     <p className="muted">{t('Use your measured readings. The faint numbers are screening limits, not healthy ranges.')}</p></div><Link className="button secondary" to="/patient/history">{t('View health history')}<Icon name="arrow" size={16} /></Link></div>
+    <BloodPressureNotice observations={values} />
+    <p className="screening-notice">{t('Severe headache, vision changes or pain below the ribs: seek medical advice immediately, even if blood pressure is lower.')}</p>
     <form className="stack" onSubmit={submit}>
       <div className="unit-controls"><label>{t('Glucose unit')}<select value={glucoseUnit} onChange={e => changeUnit('glucose_mmol_l', e.target.value)} disabled={busy}><option>mg/dL</option><option>mmol/L</option></select></label>
         <label>{t('Temperature unit')}<select value={temperatureUnit} onChange={e => changeUnit('temperature_c', e.target.value)} disabled={busy}><option>°F</option><option>°C</option></select></label></div>

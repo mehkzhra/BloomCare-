@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { bloodPressureAction } from './blood-pressure-notice.jsx';
 import { api } from './api.js';
 import { t } from './i18n.js';
 import { Icon } from './ui.jsx';
@@ -71,6 +72,6 @@ export function PEScreeningStage({ assessment, capabilities, viewerRole, onChang
         </form>}
       </>}
     </>}
-    {viewerRole === 'patient' && <Link className="text-link" to={`/patient/appointments?review=pe&record=${encodeURIComponent(assessment.health_record_id)}`}>{t('Arrange a doctor review')}<Icon name="arrow" size={16} /></Link>}
+    {viewerRole === 'patient' && bloodPressureAction(assessment.observations) !== 'IMMEDIATE_MATERNITY_REVIEW' && <Link className="text-link" to={`/patient/appointments?review=pe&record=${encodeURIComponent(assessment.health_record_id)}`}>{t('Arrange a doctor review')}<Icon name="arrow" size={16} /></Link>}
   </section>;
 }

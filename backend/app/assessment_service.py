@@ -8,6 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from app.bp_guidance import blood_pressure_guidance
 from app.maternal_model import (
     ModelUnavailable,
     UnsupportedMeasurements,
@@ -181,6 +182,7 @@ def serialize_assessment(row: Assessment):
         "pe_status": status,
         "pe_reason": reason,
         "pe_input_issues": pe_input_issues(row) if not pe else [],
+        "blood_pressure_guidance": blood_pressure_guidance(row.observations_snapshot),
         "clinical_indicators": row.clinical_snapshot,
         "clinical_review": review_out(row.clinical_review),
         "care_plan": {

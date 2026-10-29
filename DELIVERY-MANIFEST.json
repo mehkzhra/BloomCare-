@@ -1,9 +1,9 @@
 {
   "release": "1.3.0",
-  "date": "2026-10-28",
+  "date": "2026-10-29",
   "schema": "0013_account_security",
   "extract_into": "existing BloomCare project root",
-  "source_file_count": 253,
+  "source_file_count": 257,
   "cleanup": {
     "obsolete_paths": 66,
     "history": "docs/history.zip",
@@ -70,8 +70,8 @@
     },
     {
       "path": "backend/app/api.py",
-      "bytes": 17470,
-      "sha256": "557629c91b48a6a9897a5deecff6235cc3222594d72c227bec7d40e3bb06f32c"
+      "bytes": 17639,
+      "sha256": "945ad429d150c718b534062ade3c211c2277d539a15462fba4bfea87bc88189c"
     },
     {
       "path": "backend/app/appointment_api.py",
@@ -90,13 +90,18 @@
     },
     {
       "path": "backend/app/assessment_service.py",
-      "bytes": 11262,
-      "sha256": "114aa9a9f8f1124f5629212affaa56a991d1a6fcb6f3b2656db91cba82a47c7b"
+      "bytes": 11401,
+      "sha256": "9c33469b44f7f55e9af02291a39b3fd6dd848466a555dfc268db3e3ea4378481"
     },
     {
       "path": "backend/app/auth_limits.py",
       "bytes": 2899,
       "sha256": "d6873292c2fd54cd9b7c5009359a0adda25af5269354466fa9efff934baaf35d"
+    },
+    {
+      "path": "backend/app/bp_guidance.py",
+      "bytes": 1247,
+      "sha256": "3f6cc829f2dd6cf7d0584172ae8bbd1e5b7e598805bb5e16789252a4364743f3"
     },
     {
       "path": "backend/app/care_api.py",
@@ -245,8 +250,8 @@
     },
     {
       "path": "backend/app/schemas.py",
-      "bytes": 7619,
-      "sha256": "ce349adc54046b37a3f173878ec7a558c6565883266e2e885bdb5e462f6f611d"
+      "bytes": 7667,
+      "sha256": "c3fbf9e2745e7c58d5314b45f5777c33d1af8bfead5db688e932edbd5df5d29d"
     },
     {
       "path": "backend/app/security.py",
@@ -412,6 +417,11 @@
       "path": "backend/tests/test_audit_lock.py",
       "bytes": 1371,
       "sha256": "893195458062cbb0ffa2d89d377679a981178d8dbb4c3ed6320426b56f941cff"
+    },
+    {
+      "path": "backend/tests/test_bp_guidance.py",
+      "bytes": 1965,
+      "sha256": "457cf58bcd0feacea567547a33885fdc1f649ca56059c7b0f7b7490168316de2"
     },
     {
       "path": "backend/tests/test_care.py",
@@ -610,8 +620,8 @@
     },
     {
       "path": "docs/PE-MODEL.md",
-      "bytes": 3429,
-      "sha256": "05d3bae55f18c461680dfa4248046d139a7d3f6e727429b7fd6bca6f97e043ef"
+      "bytes": 4833,
+      "sha256": "cdc787426b020f582fd9485b4e15549b434ea6a5993fa9178c4ba37a25e0a92f"
     },
     {
       "path": "docs/RECRUITER-WALKTHROUGH.md",
@@ -775,8 +785,8 @@
     },
     {
       "path": "frontend/src/assessments.jsx",
-      "bytes": 10590,
-      "sha256": "ff98083dbd5c3f4a70891f371f616d4af8918658dd77961e6af1beb6db7af816"
+      "bytes": 10901,
+      "sha256": "784ec48065288b2449f4b6f46c7573ffd1beb1a73c79e16f8dfb518cb4dc34c6"
     },
     {
       "path": "frontend/src/assessments.test.jsx",
@@ -792,6 +802,16 @@
       "path": "frontend/src/assistant.test.jsx",
       "bytes": 10298,
       "sha256": "a4dbefc11871ed484411d65670e0bff124743bae6505a12787d1f6c3f76d9aea"
+    },
+    {
+      "path": "frontend/src/blood-pressure-notice.jsx",
+      "bytes": 2038,
+      "sha256": "2545df0928b7e1d4624de4d144caec4ca47921781760a314a484aed18250f01c"
+    },
+    {
+      "path": "frontend/src/blood-pressure-notice.test.jsx",
+      "bytes": 1464,
+      "sha256": "3d4de0e14952d12b6531459a30505511321d37c915f44390a110f0ea7421c4c2"
     },
     {
       "path": "frontend/src/care.jsx",
@@ -855,8 +875,8 @@
     },
     {
       "path": "frontend/src/health-form.jsx",
-      "bytes": 9423,
-      "sha256": "ebb7bbfc4d20ba2d240e3dc54cce795f85f41b5606b90899f3f47ae3aaec18e5"
+      "bytes": 9709,
+      "sha256": "3a53988aa4bcb369e5de00072aeb9cf9c160f073217ed008f46a29e96bcf2f4e"
     },
     {
       "path": "frontend/src/health-record-removal.test.jsx",
@@ -895,13 +915,13 @@
     },
     {
       "path": "frontend/src/pe-screening.jsx",
-      "bytes": 8642,
-      "sha256": "c22432c304750a2053789274fac19724a200685c4a56d9c974ac238a0b724f72"
+      "bytes": 8790,
+      "sha256": "524426701e710f92f00448404fb743573a43ba314ea829ad98601f7ad714ef00"
     },
     {
       "path": "frontend/src/pe-screening.test.jsx",
-      "bytes": 7228,
-      "sha256": "3ebcedfb2e33858c24ea03b40b16bd22b55de372e31897bc44d67fdf9ca7f20b"
+      "bytes": 7761,
+      "sha256": "24d3938591ae2b7262e98b0d298d935571187408c6b8fe3faaf1f32a0b935c27"
     },
     {
       "path": "frontend/src/privacy-content.js",
@@ -965,8 +985,8 @@
     },
     {
       "path": "frontend/src/urdu.json",
-      "bytes": 169402,
-      "sha256": "d1f3fcbe8bd7be7a2e7e312e6db977d1f62d1a912a6902218e84d10137db76d6"
+      "bytes": 171715,
+      "sha256": "89c22a81223b8bddcad86c615a29ca4685ea65e941e24cbc1f153dd66f825352"
     },
     {
       "path": "frontend/src/usability.test.jsx",

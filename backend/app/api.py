@@ -243,7 +243,12 @@ def complete_assessment(
         return assess_patient(db, user.id, record.id)
     except HTTPException as error:
         detail = error.detail if isinstance(error.detail, dict) else {"message": error.detail}
-        raise HTTPException(error.status_code, {**detail, "health_record_id": record.id}) from None
+        from app.bp_guidance import blood_pressure_guidance
+
+        raise HTTPException(error.status_code, {
+            **detail, "health_record_id": record.id,
+            "blood_pressure_guidance": blood_pressure_guidance(record.observations),
+        }) from None
 
 
 @router.get("/patients/me/health-records/{record_id}", response_model=HealthOut)
