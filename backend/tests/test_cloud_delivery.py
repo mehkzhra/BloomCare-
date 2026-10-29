@@ -8,6 +8,13 @@ from pathlib import Path
 import anyio
 import httpx
 import pytest
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
+from pydantic import SecretStr, ValidationError
+from sqlalchemy import select
+from starlette.exceptions import HTTPException
+from starlette.requests import Request
+
 from app import account_email
 from app.auth_limits import peer_identity
 from app.cloud_setup import bootstrap_admin
@@ -15,12 +22,6 @@ from app.config import Settings, get_settings
 from app.database import SessionLocal
 from app.models import User
 from app.web_frontend import SPAFiles, mount_frontend
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
-from pydantic import SecretStr, ValidationError
-from sqlalchemy import select
-from starlette.exceptions import HTTPException
-from starlette.requests import Request
 
 
 @pytest.mark.parametrize("purpose,path", [
@@ -273,9 +274,9 @@ def test_cloud_custom_origin_aligns_csrf_and_recovery_without_trusting_proxy_hea
 
 
 def test_cloud_private_pe_files_must_exist_and_match_before_serving(tmp_path, monkeypatch):
-    from app.pe_model import PEModelUnavailable
-
     from deploy import prepare_cloud_model
+
+    from app.pe_model import PEModelUnavailable
 
     # This test isolates PE integrity from the separately verified maternal artifact.
     monkeypatch.setattr(prepare_cloud_model, "load_registered_model", lambda *_: None)

@@ -9,7 +9,7 @@ BloomCare brings pregnancy observations, risk screening, clinician review and ca
 
 **[🌐 Hosted address](https://bloomcare.containers.snapdeploy.app)** · [🚀 Setup](#-get-started-on-windows) · [☁️ Deployment](docs/DEPLOYMENT.md) · [🧪 Demo inputs](docs/TEST-SAMPLES.md) · [🏗️ Architecture](docs/ARCHITECTURE.md)
 
-> Hosting status, 26 October 2026: the `bloomcare` address is assigned. The latest supplied logs show successful application startup followed by shutdown; readiness after the most recent start has not been confirmed. This link is not a claim of continuous availability.
+> Final-year project scope: demonstrate the implemented care workflow with labelled synthetic records. Screening is not independently clinically validated. See the [submission and demonstration guide](docs/FINAL-YEAR-SUBMISSION.md). A readiness check returned HTTP 200 on 29 October 2026; this does not establish continuous availability or verify every authenticated workflow.
 
 ## ✨ What you can do
 

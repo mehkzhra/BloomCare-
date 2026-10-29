@@ -3,16 +3,17 @@
 from datetime import timedelta
 
 import pytest
+from conftest import sign_in
+from fastapi import HTTPException
+from pydantic import SecretStr
+from sqlalchemy import func, select
+
 from app import account_email
 from app.account_security import action_rows, create_email_action
 from app.config import get_settings
 from app.database import SessionLocal
 from app.models import AccountEvent, EmailActionToken, User, utc_now
 from app.retire_admin import main, retire_admin
-from conftest import sign_in
-from fastapi import HTTPException
-from pydantic import SecretStr
-from sqlalchemy import func, select
 
 PASSWORD = "ValidPassword123!"
 OWNER_EMAIL = "owner@example.com"

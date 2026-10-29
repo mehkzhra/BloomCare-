@@ -83,3 +83,50 @@ python -m ml.train_pe_cbc --source "PE LMR Dataset Almawi.xlsx" --output "privat
 The raw workbook is not redistributed in this repository. Use the original dataset's download and preserve its attribution.
 
 Other reviewed candidates: Dryad 10.5061/dryad.kprr4xhk9 describes a 410-participant intervention trial in high-risk overweight pregnancies; download requests in this environment returned 403/401, so no training claim is made for it. Zenodo 15294686 uses cord-blood measurements and is unsuitable as an early antenatal input replacement.
+
+## Frozen candidate evaluation tool
+
+`ml/evaluate_pe_cbc.py` evaluates the existing JSON coefficients without retraining,
+changing the 0.5 threshold, or activating any model. It uses Python's standard library.
+This is evaluation tooling, not additional patient validation evidence.
+
+Before running it, the data custodian must resolve the training-unit/timing questions
+above and document a separately collected cohort. Do not guess units or populate the
+metadata with assumptions. Use one de-identified patient per CSV row, with the header:
+
+```text
+patient_id,Status,WBC,RBC,Neutrophils,Lymphocytes,Monocytes,Platelets
+```
+
+Status is `Patients` for adjudicated PE and `Controls` for controls. Blank CBC cells
+use the frozen training medians; an entirely blank CBC is rejected. Repeated patient
+IDs, negative/non-finite measurements and cohorts lacking either class are rejected.
+Use a private JSON metadata file containing non-empty evidence for `cohort_name`,
+`data_custodian`, `unit_mapping_evidence`, `measurement_timing`, `diagnostic_criteria`,
+and `patient_separation_evidence`, plus `units_match_training: true` only after actual
+verification. The checker cannot independently verify these declarations or exclude
+overlap with unavailable training patient identifiers.
+
+```powershell
+python -m ml.evaluate_pe_cbc --candidate ml/training_reports/pe-cbc-2026-10-29/candidate.json --cohort PRIVATE-COHORT.csv --metadata PRIVATE-METADATA.json --output PRIVATE-EVALUATION.json
+```
+
+The aggregate report includes input hashes, missing-value count, confusion matrix,
+missed cases, sensitivity/specificity and Wilson 95% intervals. It excludes patient
+identifiers and individual predictions, refuses to overwrite an existing report,
+and always preserves `clinical_use: false`. Clinician review, data provenance and
+prospective intended-use validation remain human/evidence requirements.
+
+## Care-guide availability
+
+When Groq is missing, times out or returns a service error, care-plan generation now
+saves a clearly labelled English/Urdu basic educational guide with provenance
+`local-basic-guide-v1`. It uses the existing saved BP guidance and NICE NG133 symptom
+advice, does not invent a PE category, and distinguishes old readings from current or
+unreviewed readings. Consent, ownership, immutable saved context and duplicate-request
+protection are preserved. It is not an AI-personalized or clinician-approved plan.
+An already saved basic guide is returned on repeat requests for the same context.
+
+This fallback requires a running application/database. It cannot repair a hosting
+proxy's 503 response while the container is sleeping. Health readiness alone does
+not verify authenticated care-plan generation or cross-network video calls.

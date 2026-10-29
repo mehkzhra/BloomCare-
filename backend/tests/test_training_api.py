@@ -1,6 +1,7 @@
 import pytest
-from app import training_api
 from conftest import sign_in
+
+from app import training_api
 
 
 @pytest.mark.parametrize("account", ["patient1", "doctor1"])

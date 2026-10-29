@@ -1,7 +1,8 @@
-from app.database import SessionLocal
-from app.models import AccountEvent, DoctorProfile
 from conftest import sign_in
 from sqlalchemy import select
+
+from app.database import SessionLocal
+from app.models import AccountEvent, DoctorProfile
 
 DOCTOR = {
     "email": "newdoctor@example.com",

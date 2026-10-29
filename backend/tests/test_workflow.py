@@ -2,13 +2,14 @@ from datetime import datetime, timedelta, timezone
 
 import jwt
 import pytest
+from conftest import sign_in
+from fastapi.testclient import TestClient
+
 from app.assessment_service import pe_screening_required
 from app.config import get_settings
 from app.database import SessionLocal
 from app.main import app
 from app.models import User
-from conftest import sign_in
-from fastapi.testclient import TestClient
 
 HEALTH = {
     "age_years": 27,

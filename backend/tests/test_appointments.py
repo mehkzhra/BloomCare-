@@ -4,6 +4,10 @@ from datetime import datetime, timedelta, timezone
 from threading import Barrier
 
 import pytest
+from conftest import sign_in
+from fastapi.testclient import TestClient
+from sqlalchemy import func, select, text
+
 from app import appointment_service
 from app.database import SessionLocal, engine
 from app.main import app
@@ -15,9 +19,6 @@ from app.models import (
     DoctorProfile,
     User,
 )
-from conftest import sign_in
-from fastapi.testclient import TestClient
-from sqlalchemy import func, select, text
 
 HEALTH = {
     "age_years": 27,

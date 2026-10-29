@@ -1,7 +1,8 @@
 import pytest
-from app.bp_guidance import blood_pressure_guidance
 from conftest import sign_in
 from test_appointments import HEALTH
+
+from app.bp_guidance import blood_pressure_guidance
 
 
 @pytest.mark.parametrize("systolic,diastolic,action", [

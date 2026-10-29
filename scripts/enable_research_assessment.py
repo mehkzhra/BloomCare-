@@ -14,10 +14,10 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "backend"))
 
-from app.maternal_model import load_registered_model  # noqa: E402
-
 from ml.data_contract import load_data  # noqa: E402
 from ml.verify_model import verify  # noqa: E402
+
+from app.maternal_model import load_registered_model  # noqa: E402
 
 
 def atomic_text(path: Path, contents: str):

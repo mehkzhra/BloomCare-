@@ -5,14 +5,15 @@ from uuid import uuid4
 
 import httpx
 import pytest
-from app import groq_service
-from app.config import get_settings
-from app.database import SessionLocal
-from app.models import AssistantTurn
 from conftest import sign_in
 from pydantic import SecretStr
 from sqlalchemy import func, select
 from test_delivery_scripts import load
+
+from app import groq_service
+from app.config import get_settings
+from app.database import SessionLocal
+from app.models import AssistantTurn
 
 KEY = "fake-key-private-do-not-print"
 PRIVATE = "private-provider-body-do-not-print"

@@ -4,16 +4,17 @@ import hashlib
 from datetime import timedelta
 
 import pytest
+from conftest import sign_in
+from fastapi.testclient import TestClient
+from pydantic import SecretStr
+from sqlalchemy import select
+
 from app import account_email
 from app import api as auth_api
 from app.auth_limits import consume
 from app.config import Settings, get_settings
 from app.database import SessionLocal
 from app.models import AccountEvent, AuthRateBucket, EmailActionToken, User, utc_now
-from conftest import sign_in
-from fastapi.testclient import TestClient
-from pydantic import SecretStr
-from sqlalchemy import select
 
 
 @pytest.fixture

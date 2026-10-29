@@ -3,8 +3,6 @@
 from uuid import uuid4
 
 import pytest
-from app.database import SessionLocal
-from app.models import AccountEvent, Assessment, DoctorNote, HealthRecord, Notification
 from conftest import sign_in
 from sqlalchemy import func, select
 from test_delivery import episode, future_slot
@@ -12,6 +10,9 @@ from test_pe_screening import PE_VALUES, create_assessment
 from test_pe_screening import available as available  # noqa: F401
 from test_pe_screening import pe_examples as pe_examples  # noqa: F401
 from test_pe_screening import trained as trained  # noqa: F401
+
+from app.database import SessionLocal
+from app.models import AccountEvent, Assessment, DoctorNote, HealthRecord, Notification
 
 
 def remove(client, identity, reason="Blood pressure entered incorrectly"):

@@ -5,6 +5,16 @@ from uuid import uuid4
 
 import httpx
 import pytest
+from conftest import sign_in
+from pydantic import SecretStr
+from sqlalchemy import func, select
+from test_appointments import book, decide
+from test_communication import upload
+from test_pe_screening import PE_VALUES, create_assessment
+from test_pe_screening import available as available  # noqa: F401
+from test_pe_screening import pe_examples as pe_examples  # noqa: F401
+from test_pe_screening import trained as trained  # noqa: F401
+
 from app import care_plan_service, whatsapp_service
 from app.assessment_service import pe_screening_required
 from app.config import get_settings
@@ -20,15 +30,6 @@ from app.models import (
     PEScreening,
     WhatsAppAlert,
 )
-from conftest import sign_in
-from pydantic import SecretStr
-from sqlalchemy import func, select
-from test_appointments import book, decide
-from test_communication import upload
-from test_pe_screening import PE_VALUES, create_assessment
-from test_pe_screening import available as available  # noqa: F401
-from test_pe_screening import pe_examples as pe_examples  # noqa: F401
-from test_pe_screening import trained as trained  # noqa: F401
 
 
 def future_slot(days=3):
@@ -194,22 +195,34 @@ def test_care_plan_consent_saved_version_and_provider_data_minimization(
     assert client.post(path, json={"consent": True}).status_code == 404
 
 
-def test_care_plan_failure_does_not_invent_a_saved_plan(
-    client, accounts, available, pe_examples, groq, monkeypatch
+@pytest.mark.parametrize("failure", ["missing_key", "timeout", "unavailable"])
+def test_care_plan_failure_saves_labelled_basic_guide(
+    client, accounts, available, pe_examples, groq, monkeypatch, failure
 ):
     sign_in(client)
     _, assessment = create_assessment(client, pe_examples)
 
     def fail(*_args):
-        raise GroqFailure("GROQ_TIMEOUT", "Provider timed out", 504)
+        if failure == "missing_key":
+            pytest.fail("Missing-key fallback must not call the provider")
+        if failure == "timeout":
+            raise GroqFailure("GROQ_TIMEOUT", "Provider timed out", 504)
+        raise GroqFailure("GROQ_UNAVAILABLE", "Provider unavailable", 503)
 
+    if failure == "missing_key":
+        monkeypatch.setattr(get_settings(), "groq_api_key", None)
     monkeypatch.setattr(care_plan_service, "complete", fail)
     path = f"/api/patients/me/assessments/{assessment['id']}/care-plan"
-    assert client.post(path, json={"consent": True}).status_code == 504
-    assert (
-        client.get(f"/api/patients/me/assessments/{assessment['id']}").json()["care_plan"] is None
-    )
-    assert client.post(path, json={"consent": True}).status_code == 429
+    response = client.post(path, json={"consent": True})
+    assert response.status_code == 200, response.text
+    plan = response.json()["care_plan"]
+    assert plan["provider_model"] == "local-basic-guide-v1"
+    assert "AI personalization unavailable" in plan["content"]
+    saved = client.get(f"/api/patients/me/assessments/{assessment['id']}").json()["care_plan"]
+    assert saved["id"] == plan["id"] and saved["current"]
+    assert client.post(path, json={"consent": True}).json()["care_plan"]["id"] == plan["id"]
+    sign_in(client, "patient2")
+    assert client.post(path, json={"consent": True}).status_code == 404
 
 
 def test_clinical_review_versions_urgent_counts_notifications_and_authorization(

@@ -1,7 +1,8 @@
 import pytest
+from pydantic import SecretStr, ValidationError
+
 from app.config import Settings, get_settings
 from app.deployment_checks import configuration_checks
-from pydantic import SecretStr, ValidationError
 
 
 def test_public_preflight_requires_actual_configuration_without_sending(monkeypatch):

@@ -1,8 +1,9 @@
 import pytest
-from app.database import SessionLocal, engine
-from app.models import AccessAudit, User
 from conftest import sign_in
 from sqlalchemy import select, text
+
+from app.database import SessionLocal, engine
+from app.models import AccessAudit, User
 
 
 def test_preserved_audit_actor_can_be_unavailable_without_breaking_history(client, accounts):

@@ -39,6 +39,10 @@ Common core record for all three: age **25**, duration **24 weeks**, BP **120/80
 
 HB's clinical unit was not documented in the original source. Do not infer a unit or use this table to choose real clinical inputs. The active imported PE forest is unchanged by retraining.
 
+On 29 October 2026, the three PE examples were rechecked against the pinned local
+PE forest and returned LOW, MEDIUM and HIGH respectively, including feature
+explanations. This recheck did not query the deployed application.
+
 ## Duration and correction checks
 
 1. Use a supported maternal sample and change only pregnancy duration to **12**. The saved value must stay 12 and the maternal category/scores must stay the same. For MEDIUM/HIGH, PE shows its **14–40-week** coverage and no PE category.

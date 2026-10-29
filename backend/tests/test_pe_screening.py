@@ -5,11 +5,8 @@ import shutil
 from datetime import datetime, timedelta, timezone
 
 import pytest
-from app import pe_model
-from app.database import SessionLocal
-from app.models import Assessment, PEScreening
-from app.pe_contract import BASE_FIELDS, input_contract
 from conftest import sign_in
+from ml.data_contract import load_data
 from sqlalchemy import func, select
 from test_assessments import (  # noqa: F401
     SOURCE,
@@ -23,7 +20,10 @@ from test_assessments import (
     trained as maternal_trained,
 )
 
-from ml.data_contract import load_data
+from app import pe_model
+from app.database import SessionLocal
+from app.models import Assessment, PEScreening
+from app.pe_contract import BASE_FIELDS, input_contract
 
 # Reuse the real maternal-model fixtures, preserving their pytest discovery names.
 available = maternal_available

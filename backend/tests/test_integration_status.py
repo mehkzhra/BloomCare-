@@ -3,10 +3,11 @@
 import json
 
 import pytest
-from app.config import get_settings
-from app.integration_status import parse_ice_servers, service_configuration
 from conftest import sign_in
 from pydantic import SecretStr
+
+from app.config import get_settings
+from app.integration_status import parse_ice_servers, service_configuration
 
 
 @pytest.mark.parametrize(

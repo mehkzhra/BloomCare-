@@ -24,11 +24,12 @@ def run(users, clients, rounds):
             BLOOMCARE_RESEARCH_ASSESSMENTS="false",
         )
         sys.path.insert(0, str(ROOT / "backend"))
+        from fastapi.testclient import TestClient
+
         from app.database import Base, SessionLocal, engine
         from app.main import app
         from app.models import HealthRecord, PatientProfile, User
         from app.security import hasher, issue_token
-        from fastapi.testclient import TestClient
 
         Base.metadata.create_all(engine)
         identities = []

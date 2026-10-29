@@ -9,13 +9,14 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "backend"))
 os.chdir(ROOT / "backend")
 
+from sqlalchemy import inspect, text  # noqa: E402
+
 from app.config import get_settings  # noqa: E402
 from app.database import engine  # noqa: E402
 from app.integration_status import service_configuration  # noqa: E402
 from app.pe_explanation import explainer  # noqa: E402
 from app.pe_model import get_pe_model  # noqa: E402
 from app.whatsapp_service import configured  # noqa: E402
-from sqlalchemy import inspect, text  # noqa: E402
 
 
 def main():

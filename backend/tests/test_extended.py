@@ -1,15 +1,16 @@
 from datetime import timedelta
 from uuid import uuid4
 
-from app.config import get_settings
-from app.database import SessionLocal
-from app.models import FamilyGrant, Notification, utc_now
-from app.reminders import process_reminders
 from conftest import sign_in
 from pydantic import SecretStr
 from sqlalchemy import select
 from test_appointments import book, decide
 from test_care import MEDICINE, SYMPTOM
+
+from app.config import get_settings
+from app.database import SessionLocal
+from app.models import FamilyGrant, Notification, utc_now
+from app.reminders import process_reminders
 
 
 def test_family_scope_email_and_revoke(client, accounts):

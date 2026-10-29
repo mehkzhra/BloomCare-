@@ -1,8 +1,6 @@
 """Verify actual dashboard totals, role scopes, clinical grants and usable coverage errors."""
 
 import pytest
-from app.database import SessionLocal
-from app.models import DoctorProfile
 from conftest import sign_in
 from test_appointments import HEALTH
 from test_delivery import episode
@@ -10,6 +8,9 @@ from test_pe_screening import PE_VALUES
 from test_pe_screening import available as available  # noqa: F401
 from test_pe_screening import pe_examples as pe_examples  # noqa: F401
 from test_pe_screening import trained as trained  # noqa: F401
+
+from app.database import SessionLocal
+from app.models import DoctorProfile
 
 PATHS = {
     "patient1": "/api/patients/me/workspace",

@@ -9,15 +9,15 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+from conftest import sign_in
+from ml.data_contract import load_data
+from ml.train_maternal import train
+from sqlalchemy import func, select
+
 from app import maternal_model
 from app.config import get_settings
 from app.database import SessionLocal
 from app.models import Assessment, ModelVersion
-from conftest import sign_in
-from sqlalchemy import func, select
-
-from ml.data_contract import load_data
-from ml.train_maternal import train
 
 SOURCE = Path(__file__).parent / "fixtures" / "maternal_risk_uci.csv"
 

@@ -1,10 +1,11 @@
 from uuid import uuid4
 
-from app.database import SessionLocal
-from app.models import CareMessage, Notification
 from conftest import sign_in
 from sqlalchemy import func, select
 from test_appointments import book, decide
+
+from app.database import SessionLocal
+from app.models import CareMessage, Notification
 
 PDF = b"%PDF-1.4\nDemo report\n%%EOF"
 

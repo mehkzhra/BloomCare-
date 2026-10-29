@@ -12,6 +12,8 @@ from app.assessment_service import (
     require_active_assessment,
     serialize_assessment,
 )
+from app.basic_care_guide import MODEL as BASIC_GUIDE_MODEL
+from app.basic_care_guide import basic_care_guide
 from app.config import get_settings
 from app.groq_service import GroqFailure, complete
 from app.models import Assessment, AssessmentCarePlan, utc_now
@@ -44,8 +46,6 @@ def generate_care_plan(db, patient, assessment_id, data):
     now = utc_now()
     if plan and plan.status == "READY":
         return serialize_assessment(row)
-    if not settings.groq_api_key:
-        raise HTTPException(503, "The care-plan service is currently unavailable")
     if plan:
         updated = plan.updated_at.replace(tzinfo=now.tzinfo)
         if plan.status == "GENERATING" and updated > now - timedelta(minutes=2):
@@ -105,13 +105,12 @@ def generate_care_plan(db, patient, assessment_id, data):
         {"role": "user", "content": json.dumps(context, ensure_ascii=False)},
     ]
     try:
+        if not settings.groq_api_key:
+            raise GroqFailure("GROQ_NOT_CONFIGURED", "AI personalization unavailable", 503)
         content = complete(settings, messages)
-    except GroqFailure as error:
-        plan.status, plan.updated_at = "FAILED", utc_now()
-        db.commit()
-        raise HTTPException(
-            error.status_code, {"code": error.code, "message": error.message}
-        ) from None
+    except GroqFailure:
+        content = basic_care_guide(context, data.language)
+        plan.provider_model = BASIC_GUIDE_MODEL
     plan.content, plan.status, plan.updated_at = content, "READY", utc_now()
     notify(db, patient.id, "CARE_PLAN_READY", assessment_id=row.id)
     db.commit()

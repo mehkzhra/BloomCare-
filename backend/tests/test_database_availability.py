@@ -5,12 +5,13 @@ from time import monotonic
 from unittest.mock import Mock
 
 import pytest
-from app import main
-from app.database import create_database_engine, get_db
 from conftest import sign_in
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.exc import TimeoutError as PoolTimeout
 from test_delivery_scripts import load
+
+from app import main
+from app.database import create_database_engine, get_db
 
 
 @pytest.mark.parametrize(
