@@ -61,3 +61,25 @@ The command checks workbook hashes, audits the deployed JSON forest on its origi
 - Wider BP coverage, confirmed outcomes, HB units, questionable source measurements and independent clinical validation remain unresolved. The candidate is not promoted, and the deployed model must not be presented as clinically validated.
 
 Delivery classification: software/demo PE workflow verified; standalone clinical PE detection not established. The independent high-BP care guidance remains in place. No maternal model change is included.
+
+## New independent-source CBC candidate — 29 October 2026
+
+A separate logistic-regression candidate was actually trained on [Wassim Almawi, Preeclampsia Hematological Indices, Mendeley Data V1](https://data.mendeley.com/datasets/j7d8cdndpw/1), DOI 10.17632/j7d8cdndpw.1, CC BY 4.0. The source describes a retrospective case-control cohort: 192 PE cases and 219 controls. This is a new dataset relative to the legacy BloomCare data, not external validation of the candidate trained on it.
+
+The downloaded workbook SHA-256 is pinned in `ml/train_pe_cbc.py`. Its columns contain six CBC measurements and PE/control status, but no BP or gestational age. Units, collection timing and diagnostic adjudication details have not been established from the retrieved workbook/metadata. Do not substitute these measurements for existing PE form fields or invent three-class labels.
+
+Fixed-seed grouped split: 328 training rows, 83 held-out rows, no identical measurement-group overlap. Median imputation and scaling fit only training rows; fixed logistic regression and threshold 0.5, without test-set tuning. Fourteen measurements were missing. There are 410 distinct measurement groups. JSON export parity with the trained pipeline passed.
+
+[Report](../ml/training_reports/pe-cbc-2026-10-29/report.json): held-out AUROC 0.9283 (bootstrap interval 0.8711–0.9744), sensitivity 34/39 = 87.18%, specificity 35/44 = 79.55%. Five PE cases were missed and nine controls flagged in this sample. This small internal holdout is not prospective clinical validation. Case-control sampling prevents interpreting scores as population disease probabilities.
+
+[Candidate coefficients](../ml/training_reports/pe-cbc-2026-10-29/candidate.json) are explicitly inactive. They are not loaded by the website and contain no individual records. No maternal model was changed. Before activation: confirm units, assay/timing and diagnosis definitions with the data custodian; evaluate a frozen candidate on a separately collected cohort; obtain clinician review of intended use, thresholds and workflow.
+
+Reproduce with research dependencies from the repository root:
+
+```powershell
+python -m ml.train_pe_cbc --source "PE LMR Dataset Almawi.xlsx" --output "private-builds/pe-cbc-new-run"
+```
+
+The raw workbook is not redistributed in this repository. Use the original dataset's download and preserve its attribution.
+
+Other reviewed candidates: Dryad 10.5061/dryad.kprr4xhk9 describes a 410-participant intervention trial in high-risk overweight pregnancies; download requests in this environment returned 403/401, so no training claim is made for it. Zenodo 15294686 uses cord-blood measurements and is unsuitable as an early antenatal input replacement.

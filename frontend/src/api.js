@@ -17,6 +17,13 @@ export async function api(path, { method = 'GET', body, signal, raw = false, hea
       body: body ? (raw ? body : JSON.stringify(body)) : undefined,
     });
     if (response.status === 204) return null;
+    const contentType = response.headers?.get?.('Content-Type') || '';
+    if (contentType.includes('text/html')) {
+      const error = new Error('BloomCare hosting is starting or temporarily unavailable. Open the app in a new tab, wait for it to load, then refresh this record before trying again.');
+      error.code = 'HOST_UNAVAILABLE';
+      error.status = response.ok ? 503 : response.status;
+      throw error;
+    }
     if (response.ok && responseType === 'blob') {
       const blob = await response.blob();
       return blob;

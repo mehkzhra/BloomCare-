@@ -3,7 +3,7 @@
   "date": "2026-10-29",
   "schema": "0013_account_security",
   "extract_into": "existing BloomCare project root",
-  "source_file_count": 259,
+  "source_file_count": 262,
   "cleanup": {
     "obsolete_paths": 66,
     "history": "docs/history.zip",
@@ -610,8 +610,8 @@
     },
     {
       "path": "docs/DEPLOYMENT.md",
-      "bytes": 11577,
-      "sha256": "329cb8b01bfbd933ff08856937c2e7df4476d145dd5d67268283500cb1ad0dd6"
+      "bytes": 12806,
+      "sha256": "d6cd0e1247a8763423e59d16ddf577191bacdb650a3edb65b94f0502fed946c1"
     },
     {
       "path": "docs/MODEL-TRAINING.md",
@@ -620,8 +620,8 @@
     },
     {
       "path": "docs/PE-MODEL.md",
-      "bytes": 6901,
-      "sha256": "c6fdd9e876e00e673d90083e90e12fb1759b8281f4a9d3014c88a7a3e88e5b1f"
+      "bytes": 9626,
+      "sha256": "892ef808d04e7e24dc68b5b4f42879a41a658d53c61ceab4b5f543f83d526afc"
     },
     {
       "path": "docs/RECRUITER-WALKTHROUGH.md",
@@ -760,13 +760,13 @@
     },
     {
       "path": "frontend/src/api.js",
-      "bytes": 2766,
-      "sha256": "af85129cb8e759b6b08ee72b8b8eb624465dbcff3849e6509169ab2895c19f6c"
+      "bytes": 3190,
+      "sha256": "a7f12717ae2f6f866450bfc4464b926ea7897e0a601d48e25b3bbda577eb6def"
     },
     {
       "path": "frontend/src/api.test.js",
-      "bytes": 3065,
-      "sha256": "5b21873bf74f8341aa8afd1f763f9004f12178db0387fd2f65bd224fae451d69"
+      "bytes": 3612,
+      "sha256": "7a4f8400aedd4978375a190628da7d0bb892cd4ff3c7013cbbedeff388d567bc"
     },
     {
       "path": "frontend/src/appointments.jsx",
@@ -825,8 +825,8 @@
     },
     {
       "path": "frontend/src/clinical-ui.jsx",
-      "bytes": 19525,
-      "sha256": "69c271d1bc4c1597d381651a203bc517930ad7e56091dbdbdcc8c861d8bf72bc"
+      "bytes": 19791,
+      "sha256": "ae0edd20d6774d8e7178762248b8cf2a94954fdbf88b5124e70bf39667842218"
     },
     {
       "path": "frontend/src/communication.jsx",
@@ -985,8 +985,8 @@
     },
     {
       "path": "frontend/src/urdu.json",
-      "bytes": 171715,
-      "sha256": "89c22a81223b8bddcad86c615a29ca4685ea65e941e24cbc1f153dd66f825352"
+      "bytes": 172246,
+      "sha256": "80b1065da762d4043bb19ed3f2d22ff4109ce6b454c7c9b19aceb28f1c7d08d4"
     },
     {
       "path": "frontend/src/usability.test.jsx",
@@ -1107,6 +1107,21 @@
       "path": "ml/train_maternal.py",
       "bytes": 7212,
       "sha256": "7615bf0b0c832b0a82b9ee22b9cdaccb22aeb478c599edb468f247d2dce9bfd0"
+    },
+    {
+      "path": "ml/train_pe_cbc.py",
+      "bytes": 7679,
+      "sha256": "e6bc5bf4e4b38d1e454888721f952fcad37f09bd81247f0ca87556abc0d32637"
+    },
+    {
+      "path": "ml/training_reports/pe-cbc-2026-10-29/candidate.json",
+      "bytes": 984,
+      "sha256": "6a150e000921ca4f33787c283bc50365c6c3c7f83e45687f4997f391c7378cfc"
+    },
+    {
+      "path": "ml/training_reports/pe-cbc-2026-10-29/report.json",
+      "bytes": 2456,
+      "sha256": "76e91bd55a66191cb298398bb843ac9ec5a4ac5cae0381d0a4d84cd1e23452bc"
     },
     {
       "path": "ml/training_reports/pe-v1.0.0/pe-retraining-report.json",

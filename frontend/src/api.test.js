@@ -66,3 +66,15 @@ it('does not automatically retry a timed-out write or claim that it was saved', 
   expect((await failure).message).toContain('Check your records');
   expect(fetch).toHaveBeenCalledOnce();
 });
+
+it.each([200, 503])('rejects hosting HTML with status %s without replaying care-plan writes', async status => {
+  const json = vi.fn();
+  vi.stubGlobal('fetch', vi.fn(async () => ({
+    ok: status === 200, status, headers: { get: () => 'text/html; charset=utf-8' }, json,
+  })));
+  await expect(api('/patients/me/assessments/record/care-plan', {
+    method: 'POST', body: { consent: true },
+  })).rejects.toMatchObject({ code: 'HOST_UNAVAILABLE', status: 503 });
+  expect(fetch).toHaveBeenCalledOnce();
+  expect(json).not.toHaveBeenCalled();
+});

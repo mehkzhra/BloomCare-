@@ -1,0 +1,85 @@
+{
+  "source": "https://data.mendeley.com/datasets/j7d8cdndpw/1",
+  "doi": "10.17632/j7d8cdndpw.1",
+  "attribution": "Wassim Almawi (2025), Preeclampsia Hematological Indices, V1",
+  "license": "CC BY 4.0",
+  "source_sha256": "ae382883f33166be157fafb36c5aab75217bbf9e5746bb7bae73f38bb33d6092",
+  "sklearn_version": "1.9.1",
+  "task": "Retrospective PE/control classification using CBC source values",
+  "source_rows": 411,
+  "control_rows": 219,
+  "pe_rows": 192,
+  "features": [
+    "WBC",
+    "RBC",
+    "Neutrophils",
+    "Lymphocytes",
+    "Monocytes",
+    "Platelets"
+  ],
+  "missing_values": {
+    "WBC": 0,
+    "RBC": 0,
+    "Neutrophils": 0,
+    "Lymphocytes": 0,
+    "Monocytes": 7,
+    "Platelets": 7
+  },
+  "unique_measurement_groups": 410,
+  "training_rows": 328,
+  "heldout_rows": 83,
+  "heldout_positive_rows": 39,
+  "overlapping_groups": 0,
+  "split_seed": 20261029,
+  "threshold": 0.5,
+  "preprocessing": "Median imputation and standardisation fitted on development rows only",
+  "heldout_metrics": {
+    "auroc": 0.9283216783216783,
+    "average_precision": 0.9169287471183065,
+    "brier_score": 0.11301947040166331,
+    "sensitivity_at_fixed_0_5": 0.8717948717948718,
+    "specificity_at_fixed_0_5": 0.7954545454545454,
+    "confusion_matrix_actual_rows": [
+      [
+        35,
+        9
+      ],
+      [
+        5,
+        34
+      ]
+    ]
+  },
+  "heldout_auroc_bootstrap_95_percent_interval": [
+    0.8710758631612291,
+    0.9744222834554792
+  ],
+  "constant_training_prevalence_baseline": {
+    "auroc": 0.5,
+    "average_precision": 0.46987951807228917,
+    "brier_score": 0.24910442633114252,
+    "sensitivity_at_fixed_0_5": 0.0,
+    "specificity_at_fixed_0_5": 1.0,
+    "confusion_matrix_actual_rows": [
+      [
+        44,
+        0
+      ],
+      [
+        39,
+        0
+      ]
+    ]
+  },
+  "active": false,
+  "clinical_validation": "NOT_ESTABLISHED",
+  "deployment_blockers": [
+    "CBC units and assay conventions are undocumented in retrieved workbook/metadata.",
+    "Measurement timing and PE adjudication criteria need confirmation.",
+    "No gestational age or BP columns: this does not repair current model BP coverage.",
+    "Case-control sampling cannot supply calibrated real-world disease probabilities.",
+    "No external cohort or patient-identity linkage verifies clinical generalisation.",
+    "Two-class labels cannot justify fabricated LOW/MEDIUM/HIGH PE categories."
+  ],
+  "json_export_parity_passed": true
+}

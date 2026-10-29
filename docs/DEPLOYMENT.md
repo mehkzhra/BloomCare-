@@ -120,3 +120,11 @@ Run the provisioning script from the latest source, optionally passing `--model-
 Only after provisioning succeeds, connect GitHub to SnapDeploy and link `mehkzhra/BloomCare-`, branch `main`, to the **existing** `bloomcare` container ID. The documented endpoint is `POST /api/mobile/github/link` with `containerId`, `repoFullName`, and `deployBranch`. Linking itself starts the first build: do not trigger a second deploy. Do not use the new-container deploy endpoint, delete the container, change its name, or replace its environment map. Retain the current database, JWT secret, public URL, origins, provider keys and port 10000. Verify auto-deploy is enabled for main after linking.
 
 The root Dockerfile is intended for a fresh Git checkout. Local unit/integration checks do not substitute for the first provider build: verify its logs, readiness, both model flags, sign-in, password recovery and two-device consultation before declaring the update live.
+
+## Care-plan HTTP 503 hosting diagnosis — 29 October 2026
+
+A public request to the live readiness URL returned HTTP 503 with SnapDeploy's HTML “Waking up your container” page. This confirms a hosting-level failure at that check; it does not prove that every previous care-plan error had the same cause. The patient-specific care-plan POST requires an authenticated session and was not live-tested here.
+
+The frontend now distinguishes hosting HTML from API JSON (including HTML returned as HTTP 200), gives an actionable message, and offers opening the app in a new tab. It never automatically replays a care-plan write or claims a plan was saved. Provider JSON error details remain intact.
+
+Start/resume the existing bloomcare container, wait for readiness JSON and the normal login page, then refresh the assessment and check for an already-saved guide before generating again. If the host repeatedly sleeps during use, inspect provider activity/sleep settings; UI changes cannot provide always-on hosting. Retain container name, port, database and environment settings. If a care-plan POST still fails while readiness is healthy, inspect its JSON error code and provider logs without exposing keys or patient payloads.

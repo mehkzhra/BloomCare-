@@ -13,15 +13,16 @@ const localTime = value => { const d = new Date(value); return new Date(d.getTim
 export function CarePlanPanel({ assessment, onChanged, viewerRole }) {
   const language = useLanguage();
   const [busy, setBusy] = useState(false), [error, setError] = useState('');
+  const [hostUnavailable, setHostUnavailable] = useState(false);
   const plan = assessment.care_plan;
   async function generate(event) {
-    event.preventDefault(); setBusy(true); setError('');
+    event.preventDefault(); setBusy(true); setError(''); setHostUnavailable(false);
     try {
       const result = await api(`/patients/me/assessments/${assessment.id}/care-plan`, {
         method: 'POST', timeoutMs: 60000, body: { consent: true, language },
       });
       onChanged(result);
-    } catch (err) { setError(err.message); }
+    } catch (err) { setError(t(err.message)); setHostUnavailable(err.code === 'HOST_UNAVAILABLE'); }
     finally { setBusy(false); }
   }
   return <details className="explanation care-plan-panel" open={Boolean(plan)}><summary><Icon name="leaf" size={17} />{t('Personalized care plan')}{plan && <span className="subtle-tag">{t('Saved')}</span>}</summary>
@@ -34,6 +35,7 @@ export function CarePlanPanel({ assessment, onChanged, viewerRole }) {
       <div><button disabled={busy}>{busy ? t('Preparing care plan…') : t('Generate and save care plan')}</button></div>
     </form>}
     {error && <p className="error" role="alert">{error}</p>}
+    {hostUnavailable && <a href="/" target="_blank" rel="noopener noreferrer">{t("Open BloomCare in a new tab")}</a>}
   </details>;
 }
 
