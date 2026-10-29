@@ -42,7 +42,7 @@ SOURCE_HASHES = {
 }
 
 
-def read_source_sheet(path):
+def read_source_sheet(path, *, impute_missing=True):
     """Read this pinned input workbook without an Excel runtime dependency."""
     import pandas as pd
 
@@ -79,7 +79,8 @@ def read_source_sheet(path):
         frame[name] = frame[name].astype(str).str.strip().str.lower().map(mapping)
     for _name, column, *_rest in FEATURES:
         frame[column] = pd.to_numeric(frame[column], errors="coerce")
-        frame[column] = frame[column].fillna(frame[column].median())
+        if impute_missing:
+            frame[column] = frame[column].fillna(frame[column].median())
     frame["Risk_level"] = frame["Risk_level"].astype(str).str.strip().str.lower()
     return frame
 

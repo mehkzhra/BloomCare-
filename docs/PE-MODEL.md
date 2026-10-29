@@ -41,3 +41,23 @@ The form, saved record and assessment display independent blood-pressure care gu
 Thresholds follow [NICE NG133](https://www.nice.org.uk/guidance/ng133/chapter/recommendations) and its [gestational hypertension summary](https://www.nice.org.uk/guidance/ng133/resources/gestational-hypertension-pdf-8720711394). Same-day contact wording is a conservative application routing policy. This rule is not a PE diagnosis, classifier output, or substitute for clinical assessment; lower readings do not exclude PE or concerning symptoms.
 
 This change fixes the dead-end workflow, not the model's evidence gap. PE inference still declines unsupported measurements. Wider inference requires appropriately licensed, documented data with confirmed outcomes, adequate coverage, patient-separated evaluation and independent clinical validation. No range widening, clipping, invented training examples or replacement model is included.
+
+## Reproducible PE validation audit — 29 October 2026
+
+Run from the repository root with research dependencies installed:
+
+```powershell
+python -m ml.validate_pe --source "PATH-TO-PINNED-LEGACY-REPOSITORY" --output "pe-validation-new-run.json"
+```
+
+The command checks workbook hashes, audits the deployed JSON forest on its original test set, and separately retrains five fixed-parameter candidate folds. It never activates a candidate or modifies maternal screening. Report: [PE validation results](../ml/training_reports/pe-v1.0.0/pe-validation-2026-10-29.json).
+
+- Deployed PE forest integrity, feature mapping and reference-score verification passed; 27 PE API/runtime tests passed.
+- Original nominal accuracy reproduces at 90.24%, but 25 of 41 test inputs match training inputs. This is not independent accuracy.
+- Of 203 source rows, 113 exact labelled duplicates are removed: 90 labelled rows, 89 unique feature groups, one conflicting-label group.
+- Two used values are missing (one HB, one amniotic-fluid measurement). The new candidate evaluation fits median imputation within each training fold, unlike the historical workbook-level preprocessing.
+- Across five disjoint-feature-group folds, candidate out-of-fold accuracy is 68.89%, macro F1 0.637, HIGH-label recall 50.00%, MEDIUM-label recall 48.28%. The majority-class baseline accuracy is 47.78%.
+- These are internal historical-category results, not sensitivity for clinically confirmed PE. Candidate parameters were retained from the earlier experiment; the data have already been examined. No patient IDs or untouched external cohort are available.
+- Wider BP coverage, confirmed outcomes, HB units, questionable source measurements and independent clinical validation remain unresolved. The candidate is not promoted, and the deployed model must not be presented as clinically validated.
+
+Delivery classification: software/demo PE workflow verified; standalone clinical PE detection not established. The independent high-BP care guidance remains in place. No maternal model change is included.

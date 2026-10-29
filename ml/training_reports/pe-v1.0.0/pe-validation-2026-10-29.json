@@ -1,0 +1,562 @@
+{
+  "scope": "Internal legacy-label validation only; not clinical or external validation",
+  "source_hashes": {
+    "ml/datasets/train_dataset.xlsx": "03cc79c707168b5862686088bde98e07b67cf4ec1587cc103e7a480a785ade2b",
+    "ml/datasets/test_dataset.xlsx": "29f0467b672c2e5b03ee737493a3d8a7d7fd1dd9b3249d5d824ec5e13183b8f2"
+  },
+  "sklearn_version": "1.9.1",
+  "class_order": [
+    "HIGH",
+    "LOW",
+    "MEDIUM"
+  ],
+  "missing_used_measurements": {
+    "gravida": 0,
+    "parity": 0,
+    "gestational_weeks": 0,
+    "age_years": 0,
+    "bmi": 0,
+    "diabetes": 0,
+    "history_of_hypertension": 0,
+    "systolic_mmhg": 0,
+    "diastolic_mmhg": 0,
+    "hb": 1,
+    "fetal_weight_kg": 0,
+    "protein_uria": 0,
+    "amniotic_fluid_level_cm": 1
+  },
+  "preprocessing": "Median imputer fitted inside each training fold only",
+  "raw_rows": 203,
+  "unique_labelled_rows": 90,
+  "exact_duplicates_removed": 113,
+  "unique_feature_groups": 89,
+  "conflicting_label_feature_groups": 1,
+  "original_test_rows": 41,
+  "original_test_rows_matching_training_features": 25,
+  "deployed_model_original_test": {
+    "accuracy": 0.9024390243902439,
+    "macro_f1": 0.8644444444444446,
+    "confusion_matrix_actual_rows_predicted_columns": [
+      [
+        5,
+        0,
+        0
+      ],
+      [
+        0,
+        24,
+        1
+      ],
+      [
+        2,
+        1,
+        8
+      ]
+    ],
+    "class_report": {
+      "HIGH": {
+        "precision": 0.7142857142857143,
+        "recall": 1.0,
+        "f1-score": 0.8333333333333334,
+        "support": 5.0
+      },
+      "LOW": {
+        "precision": 0.96,
+        "recall": 0.96,
+        "f1-score": 0.96,
+        "support": 25.0
+      },
+      "MEDIUM": {
+        "precision": 0.8888888888888888,
+        "recall": 0.7272727272727273,
+        "f1-score": 0.8,
+        "support": 11.0
+      },
+      "accuracy": 0.9024390243902439,
+      "macro avg": {
+        "precision": 0.8543915343915344,
+        "recall": 0.8957575757575759,
+        "f1-score": 0.8644444444444446,
+        "support": 41.0
+      },
+      "weighted avg": {
+        "precision": 0.910956252419667,
+        "recall": 0.9024390243902439,
+        "f1-score": 0.9016260162601627,
+        "support": 41.0
+      }
+    }
+  },
+  "candidate_parameters_fixed_before_this_run": {
+    "n_estimators": 400,
+    "max_depth": 6,
+    "min_samples_leaf": 2,
+    "class_weight": "balanced_subsample",
+    "random_state": 20261016,
+    "n_jobs": 1
+  },
+  "candidate_grouped_folds": [
+    {
+      "fold": 1,
+      "training_rows": 72,
+      "test_rows": 18,
+      "overlap_feature_groups": 0,
+      "accuracy": 0.6111111111111112,
+      "macro_f1": 0.5485838779956427,
+      "confusion_matrix_actual_rows_predicted_columns": [
+        [
+          3,
+          0,
+          1
+        ],
+        [
+          0,
+          7,
+          1
+        ],
+        [
+          3,
+          2,
+          1
+        ]
+      ],
+      "class_report": {
+        "HIGH": {
+          "precision": 0.5,
+          "recall": 0.75,
+          "f1-score": 0.6,
+          "support": 4.0
+        },
+        "LOW": {
+          "precision": 0.7777777777777778,
+          "recall": 0.875,
+          "f1-score": 0.8235294117647058,
+          "support": 8.0
+        },
+        "MEDIUM": {
+          "precision": 0.3333333333333333,
+          "recall": 0.16666666666666666,
+          "f1-score": 0.2222222222222222,
+          "support": 6.0
+        },
+        "accuracy": 0.6111111111111112,
+        "macro avg": {
+          "precision": 0.537037037037037,
+          "recall": 0.5972222222222222,
+          "f1-score": 0.5485838779956427,
+          "support": 18.0
+        },
+        "weighted avg": {
+          "precision": 0.5679012345679012,
+          "recall": 0.6111111111111112,
+          "f1-score": 0.5734204793028322,
+          "support": 18.0
+        }
+      }
+    },
+    {
+      "fold": 2,
+      "training_rows": 72,
+      "test_rows": 18,
+      "overlap_feature_groups": 0,
+      "accuracy": 0.6666666666666666,
+      "macro_f1": 0.5932539682539683,
+      "confusion_matrix_actual_rows_predicted_columns": [
+        [
+          1,
+          0,
+          3
+        ],
+        [
+          0,
+          7,
+          1
+        ],
+        [
+          1,
+          1,
+          4
+        ]
+      ],
+      "class_report": {
+        "HIGH": {
+          "precision": 0.5,
+          "recall": 0.25,
+          "f1-score": 0.3333333333333333,
+          "support": 4.0
+        },
+        "LOW": {
+          "precision": 0.875,
+          "recall": 0.875,
+          "f1-score": 0.875,
+          "support": 8.0
+        },
+        "MEDIUM": {
+          "precision": 0.5,
+          "recall": 0.6666666666666666,
+          "f1-score": 0.5714285714285714,
+          "support": 6.0
+        },
+        "accuracy": 0.6666666666666666,
+        "macro avg": {
+          "precision": 0.625,
+          "recall": 0.5972222222222222,
+          "f1-score": 0.5932539682539683,
+          "support": 18.0
+        },
+        "weighted avg": {
+          "precision": 0.6666666666666666,
+          "recall": 0.6666666666666666,
+          "f1-score": 0.6534391534391535,
+          "support": 18.0
+        }
+      }
+    },
+    {
+      "fold": 3,
+      "training_rows": 72,
+      "test_rows": 18,
+      "overlap_feature_groups": 0,
+      "accuracy": 0.7222222222222222,
+      "macro_f1": 0.6685906685906685,
+      "confusion_matrix_actual_rows_predicted_columns": [
+        [
+          2,
+          0,
+          2
+        ],
+        [
+          0,
+          8,
+          1
+        ],
+        [
+          1,
+          1,
+          3
+        ]
+      ],
+      "class_report": {
+        "HIGH": {
+          "precision": 0.6666666666666666,
+          "recall": 0.5,
+          "f1-score": 0.5714285714285714,
+          "support": 4.0
+        },
+        "LOW": {
+          "precision": 0.8888888888888888,
+          "recall": 0.8888888888888888,
+          "f1-score": 0.8888888888888888,
+          "support": 9.0
+        },
+        "MEDIUM": {
+          "precision": 0.5,
+          "recall": 0.6,
+          "f1-score": 0.5454545454545454,
+          "support": 5.0
+        },
+        "accuracy": 0.7222222222222222,
+        "macro avg": {
+          "precision": 0.6851851851851851,
+          "recall": 0.662962962962963,
+          "f1-score": 0.6685906685906685,
+          "support": 18.0
+        },
+        "weighted avg": {
+          "precision": 0.7314814814814814,
+          "recall": 0.7222222222222222,
+          "f1-score": 0.7229437229437229,
+          "support": 18.0
+        }
+      }
+    },
+    {
+      "fold": 4,
+      "training_rows": 72,
+      "test_rows": 18,
+      "overlap_feature_groups": 0,
+      "accuracy": 0.7222222222222222,
+      "macro_f1": 0.5185185185185185,
+      "confusion_matrix_actual_rows_predicted_columns": [
+        [
+          0,
+          0,
+          3
+        ],
+        [
+          0,
+          8,
+          1
+        ],
+        [
+          0,
+          1,
+          5
+        ]
+      ],
+      "class_report": {
+        "HIGH": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 3.0
+        },
+        "LOW": {
+          "precision": 0.8888888888888888,
+          "recall": 0.8888888888888888,
+          "f1-score": 0.8888888888888888,
+          "support": 9.0
+        },
+        "MEDIUM": {
+          "precision": 0.5555555555555556,
+          "recall": 0.8333333333333334,
+          "f1-score": 0.6666666666666666,
+          "support": 6.0
+        },
+        "accuracy": 0.7222222222222222,
+        "macro avg": {
+          "precision": 0.48148148148148145,
+          "recall": 0.5740740740740741,
+          "f1-score": 0.5185185185185185,
+          "support": 18.0
+        },
+        "weighted avg": {
+          "precision": 0.6296296296296297,
+          "recall": 0.7222222222222222,
+          "f1-score": 0.6666666666666666,
+          "support": 18.0
+        }
+      }
+    },
+    {
+      "fold": 5,
+      "training_rows": 72,
+      "test_rows": 18,
+      "overlap_feature_groups": 0,
+      "accuracy": 0.7222222222222222,
+      "macro_f1": 0.6894409937888198,
+      "confusion_matrix_actual_rows_predicted_columns": [
+        [
+          3,
+          0,
+          0
+        ],
+        [
+          0,
+          9,
+          0
+        ],
+        [
+          0,
+          5,
+          1
+        ]
+      ],
+      "class_report": {
+        "HIGH": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1-score": 1.0,
+          "support": 3.0
+        },
+        "LOW": {
+          "precision": 0.6428571428571429,
+          "recall": 1.0,
+          "f1-score": 0.782608695652174,
+          "support": 9.0
+        },
+        "MEDIUM": {
+          "precision": 1.0,
+          "recall": 0.16666666666666666,
+          "f1-score": 0.2857142857142857,
+          "support": 6.0
+        },
+        "accuracy": 0.7222222222222222,
+        "macro avg": {
+          "precision": 0.8809523809523809,
+          "recall": 0.7222222222222222,
+          "f1-score": 0.6894409937888198,
+          "support": 18.0
+        },
+        "weighted avg": {
+          "precision": 0.8214285714285715,
+          "recall": 0.7222222222222222,
+          "f1-score": 0.6532091097308489,
+          "support": 18.0
+        }
+      }
+    }
+  ],
+  "candidate_out_of_fold": {
+    "accuracy": 0.6888888888888889,
+    "macro_f1": 0.6367753623188406,
+    "confusion_matrix_actual_rows_predicted_columns": [
+      [
+        9,
+        0,
+        9
+      ],
+      [
+        0,
+        39,
+        4
+      ],
+      [
+        5,
+        10,
+        14
+      ]
+    ],
+    "class_report": {
+      "HIGH": {
+        "precision": 0.6428571428571429,
+        "recall": 0.5,
+        "f1-score": 0.5625,
+        "support": 18.0
+      },
+      "LOW": {
+        "precision": 0.7959183673469388,
+        "recall": 0.9069767441860465,
+        "f1-score": 0.8478260869565217,
+        "support": 43.0
+      },
+      "MEDIUM": {
+        "precision": 0.5185185185185185,
+        "recall": 0.4827586206896552,
+        "f1-score": 0.5,
+        "support": 29.0
+      },
+      "accuracy": 0.6888888888888889,
+      "macro avg": {
+        "precision": 0.6524313429075335,
+        "recall": 0.6299117882919005,
+        "f1-score": 0.6367753623188406,
+        "support": 90.0
+      },
+      "weighted avg": {
+        "precision": 0.6759217267153775,
+        "recall": 0.6888888888888889,
+        "f1-score": 0.678683574879227,
+        "support": 90.0
+      }
+    }
+  },
+  "most_frequent_baseline_out_of_fold": {
+    "accuracy": 0.4777777777777778,
+    "macro_f1": 0.21553884711779447,
+    "confusion_matrix_actual_rows_predicted_columns": [
+      [
+        0,
+        18,
+        0
+      ],
+      [
+        0,
+        43,
+        0
+      ],
+      [
+        0,
+        29,
+        0
+      ]
+    ],
+    "class_report": {
+      "HIGH": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 18.0
+      },
+      "LOW": {
+        "precision": 0.4777777777777778,
+        "recall": 1.0,
+        "f1-score": 0.6466165413533834,
+        "support": 43.0
+      },
+      "MEDIUM": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 29.0
+      },
+      "accuracy": 0.4777777777777778,
+      "macro avg": {
+        "precision": 0.15925925925925927,
+        "recall": 0.3333333333333333,
+        "f1-score": 0.21553884711779447,
+        "support": 90.0
+      },
+      "weighted avg": {
+        "precision": 0.22827160493827162,
+        "recall": 0.4777777777777778,
+        "f1-score": 0.30893901420217207,
+        "support": 90.0
+      }
+    }
+  },
+  "observed_ranges": {
+    "gravida": [
+      1.0,
+      8.0
+    ],
+    "parity": [
+      0.0,
+      6.0
+    ],
+    "gestational_weeks": [
+      14.0,
+      40.0
+    ],
+    "age_years": [
+      18.0,
+      38.0
+    ],
+    "bmi": [
+      16.4,
+      43.3
+    ],
+    "diabetes": [
+      0.0,
+      1.0
+    ],
+    "history_of_hypertension": [
+      0.0,
+      1.0
+    ],
+    "systolic_mmhg": [
+      90.0,
+      130.0
+    ],
+    "diastolic_mmhg": [
+      20.0,
+      90.0
+    ],
+    "hb": [
+      8.0,
+      11.2
+    ],
+    "fetal_weight_kg": [
+      0.0001,
+      9.55
+    ],
+    "protein_uria": [
+      0.0,
+      1.0
+    ],
+    "amniotic_fluid_level_cm": [
+      4.79,
+      18.0
+    ]
+  },
+  "activation": "NOT_PROMOTED",
+  "clinical_validation": "NOT_ESTABLISHED",
+  "limitations": [
+    "Legacy category labels do not establish confirmed PE outcomes or diagnostic accuracy.",
+    "Feature grouping prevents identical-input overlap, not unidentified-patient leakage.",
+    "Data previously examined; cross-validation is not a new external test.",
+    "Small sample, conflicting labels and undocumented units/provenance remain unresolved.",
+    "No systolic BP above 130 in source data; this audit cannot extend model coverage.",
+    "No hyperparameter selection or model promotion is performed by this audit."
+  ]
+}

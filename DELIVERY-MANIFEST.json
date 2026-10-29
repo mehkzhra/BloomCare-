@@ -3,7 +3,7 @@
   "date": "2026-10-29",
   "schema": "0013_account_security",
   "extract_into": "existing BloomCare project root",
-  "source_file_count": 257,
+  "source_file_count": 259,
   "cleanup": {
     "obsolete_paths": 66,
     "history": "docs/history.zip",
@@ -620,8 +620,8 @@
     },
     {
       "path": "docs/PE-MODEL.md",
-      "bytes": 4833,
-      "sha256": "cdc787426b020f582fd9485b4e15549b434ea6a5993fa9178c4ba37a25e0a92f"
+      "bytes": 6901,
+      "sha256": "c6fdd9e876e00e673d90083e90e12fb1759b8281f4a9d3014c88a7a3e88e5b1f"
     },
     {
       "path": "docs/RECRUITER-WALKTHROUGH.md",
@@ -1065,8 +1065,8 @@
     },
     {
       "path": "ml/import_legacy_pe.py",
-      "bytes": 11998,
-      "sha256": "4f377221533b866f75dfbc54d21a055752b924e1912bcae994297a5d1976d044"
+      "bytes": 12053,
+      "sha256": "ac5c546a3cc1b40940078fd8e8c50c14cc3f4e76a076c62f06cce96344a6d67f"
     },
     {
       "path": "ml/pytest.ini",
@@ -1114,6 +1114,11 @@
       "sha256": "ec9b24b72aa6f3e601b1bf7065ad93318a4002152c62e8f6fc276b656909ab67"
     },
     {
+      "path": "ml/training_reports/pe-v1.0.0/pe-validation-2026-10-29.json",
+      "bytes": 12905,
+      "sha256": "e9f01b89bc4e70e334bd253a1ac1ddd1879075789b852bbba49b8efbda7c9bf2"
+    },
+    {
       "path": "ml/training_reports/source-review-2026-10-21.json",
       "bytes": 9671,
       "sha256": "87b6a2e0e97c9698be826f05592a6892d64a32ea3ba021ab3825b0c55bb5ec8d"
@@ -1122,6 +1127,11 @@
       "path": "ml/training_reports/v1.0.0/comparison.json",
       "bytes": 13933,
       "sha256": "9a6030616acf1fd33969379efd5090a5e7cb8bef8c4f8a31d530db8d366396dc"
+    },
+    {
+      "path": "ml/validate_pe.py",
+      "bytes": 6870,
+      "sha256": "4bc54a1587caa6d91f176228577f63dcd850db6b9ad244a9f3dc655790e22912"
     },
     {
       "path": "ml/verify_model.py",
