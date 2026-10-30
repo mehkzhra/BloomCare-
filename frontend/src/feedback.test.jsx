@@ -96,6 +96,19 @@ it('shows operational availability while keeping setup commands and variables ou
   expect(screen.getByText(/Manual sharing is available/)).toBeInTheDocument();
   expect(writeText).not.toHaveBeenCalled();
 });
+it('tests AI only on an explicit admin click and shows the provider error', async () => {
+  const fetcher = vi.fn(async (url) => response(url.endsWith('/groq/check')
+    ? { ok: false, code: 'GROQ_INVALID_KEY', message: 'Groq rejected the server API key.' }
+    : { services: { groq: { status: 'CONFIGURED' } } }));
+  vi.stubGlobal('fetch', fetcher);
+  mount(<ServiceSettingsPage />);
+  const button = await screen.findByRole('button', { name: 'Test AI connection' });
+  expect(fetcher).toHaveBeenCalledTimes(1);
+  fireEvent.click(button);
+  expect(await screen.findByRole('alert')).toHaveTextContent('GROQ_INVALID_KEY');
+  expect(fetcher.mock.calls[1][0]).toBe('/api/admin/service-configuration/groq/check');
+  expect(fetcher.mock.calls[1][1].method).toBe('POST');
+});
 it('checks local devices only on demand and releases all tracks when closed', async () => {
   const stop = vi.fn(); const getUserMedia = vi.fn(async () => ({ getTracks: () => [{ stop }] }));
   vi.stubGlobal('navigator', { mediaDevices: { getUserMedia } });

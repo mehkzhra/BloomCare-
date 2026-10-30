@@ -44,10 +44,16 @@ def generate_care_plan(db, patient, assessment_id, data):
         .with_for_update()
     )
     now = utc_now()
-    if plan and plan.status == "READY":
+    retry_basic = bool(
+        plan and plan.status == "READY" and plan.provider_model == BASIC_GUIDE_MODEL
+        and data.retry_personalization
+    )
+    if plan and plan.status == "READY" and not retry_basic:
         return serialize_assessment(row)
     if plan:
         updated = plan.updated_at.replace(tzinfo=now.tzinfo)
+        if retry_basic and updated > now - timedelta(seconds=30):
+            raise HTTPException(429, "Wait 30 seconds before retrying AI personalization")
         if plan.status == "GENERATING" and updated > now - timedelta(minutes=2):
             raise HTTPException(409, "This care plan is being prepared. Refresh before retrying.")
         if plan.status == "FAILED" and updated > now - timedelta(seconds=30):
@@ -77,6 +83,8 @@ def generate_care_plan(db, patient, assessment_id, data):
         )
         db.add(plan)
     plan.status, plan.updated_at = "GENERATING", now
+    if retry_basic:
+        plan.consent_at = now
     try:
         db.commit()
     except IntegrityError:
@@ -108,6 +116,7 @@ def generate_care_plan(db, patient, assessment_id, data):
         if not settings.groq_api_key:
             raise GroqFailure("GROQ_NOT_CONFIGURED", "AI personalization unavailable", 503)
         content = complete(settings, messages)
+        plan.provider_model = settings.groq_model
     except GroqFailure:
         content = basic_care_guide(context, data.language)
         plan.provider_model = BASIC_GUIDE_MODEL

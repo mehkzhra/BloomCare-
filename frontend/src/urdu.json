@@ -1421,5 +1421,13 @@
   "If this is an older reading already assessed, follow your clinician’s plan. Keep the recorded values unchanged.": "اگر یہ پرانی ریڈنگ ہے جس کا معائنہ ہو چکا ہے تو اپنے معالج کے منصوبے پر عمل کریں۔ محفوظ ریڈنگ تبدیل نہ کریں۔",
   "Severe headache, vision changes or pain below the ribs: seek medical advice immediately, even if blood pressure is lower.": "شدید سر درد، نظر میں تبدیلی یا پسلیوں کے نیچے درد ہو تو فوراً طبی مشورہ لیں، چاہے بلڈ پریشر کم ہو۔",
   "Open BloomCare in a new tab": "بلوم کیئر نئے ٹیب میں کھولیں",
-  "BloomCare hosting is starting or temporarily unavailable. Open the app in a new tab, wait for it to load, then refresh this record before trying again.": "بلوم کیئر کا سرور شروع ہو رہا ہے یا عارضی طور پر دستیاب نہیں۔ ایپ نئے ٹیب میں کھولیں، لوڈ ہونے کا انتظار کریں، پھر دوبارہ کوشش سے پہلے یہ ریکارڈ ریفریش کریں۔"
+  "BloomCare hosting is starting or temporarily unavailable. Open the app in a new tab, wait for it to load, then refresh this record before trying again.": "بلوم کیئر کا سرور شروع ہو رہا ہے یا عارضی طور پر دستیاب نہیں۔ ایپ نئے ٹیب میں کھولیں، لوڈ ہونے کا انتظار کریں، پھر دوبارہ کوشش سے پہلے یہ ریکارڈ ریفریش کریں۔",
+  "Test AI connection": "AI کنکشن چیک کریں",
+  "Checking AI connection…": "AI کنکشن چیک ہو رہا ہے…",
+  "Send a short test prompt to Groq. No patient records are included.": "Groq کو مختصر آزمائشی سوال بھیجیں۔ مریض کا کوئی ریکارڈ شامل نہیں ہوگا۔",
+  "Retry AI personalization": "ذاتی AI رہنمائی دوبارہ آزمائیں",
+  "AI personalization is still unavailable. Your basic guide has been kept. Ask the administrator to test the AI connection.": "ذاتی AI رہنمائی ابھی دستیاب نہیں۔ آپ کی بنیادی رہنمائی محفوظ ہے۔ منتظم سے AI کنکشن چیک کروائیں۔",
+  "A test reply was received. No patient records were sent.": "آزمائشی جواب موصول ہو گیا۔ مریض کا کوئی ریکارڈ نہیں بھیجا گیا۔",
+  "Wait 30 seconds before retrying AI personalization": "AI رہنمائی دوبارہ آزمانے سے پہلے 30 سیکنڈ انتظار کریں۔",
+  "WEBRTC_ICE_SERVERS contains invalid configuration. In hosting environment settings, save only the JSON array from your TURN provider, then restart the app. Do not share the credentials here.": "WEBRTC_ICE_SERVERS کی ترتیب درست نہیں۔ ہوسٹنگ کی سیٹنگز میں TURN فراہم کنندہ کا صرف JSON array محفوظ کریں، پھر ایپ دوبارہ شروع کریں۔ اسناد یہاں شیئر نہ کریں۔"
 }

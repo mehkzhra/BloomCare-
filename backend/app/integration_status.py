@@ -3,7 +3,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.account_email import configured as email_configured
+from app.auth_limits import consume
 from app.config import get_settings
+from app.database import get_db
+from app.groq_service import GroqFailure, complete
 from app.ice_config import parse_ice_servers
 from app.models import User
 from app.security import current_user, require_role
@@ -125,6 +128,20 @@ def service_configuration(settings=None):
 @router.get("/admin/service-configuration")
 def admin_configuration(_user: User = Depends(require_role("admin"))):
     return {"services": service_configuration()}
+
+
+@router.post("/admin/service-configuration/groq/check")
+def check_groq(user: User = Depends(require_role("admin")), db=Depends(get_db)):
+    # Deliberate admin action, never a side effect of loading the status page.
+    consume(db, "groq-diagnostic", user.id, 3, 60)
+    try:
+        complete(get_settings(), [{"role": "user", "content": "Reply with OK only."}])
+    except GroqFailure as error:
+        return {"ok": False, "code": error.code, "message": error.message}
+    return {
+        "ok": True, "code": "GROQ_CONNECTED",
+        "message": "A test reply was received. No patient records were sent.",
+    }
 
 
 @router.get("/consultation-readiness")

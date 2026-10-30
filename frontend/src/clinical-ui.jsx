@@ -15,13 +15,15 @@ export function CarePlanPanel({ assessment, onChanged, viewerRole }) {
   const [busy, setBusy] = useState(false), [error, setError] = useState('');
   const [hostUnavailable, setHostUnavailable] = useState(false);
   const plan = assessment.care_plan;
+  const basicGuide = plan?.provider_model === 'local-basic-guide-v1';
   async function generate(event) {
     event.preventDefault(); setBusy(true); setError(''); setHostUnavailable(false);
     try {
       const result = await api(`/patients/me/assessments/${assessment.id}/care-plan`, {
-        method: 'POST', timeoutMs: 60000, body: { consent: true, language },
+        method: 'POST', timeoutMs: 60000, body: { consent: true, language, ...(basicGuide ? { retry_personalization: true } : {}) },
       });
       onChanged(result);
+      if (basicGuide && result.care_plan?.provider_model === 'local-basic-guide-v1') setError(t('AI personalization is still unavailable. Your basic guide has been kept. Ask the administrator to test the AI connection.'));
     } catch (err) { setError(t(err.message)); setHostUnavailable(err.code === 'HOST_UNAVAILABLE'); }
     finally { setBusy(false); }
   }
@@ -29,10 +31,10 @@ export function CarePlanPanel({ assessment, onChanged, viewerRole }) {
     {plan ? <div className="stack"><p className="muted text-sm">{t('Saved')}{date(plan.created_at)} · {plan.language.toUpperCase()}</p>
       {!plan.current && <p className="banner">{t('The PE stage changed after this plan was prepared. Generate an updated guide.')}</p>}
       <p className="note-body">{plan.content}</p></div> : <p className="muted">{t('A care guide can be prepared from this saved assessment.')}</p>}
-    {viewerRole === 'patient' && (!plan?.current || plan.language !== language) && <form className="stack" onSubmit={generate}>
+    {viewerRole === 'patient' && (basicGuide || !plan?.current || plan.language !== language) && <form className="stack" onSubmit={generate}>
       <label className="check-label"><input type="checkbox" required disabled={busy} />{t('I agree to send this assessment and its measurements to Groq to prepare my care guide.')}</label>
       <p className="muted text-sm">{t('Your name and email are excluded. This educational guide does not prescribe or change treatment.')}</p>
-      <div><button disabled={busy}>{busy ? t('Preparing care plan…') : t('Generate and save care plan')}</button></div>
+      <div><button disabled={busy}>{busy ? t('Preparing care plan…') : t(basicGuide ? 'Retry AI personalization' : 'Generate and save care plan')}</button></div>
     </form>}
     {error && <p className="error" role="alert">{error}</p>}
     {hostUnavailable && <a href="/" target="_blank" rel="noopener noreferrer">{t("Open BloomCare in a new tab")}</a>}

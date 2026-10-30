@@ -85,6 +85,19 @@ it('requests a care plan only after consent and returns the saved assessment', a
   expect(requests[0].body).toEqual({ consent: true, language: 'en' });
 });
 
+it('offers explicit consented AI retry for a saved basic guide', async () => {
+  const changed = vi.fn();
+  const basic = { ...assessment, care_plan: { provider_model: 'local-basic-guide-v1', language: 'en', current: true, created_at: '2026-10-29T12:00:00Z', content: 'Basic care guide' } };
+  mock(() => response(basic));
+  render(<CarePlanPanel assessment={basic} viewerRole="patient" onChanged={changed} />);
+  expect(requests).toHaveLength(0);
+  fireEvent.click(screen.getByRole('checkbox'));
+  fireEvent.click(screen.getByRole('button', { name: 'Retry AI personalization' }));
+  await waitFor(() => expect(changed).toHaveBeenCalled());
+  expect(requests[0].body).toEqual({ consent: true, language: 'en', retry_personalization: true });
+  expect(await screen.findByRole('alert')).toHaveTextContent('Your basic guide has been kept');
+});
+
 it('loads review history when opened and submits the displayed review version', async () => {
   const changed = vi.fn();
   mock(call => response(call.method === 'PUT' ? assessment : []));

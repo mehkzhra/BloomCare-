@@ -35,6 +35,7 @@ class HealthRecordInput(HealthInput):
 class CarePlanInput(Input):
     consent: Literal[True]
     language: Literal["en", "ur"] = "en"
+    retry_personalization: bool = Field(default=False, strict=True)
 
 
 class ClinicalReviewInput(Input):

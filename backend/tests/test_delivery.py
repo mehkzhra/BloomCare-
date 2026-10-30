@@ -225,6 +225,39 @@ def test_care_plan_failure_saves_labelled_basic_guide(
     assert client.post(path, json={"consent": True}).status_code == 404
 
 
+def test_basic_guide_can_be_personalized_after_provider_recovers(
+    client, accounts, available, pe_examples, groq, monkeypatch
+):
+    sign_in(client)
+    _, assessment = create_assessment(client, pe_examples)
+    path = f"/api/patients/me/assessments/{assessment['id']}/care-plan"
+    key = get_settings().groq_api_key
+    monkeypatch.setattr(get_settings(), "groq_api_key", None)
+    plan = client.post(path, json={"consent": True}).json()["care_plan"]
+    body = {"consent": True, "retry_personalization": True}
+    assert client.post(path, json=body).status_code == 429
+    with SessionLocal() as db:
+        row = db.get(AssessmentCarePlan, plan["id"])
+        row.updated_at -= timedelta(minutes=1)
+        db.commit()
+    # Another provider failure keeps the usable basic guide.
+    failed = client.post(path, json=body).json()["care_plan"]
+    assert failed["content"] == plan["content"] and failed["current"]
+    with SessionLocal() as db:
+        row = db.get(AssessmentCarePlan, plan["id"])
+        row.updated_at -= timedelta(minutes=1)
+        db.commit()
+    monkeypatch.setattr(get_settings(), "groq_api_key", key)
+    denied = client.post(path, json={"consent": False, "retry_personalization": True})
+    assert denied.status_code == 422
+    result = client.post(path, json=body).json()["care_plan"]
+    assert result["id"] == plan["id"] and result["current"]
+    assert result["provider_model"] == get_settings().groq_model
+    assert "care team" in result["content"] and len(groq) == 1
+    client.post(path, json=body)
+    assert len(groq) == 1  # A successful AI plan is not repeatedly regenerated.
+
+
 def test_clinical_review_versions_urgent_counts_notifications_and_authorization(
     client, accounts, available, pe_examples
 ):

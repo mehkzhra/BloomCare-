@@ -54,6 +54,18 @@ included. It does not invent PE results, prescribe treatment, or claim clinician
 Repeated requests for the same saved context return the existing plan. Hosting sleep
 can still prevent the request from reaching the application.
 
+On the admin service-status page, **Test AI connection** explicitly sends a short
+non-patient test prompt and displays a safe provider result/error code. Viewing or
+refreshing the page does not call Groq. The endpoint is admin-only and limited to
+three attempts per minute per administrator. A successful test is a point-in-time
+provider check, not proof that every care-plan request succeeds.
+
+Patients with a saved basic guide can select **Retry AI personalization** after
+renewing consent. A 30-second cooldown and in-progress guard prevent rapid repeats.
+Success replaces that basic guide with the personalized text for the same saved
+assessment context; provider failure keeps a basic guide. Already personalized plans
+remain idempotent. This action does not modify the assessment measurements or PE result.
+
 ## Final acceptance on the deployment
 
 Local submission verification on 29 October 2026:

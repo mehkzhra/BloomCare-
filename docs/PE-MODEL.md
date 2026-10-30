@@ -126,6 +126,8 @@ advice, does not invent a PE category, and distinguishes old readings from curre
 unreviewed readings. Consent, ownership, immutable saved context and duplicate-request
 protection are preserved. It is not an AI-personalized or clinician-approved plan.
 An already saved basic guide is returned on repeat requests for the same context.
+An explicit consented AI-personalization retry can replace a basic guide after the
+provider recovers; it is subject to a cooldown and preserves the assessment context.
 
 This fallback requires a running application/database. It cannot repair a hosting
 proxy's 503 response while the container is sleeping. Health readiness alone does

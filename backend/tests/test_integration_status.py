@@ -6,8 +6,45 @@ import pytest
 from conftest import sign_in
 from pydantic import SecretStr
 
+from app import integration_status
 from app.config import get_settings
+from app.groq_service import GroqFailure
 from app.integration_status import parse_ice_servers, service_configuration
+
+
+def test_admin_ai_check_is_explicit_private_and_rate_limited(client, accounts, monkeypatch):
+    calls = []
+    monkeypatch.setattr(
+        integration_status, "complete", lambda settings, messages: calls.append(messages) or "OK"
+    )
+    path = "/api/admin/service-configuration/groq/check"
+    assert client.post(path).status_code == 401
+    sign_in(client, "patient1")
+    assert client.post(path).status_code == 403
+    sign_in(client, "doctor1")
+    assert client.post(path).status_code == 403
+    sign_in(client, "admin")
+    client.get("/api/admin/service-configuration")
+    assert calls == []
+    for _ in range(3):
+        response = client.post(path)
+        assert response.status_code == 200 and response.json()["ok"] is True
+    assert calls == [[{"role": "user", "content": "Reply with OK only."}]] * 3
+    assert client.post(path).status_code == 429
+
+
+def test_admin_ai_check_reports_provider_failure(client, accounts, monkeypatch):
+    def fail(*args):
+        raise GroqFailure("GROQ_INVALID_KEY", "Groq rejected the server API key.", 502)
+
+    monkeypatch.setattr(integration_status, "complete", fail)
+    sign_in(client, "admin")
+    response = client.post("/api/admin/service-configuration/groq/check")
+    assert response.json() == {
+        "ok": False,
+        "code": "GROQ_INVALID_KEY",
+        "message": "Groq rejected the server API key.",
+    }
 
 
 @pytest.mark.parametrize(
