@@ -135,3 +135,20 @@ it('releases a late camera stream after a pending device check was cancelled', a
   await waitFor(() => expect(stop).toHaveBeenCalledTimes(1));
   expect(within(screen.getByText('Check this device').parentElement).queryByText(/Camera and microphone opened/)).not.toBeInTheDocument();
 });
+
+it.each([
+  ['email', 'Send test email to my account'],
+  ['whatsapp', 'Check WhatsApp setup'],
+  ['video', 'Check video configuration'],
+])('runs the %s diagnostic only after an explicit click', async (name, label) => {
+  const fetch = vi.fn(async (url, options) => options?.method === 'POST'
+    ? response({ ok: true, message: 'Diagnostic finished' })
+    : response({ services: { [name]: { status: 'CONFIGURED' } } }));
+  vi.stubGlobal('fetch', fetch);
+  mount(<ServiceSettingsPage />);
+  const button = await screen.findByRole('button', { name: label });
+  expect(fetch.mock.calls.filter(([, options]) => options?.method === 'POST')).toHaveLength(0);
+  fireEvent.click(button);
+  expect(await screen.findByText('Diagnostic finished')).toBeInTheDocument();
+  expect(fetch.mock.calls.find(([, options]) => options?.method === 'POST')[0]).toContain(`/admin/service-configuration/${name}/check`);
+});

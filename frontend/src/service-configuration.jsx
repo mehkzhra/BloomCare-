@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { api } from './api.js';
 import { t } from './i18n.js';
 import { ResourceStatus, useResource } from './resources.jsx';
+import { DeviceCheck } from './video-readiness.jsx';
 import { Icon } from './ui.jsx';
 
 const names = { email: 'Account emails', groq: 'Assistant & care guides', whatsapp: 'WhatsApp care alerts', video: 'Video consultations' };
@@ -35,6 +36,19 @@ const descriptions = {
   whatsapp: 'Patients can choose a contact and consent to an automatic care alert when this service is enabled.',
   video: 'Patients and doctors meet through accepted appointments with active access.',
 };
+const testLabels = { email: 'Send test email to my account', groq: 'Test AI connection', whatsapp: 'Check WhatsApp setup', video: 'Check video configuration' };
+const testNotes = {
+  email: 'Sends one test email to your signed-in account. No reset link or patient data is sent.',
+  groq: 'Send a short test prompt to Groq. No patient records are included.',
+  whatsapp: 'Checks required settings only. Does not contact WhatsApp or send a message.',
+  video: 'Checks saved network configuration. Use the device preview and a two-device call to test actual connectivity.',
+};
+const setup = {
+  email: 'For Brevo, set EMAIL_PROVIDER=brevo, EMAIL_FROM and BREVO_API_KEY. For SMTP, configure SMTP_HOST, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD, SMTP_FROM and SMTP_SECURITY.',
+  groq: 'Replace GROQ_API_KEY with an active key and check GROQ_MODEL. Never paste secret keys into chat or screenshots.',
+  whatsapp: 'Automatic alerts require a Twilio account, sender and opted-in allowed recipients. Configure the account SID, auth token, WhatsApp sender and allowed recipients in hosting. Manual report sharing works without Twilio.',
+  video: 'Set WEBRTC_ICE_SERVERS to the JSON array supplied by your STUN/TURN provider, including TURN credentials. STUN alone does not ensure calls across different networks.',
+};
 const checks = {
   email: 'Use Forgot password with an account you own and check that the reset email arrives.',
   groq: 'Ask one question from the patient Assistant page with consent, then check that a reply arrives.',
@@ -43,9 +57,9 @@ const checks = {
 };
 function ServiceCard({ name, item }) {
   const [busy, setBusy] = useState(false), [result, setResult] = useState(null);
-  async function checkGroq() {
+  async function checkService() {
     setBusy(true); setResult(null);
-    try { setResult(await api('/admin/service-configuration/groq/check', { method: 'POST', timeoutMs: 60000 })); }
+    try { setResult(await api(`/admin/service-configuration/${name}/check`, { method: 'POST', timeoutMs: 60000 })); }
     catch (error) { setResult({ ok: false, message: error.message }); }
     finally { setBusy(false); }
   }
@@ -53,9 +67,11 @@ function ServiceCard({ name, item }) {
   return <section className="card service-status-card stack" id={name}>
     <div className="panel-heading"><div className="service-title"><span className="step-icon"><Icon name={icons[name]} size={22} /></span><h2>{t(names[name])}</h2></div><Badge name={name} status={item.status} /></div>
     <p>{t(descriptions[name])}</p>
-    {name === 'groq' && <div className="stack"><p className="muted">{t('Send a short test prompt to Groq. No patient records are included.')}</p><div><button disabled={busy} onClick={checkGroq}>{t(busy ? 'Checking AI connection…' : 'Test AI connection')}</button></div>{result && <p role={result.ok ? 'status' : 'alert'} className={result.ok ? 'banner' : 'error'}>{result.code && <strong>{result.code}: </strong>}{t(result.message)}</p>}</div>}
+    <div className="stack"><p className="muted">{t(testNotes[name])}</p><div><button disabled={busy} onClick={checkService}>{t(busy ? 'Checking service…' : testLabels[name])}</button></div>{result && <p role={result.ok ? 'status' : 'alert'} className={result.ok ? 'banner' : 'error'}>{result.code && <strong>{result.code}: </strong>}{t(result.message)}</p>}</div>
+    {name === 'video' && <DeviceCheck />}
+    <details className="explanation"><summary>{t('Setup settings')}</summary><p>{t('Service credentials are managed in your hosting environment settings. Save changes there, restart the app, then refresh and test here. This panel does not edit saved credentials.')}</p><p>{t(setup[name])}</p></details>
     {name === 'video' && item.status === 'INVALID' && <p role="alert">{t('WEBRTC_ICE_SERVERS contains invalid configuration. In hosting environment settings, save only the JSON array from your TURN provider, then restart the app. Do not share the credentials here.')}</p>}
-    {needsAttention && <p className="service-action-note"><Icon name="clock" size={17} />{t('Ask the person maintaining BloomCare to enable or check this service.')}</p>}
+    {needsAttention && <p className="service-action-note"><Icon name="clock" size={17} />{t('Open Setup settings below to see what needs configuration.')}</p>}
     <details className="explanation"><summary>{t('How to check this service')}</summary><p>{t(checks[name])}</p></details>
   </section>;
 }

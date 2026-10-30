@@ -3,7 +3,7 @@ import { t } from './i18n.js';
 import { ResourceStatus, useResource } from './resources.jsx';
 import { Icon } from './ui.jsx';
 
-function DeviceCheck() {
+export function DeviceCheck() {
   const preview = useRef(null), stream = useRef(null), generation = useRef(0);
   const [busy, setBusy] = useState(false), [ready, setReady] = useState(false), [error, setError] = useState('');
   const supported = window.isSecureContext !== false && navigator.mediaDevices?.getUserMedia && window.RTCPeerConnection;

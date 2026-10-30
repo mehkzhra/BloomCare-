@@ -116,3 +116,46 @@ def test_only_admin_sees_service_details_and_participants_receive_safe_video_rea
     response = client.get("/api/consultation-readiness")
     assert response.status_code == 200
     assert set(response.json()) == {"status", "label", "summary", "verified_live"}
+
+
+@pytest.mark.parametrize("service", ["email", "whatsapp", "video"])
+def test_service_checks_require_admin(client, accounts, service):
+    path = f"/api/admin/service-configuration/{service}/check"
+    assert client.post(path).status_code == 401
+    sign_in(client, "patient1")
+    assert client.post(path).status_code == 403
+    sign_in(client, "doctor1")
+    assert client.post(path).status_code == 403
+
+
+def test_email_check_sends_only_to_admin_and_limits_requests(client, accounts, monkeypatch):
+    sent = []
+    monkeypatch.setattr(integration_status, "send_test", sent.append)
+    sign_in(client, "admin")
+    client.get("/api/admin/service-configuration")
+    assert sent == []
+    response = client.post("/api/admin/service-configuration/email/check")
+    assert response.json()["code"] == "EMAIL_SUBMITTED"
+    assert len(sent) == 1
+    assert sent[0] == client.get("/api/auth/me").json()["email"]
+    assert client.post("/api/admin/service-configuration/email/check").status_code == 429
+
+
+def test_email_check_hides_provider_errors(client, accounts, monkeypatch):
+    def fail(*args):
+        raise ValueError("secret-key private-recipient")
+
+    monkeypatch.setattr(integration_status, "send_test", fail)
+    sign_in(client, "admin")
+    response = client.post("/api/admin/service-configuration/email/check")
+    assert response.json()["ok"] is False
+    assert "secret-key" not in response.text
+
+
+def test_video_check_rejects_invalid_json_without_echoing_it(client, accounts, monkeypatch):
+    monkeypatch.setattr(get_settings(), "webrtc_ice_servers", "secret-invalid-json")
+    sign_in(client, "admin")
+    response = client.post("/api/admin/service-configuration/video/check")
+    assert response.json()["ok"] is False
+    assert response.json()["code"] == "INVALID"
+    assert "secret-invalid-json" not in response.text

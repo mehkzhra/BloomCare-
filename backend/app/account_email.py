@@ -58,6 +58,27 @@ def send(recipient, purpose, token):
         + " Use the latest link if you requested more than one.\n"
         + "If you did not make this request, ignore this email. Do not share the link.\n"
     )
+    submit_message(settings, recipient, message)
+
+
+def send_test(recipient):
+    settings = get_settings()
+    if not configured(settings):
+        raise ValueError("Account email is not configured")
+    message = EmailMessage()
+    message["From"] = str(
+        settings.email_from if settings.email_provider == "brevo" else settings.smtp_from
+    )
+    message["To"] = recipient
+    message["Subject"] = "BloomCare service test"
+    message.set_content(
+        "You requested this service test from BloomCare administration. "
+        "No patient information or account reset links are included."
+    )
+    submit_message(settings, recipient, message)
+
+
+def submit_message(settings, recipient, message):
     if settings.email_provider == "brevo":
         # Fixed endpoint, verified TLS, no redirect or implicit retry. Avoid exception
         # bodies/URLs that could expose the reset link or provider credential.

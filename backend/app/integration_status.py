@@ -3,6 +3,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.account_email import configured as email_configured
+from app.account_email import send_test
 from app.auth_limits import consume
 from app.config import get_settings
 from app.database import get_db
@@ -48,16 +49,17 @@ def service_configuration(settings=None):
             "verification_required": settings.auth_require_email_verification,
             "missing": []
             if email_configured(settings)
-            else ["BREVO_API_KEY", "EMAIL_FROM"] if settings.email_provider == "brevo" else [
+            else ["BREVO_API_KEY", "EMAIL_FROM"]
+            if settings.email_provider == "brevo"
+            else [
                 "SMTP_HOST",
                 "SMTP_PORT",
                 "SMTP_USERNAME",
                 "SMTP_PASSWORD",
                 "SMTP_FROM",
             ],
-            "command": "scripts\\configure-integrations.cmd " + (
-                "email-brevo" if settings.email_provider == "brevo" else "email"
-            ),
+            "command": "scripts\\configure-integrations.cmd "
+            + ("email-brevo" if settings.email_provider == "brevo" else "email"),
             "provider": settings.email_provider,
             "verified_live": False,
         },
@@ -139,7 +141,8 @@ def check_groq(user: User = Depends(require_role("admin")), db=Depends(get_db)):
     except GroqFailure as error:
         return {"ok": False, "code": error.code, "message": error.message}
     return {
-        "ok": True, "code": "GROQ_CONNECTED",
+        "ok": True,
+        "code": "GROQ_CONNECTED",
         "message": "A test reply was received. No patient records were sent.",
     }
 
@@ -150,3 +153,47 @@ def consultation_readiness(_user: User = Depends(current_user)):
         raise HTTPException(403, "Only consultation participants can access this view")
     result = service_configuration()["video"]
     return {key: result[key] for key in ("status", "label", "summary", "verified_live")}
+
+
+@router.post("/admin/service-configuration/email/check")
+def check_email(user: User = Depends(require_role("admin")), db=Depends(get_db)):
+    consume(db, "email-diagnostic", user.id, 1, 60)
+    try:
+        send_test(user.email)
+    except Exception:
+        return {
+            "ok": False,
+            "code": "EMAIL_TEST_FAILED",
+            "message": "Test email could not be submitted. Check the email provider settings.",
+        }
+    return {
+        "ok": True,
+        "code": "EMAIL_SUBMITTED",
+        "message": (
+            "Test email submitted to your account address. "
+            "Check your inbox and spam folder; delivery is not yet confirmed."
+        ),
+    }
+
+
+@router.post("/admin/service-configuration/whatsapp/check")
+def check_whatsapp(user: User = Depends(require_role("admin")), db=Depends(get_db)):
+    consume(db, "whatsapp-diagnostic", user.id, 3, 60)
+    missing = configuration_issues(get_settings())
+    return {
+        "ok": not missing,
+        "code": "WHATSAPP_SETUP_INCOMPLETE" if missing else "WHATSAPP_SETTINGS_SAVED",
+        "message": "WhatsApp settings are incomplete. Manual report sharing is still available."
+        if missing
+        else (
+            "Required settings are saved. Provider credentials and message delivery "
+            "are not verified. No message was sent."
+        ),
+    }
+
+
+@router.post("/admin/service-configuration/video/check")
+def check_video(user: User = Depends(require_role("admin")), db=Depends(get_db)):
+    consume(db, "video-diagnostic", user.id, 3, 60)
+    item = service_configuration()["video"]
+    return {"ok": item["status"] != "INVALID", "code": item["status"], "message": item["summary"]}
